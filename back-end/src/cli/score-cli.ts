@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { importSheetMusic } from './score-import.ts';
-import { referenceForScorePassage } from './score-xml.ts';
-import type { SheetImportOptions } from './score-import.ts';
+import { importSheetMusic } from '../score/score-import.ts';
+import { referenceForScorePassage } from '../../../score-xml.ts';
+import type { SheetImportOptions } from '../score/score-import.ts';
 
 const [input, output, settings] = process.argv.slice(2);
 if (!input || !output) {

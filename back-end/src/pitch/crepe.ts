@@ -3,7 +3,7 @@ import { mkdtemp, writeFile, readFile, stat, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AnalysisOptions, AudioClip, CrepeRuntimeOptions, PitchTrack } from './types.ts';
+import type { AnalysisOptions, AudioClip, CrepeRuntimeOptions, PitchTrack } from './back-end/types.ts';
 
 export function validatePitchTrack(track: PitchTrack, clip: AudioClip): void {
   const duration = clip.samples.length / clip.sampleRate;

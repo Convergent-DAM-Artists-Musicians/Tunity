@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { analyzeClip, analyzePitchTrack } from '../src/analyzer.ts';
 import { reference, synthesize } from '../src/fixtures.ts';
-import { analyzeFixture, trackForNotes } from './helpers.ts';
+import { analyzeFixture, trackForNotes } from '../helpers.ts';
 
 test('correct performance with known pitch frames produces no findings', () => {
   assert.deepEqual(analyzeFixture(synthesize(reference), reference, reference).findings, []);

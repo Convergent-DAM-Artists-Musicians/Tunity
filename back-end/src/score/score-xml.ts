@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import type { ExpectedNote } from './types.ts';
+import type { ExpectedNote } from './back-end/types.ts';
 
 const require = createRequire(import.meta.url);
 const { xml2js } = require('xml-js') as { xml2js(xml: string, options: object): XmlNode };

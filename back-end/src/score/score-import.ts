@@ -3,8 +3,8 @@ import { readFile, stat, mkdtemp, readdir, rm } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawn } from 'node:child_process';
-import { children, parseXml, parseMusicXml } from './score-xml.ts';
-import type { ImportedScore, ScoreImportOptions } from './score-xml.ts';
+import { children, parseXml, parseMusicXml } from '../../../score-xml.ts';
+import type { ImportedScore, ScoreImportOptions } from '../../../score-xml.ts';
 
 const require = createRequire(import.meta.url);
 const JSZip = require('jszip');

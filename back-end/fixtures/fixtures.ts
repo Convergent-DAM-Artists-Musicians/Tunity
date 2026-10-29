@@ -1,4 +1,4 @@
-import type { AudioClip, ExpectedNote } from './types.ts';
+import type { AudioClip, ExpectedNote } from '../src/types.ts';
 
 export type SynthNote = { midi: number; startSec: number; endSec: number; amplitude?: number };
 export const reference: ExpectedNote[] = [69, 71, 72, 74, 76, 77, 79].map((midi, i) => ({
