@@ -1,0 +1,4 @@
+# Install a matching torch / torchaudio pair for your CPU or CUDA platform first:
+# https://pytorch.org/get-started/locally/
+torchcrepe==0.0.24
+numpy>=1.26,<3

@@ -1,0 +1,43 @@
+{
+  "title": "A minor practice",
+  "parts": [
+    {
+      "id": "P1",
+      "name": "Flute"
+    }
+  ],
+  "selectedPartId": "P1",
+  "notes": [
+    {
+      "id": "P1-m1-n1",
+      "midi": 69,
+      "startSec": 0,
+      "endSec": 0.6666666666666666
+    },
+    {
+      "id": "P1-m1-n2",
+      "midi": 71,
+      "startSec": 0.6666666666666666,
+      "endSec": 1.3333333333333333
+    },
+    {
+      "id": "P1-m1-n3",
+      "midi": 72,
+      "startSec": 1.3333333333333333,
+      "endSec": 2
+    }
+  ],
+  "tempoMap": [
+    {
+      "beat": 0,
+      "bpm": 90
+    }
+  ],
+  "durationSec": 2.6666666666666665,
+  "warnings": [
+    "Review the imported melody, tempo and synchronization cue before using it to grade a performance.",
+    "Printed dynamics have no universal dB mapping; dynamics scoring is disabled until relative targets are supplied."
+  ],
+  "source": "musicxml",
+  "requiresReview": true
+}

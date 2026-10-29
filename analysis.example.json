@@ -1,0 +1,176 @@
+{
+  "fixtureOnly": true,
+  "description": "Synthetic audio and oracle frames; not CREPE inference.",
+  "result": {
+    "version": "0.2.0-crepe",
+    "pitchEngine": "torchcrepe",
+    "durationSec": 5,
+    "detectedNotes": [
+      {
+        "startSec": 0.6,
+        "endSec": 0.7,
+        "midi": 69,
+        "frequencyHz": 440,
+        "confidence": 0.95,
+        "rmsDb": -14.950769876329222
+      },
+      {
+        "startSec": 0.9500000000000001,
+        "endSec": 1.35,
+        "midi": 72,
+        "frequencyHz": 523.2511306011972,
+        "confidence": 0.95,
+        "rmsDb": -14.960294588963393
+      },
+      {
+        "startSec": 1.6,
+        "endSec": 2,
+        "midi": 72.35,
+        "frequencyHz": 533.9372457960407,
+        "confidence": 0.95,
+        "rmsDb": -14.951404693504674
+      },
+      {
+        "startSec": 2.25,
+        "endSec": 2.65,
+        "midi": 73.65,
+        "frequencyHz": 575.5748378311058,
+        "confidence": 0.95,
+        "rmsDb": -14.96392241044331
+      },
+      {
+        "startSec": 2.7800000000000002,
+        "endSec": 3.3,
+        "midi": 76,
+        "frequencyHz": 659.2551138257398,
+        "confidence": 0.95,
+        "rmsDb": -14.976073539837387
+      },
+      {
+        "startSec": 3.67,
+        "endSec": 3.95,
+        "midi": 77,
+        "frequencyHz": 698.4564628660078,
+        "confidence": 0.95,
+        "rmsDb": -14.958710498786271
+      },
+      {
+        "startSec": 4.2,
+        "endSec": 4.6,
+        "midi": 79,
+        "frequencyHz": 783.9908719634985,
+        "confidence": 0.95,
+        "rmsDb": -26.007402066374333
+      }
+    ],
+    "matches": [
+      {
+        "expectedIndex": 0,
+        "detectedIndex": 0
+      },
+      {
+        "expectedIndex": 1,
+        "detectedIndex": 1
+      },
+      {
+        "expectedIndex": 2,
+        "detectedIndex": 2
+      },
+      {
+        "expectedIndex": 3,
+        "detectedIndex": 3
+      },
+      {
+        "expectedIndex": 4,
+        "detectedIndex": 4
+      },
+      {
+        "expectedIndex": 5,
+        "detectedIndex": 5
+      },
+      {
+        "expectedIndex": 6,
+        "detectedIndex": 6
+      }
+    ],
+    "findings": [
+      {
+        "kind": "missed_entrance",
+        "expectedId": "note-1",
+        "startSec": 0.6,
+        "sourceStartSec": 10.6,
+        "endSec": 0.7,
+        "confidence": 0.95,
+        "message": "Entrance is 300 ms late.",
+        "timingErrorMs": 300
+      },
+      {
+        "kind": "wrong_note",
+        "expectedId": "note-2",
+        "startSec": 0.9500000000000001,
+        "sourceStartSec": 10.95,
+        "endSec": 1.35,
+        "confidence": 0.95,
+        "message": "Expected MIDI 71; detected MIDI 72.",
+        "expectedMidi": 71,
+        "detectedMidi": 72,
+        "cents": 100
+      },
+      {
+        "kind": "sharp",
+        "expectedId": "note-3",
+        "startSec": 1.6,
+        "sourceStartSec": 11.6,
+        "endSec": 2,
+        "confidence": 0.95,
+        "message": "Note is 35 cents sharp.",
+        "cents": 34.99999999999943
+      },
+      {
+        "kind": "flat",
+        "expectedId": "note-4",
+        "startSec": 2.25,
+        "sourceStartSec": 12.25,
+        "endSec": 2.65,
+        "confidence": 0.95,
+        "message": "Note is 35 cents flat.",
+        "cents": -34.99999999999943
+      },
+      {
+        "kind": "early",
+        "expectedId": "note-5",
+        "startSec": 2.7800000000000002,
+        "sourceStartSec": 12.780000000000001,
+        "endSec": 3.3,
+        "confidence": 0.95,
+        "message": "Note starts 120 ms early.",
+        "timingErrorMs": -119.99999999999966
+      },
+      {
+        "kind": "late",
+        "expectedId": "note-6",
+        "startSec": 3.67,
+        "sourceStartSec": 13.67,
+        "endSec": 3.95,
+        "confidence": 0.95,
+        "message": "Note starts 120 ms late.",
+        "timingErrorMs": 120.00000000000011
+      },
+      {
+        "kind": "uneven_dynamics",
+        "expectedId": "note-7",
+        "startSec": 4.2,
+        "sourceStartSec": 14.2,
+        "endSec": 4.6,
+        "confidence": 0.95,
+        "message": "Note is 11.0 dB quieter than the relative target.",
+        "dynamicsErrorDb": -11.04710747741094
+      }
+    ],
+    "quality": {
+      "voicedConfidenceFraction": 1,
+      "clippedSampleFraction": 0,
+      "warnings": []
+    }
+  }
+}
