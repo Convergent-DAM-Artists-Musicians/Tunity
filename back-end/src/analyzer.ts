@@ -1,6 +1,6 @@
 import type { AnalysisOptions, AnalysisResult, AudioClip, DetectedNote, ExpectedNote, Finding, Match, PitchTrack, CrepeRuntimeOptions } from './types.ts';
 import { defaults, median, segmentNotes } from './notes.ts';
-import { estimatePitch, validatePitchTrack } from '../crepe.ts';
+import { estimatePitch, validatePitchTrack } from './pitch/crepe.ts';
 export { median } from './notes.ts';
 
 /** Global sequence edit alignment: skips and extras cannot shift all subsequent notes. */
