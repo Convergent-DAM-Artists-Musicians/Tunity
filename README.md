@@ -1,3 +1,5 @@
+> **User profile draft:** Open `/profile` after starting the frontend. Guests can continue without an account; Google users can save profile preferences once the Firestore profile rules are configured. See [PROFILE_DRAFT.md](tunity-front-end/PROFILE_DRAFT.md) for behavior, schema, and setup.
+
 # Tunity
 
 Tunity combines a Next.js demo workspace with a Python-backed solo music analyzer.
@@ -67,9 +69,9 @@ npm run dev
 
 The sample projects, filtering, Files view, and Trash/restore work without the analyzer. Real uploads additionally need backend npm dependencies, a compatible Python environment with `torch`, `torchaudio`, and `torchcrepe`, and FFmpeg. Set `PYTHON_PATH` to that environment's absolute Python executable **before starting Next.js**. On macOS the Python command is usually `python3`.
 
-See [the demo setup guide](DEMO_UI.md#run) for the full connection and server variable details. For PyTorch on macOS, use the macOS installation command from the [official installation selector](https://pytorch.org/get-started/locally/); the Linux CPU-wheel index is not the macOS installation route. Keep `back-end` beside `tunity-front-end`, or configure `TUNITY_BACKEND_DIR`.
+See [the frontend setup guide](tunity-front-end/README.md#optional-backend-connection) for the full connection and server variable details. For PyTorch on macOS, use the macOS installation command from the [official installation selector](https://pytorch.org/get-started/locally/); the Linux CPU-wheel index is not the macOS installation route. Keep `back-end` beside `tunity-front-end`, or configure `TUNITY_BACKEND_DIR`.
 
-Projects and results currently live in the browser tab and reset on refresh. Download analysis JSON to keep results. The demo does not connect accounts or persistent project storage.
+Projects and results currently live in the browser tab and reset on refresh. Download analysis JSON to keep results. Google sign-in is connected; profile preference storage is described in the profile guide above. Persistent project storage is not connected.
 
 See [the frontend README](tunity-front-end/README.md) for useful development commands.
 
@@ -91,6 +93,4 @@ Requirements:
 - FFmpeg on PATH, or its executable path in `FFMPEG_PATH`.
 - Audiveris only if importing PDF/image scores; MusicXML does not need it.
 
-From the repository root, on Windows PowerShell:
-
-```powershell
+For runtime dependencies, see [the backend manifest](back-end/package.json) and [Python requirements](back-end/requirements.txt).

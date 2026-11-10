@@ -3,3 +3,33 @@ node_modules/
 .venv/
 __pycache__/
 *.pyc
+
+# Local environment files across the repo
+.env*
+!.env.example
+!.env.*.example
+!.env.sample
+!.env.template
+
+# Private keys and credential exports
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*firebase-adminsdk*.json
+service-account*.json
+serviceAccount*.json
+service_account*.json
+client_secret_*.json
+credentials.json
+application_default_credentials.json
+secrets.json
+
+# Local Firebase state and installer backups
+.firebase/
+tunity-demo-backup-*/
+tunity-profile-backup-*/
+.DS_Store

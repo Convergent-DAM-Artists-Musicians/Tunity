@@ -59,6 +59,10 @@ The route runs `../back-end/src/cli/web-demo.ts` locally using Node 24+, FFmpeg,
 
 Configure `PYTHON_PATH` with the absolute path of the Python interpreter containing the ML dependencies before starting Next.js. Optional overrides are `FFMPEG_PATH`, `TUNITY_BACKEND_DIR`, and `TUNITY_NODE_PATH`. An ignored `.env.local` in this folder can hold local paths; restart Next.js after changing them.
 
-See [DEMO_UI.md](../DEMO_UI.md#run) for full backend setup. On macOS use `python3` when creating the virtual environment and select the macOS PyTorch installation from the [official selector](https://pytorch.org/get-started/locally/), rather than the Linux CPU-wheel index.
+Install the backend dependencies from `../back-end/package.json` and `../back-end/requirements.txt` for recording analysis. On macOS use `python3` when creating the virtual environment and select the macOS PyTorch installation from the [official selector](https://pytorch.org/get-started/locally/), rather than the Linux CPU-wheel index.
 
-Uploads are limited to 25 MB and the first 120 seconds. A recording alone returns detected notes; optional reference JSON enables pitch and timing feedback. Sample projects contain no attached audio or invented analysis. Projects/results reset on refresh; download analysis JSON to retain it. Accounts and persistent storage are not connected.
+Uploads are limited to 25 MB and the first 120 seconds. A recording alone returns detected notes; optional reference JSON enables pitch and timing feedback. Sample projects contain no attached audio or invented analysis. Projects/results reset on refresh; download analysis JSON to retain it. Google sign-in is connected. Profile preference storage is described below; persistent project and recording storage is not connected.
+
+## User profiles
+
+Open `/profile` or use **My profile** in the workspace. Guest access remains optional; signing in is only required for account-backed profile saves. See [PROFILE_DRAFT.md](PROFILE_DRAFT.md) for the draft UI, Firestore rules, and local emulator setup.
