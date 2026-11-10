@@ -2,6 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  type User,
+} from "firebase/auth";
+import { getFirebaseAuth, initAnalytics } from "@/lib/firebase";
 
 type Note = {
   midi: number;
@@ -65,6 +73,17 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   );
 }
 
+function GoogleMark() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+      <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62Z" />
+      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33A9 9 0 0 0 9 18Z" />
+      <path fill="#FBBC05" d="M3.97 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3.01-2.33Z" />
+      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58Z" />
+    </svg>
+  );
+}
+
 function Brand() {
   return (
     <span className="brand">
@@ -100,6 +119,29 @@ const seeds: Project[] = [
 const noteName = (midi: number) =>
   `${["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"][Math.round(midi) % 12]}${Math.floor(Math.round(midi) / 12) - 1}`;
 
+function authCode(err: unknown) {
+  return typeof err === "object" && err && "code" in err ? String((err as { code: string }).code) : "";
+}
+
+function authMessage(err: unknown) {
+  switch (authCode(err)) {
+    case "auth/popup-blocked":
+      return "Your browser blocked the Google sign-in popup. Allow popups and try again.";
+    case "auth/operation-not-allowed":
+      return "Google sign-in isn’t enabled for this Firebase project yet. Turn on Google in the Firebase console.";
+    case "auth/unauthorized-domain":
+      return "This site isn’t authorized for Google sign-in yet. Add it under Firebase Authentication → Settings → Authorized domains.";
+    case "auth/account-exists-with-different-credential":
+      return "An account already exists with this email using a different sign-in method.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Wait a moment and try again.";
+    case "auth/network-request-failed":
+      return "Couldn’t reach Firebase. Check your connection and try again.";
+    default:
+      return "Google sign-in didn’t complete. Try again.";
+  }
+}
+
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>(seeds);
   const [view, setView] = useState("Home");
@@ -116,13 +158,48 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [authError, setAuthError] = useState("");
+  const [authBusy, setAuthBusy] = useState<"signin" | "signout" | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const audioInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    initAnalytics();
+    return onAuthStateChanged(getFirebaseAuth(), setUser);
+  }, []);
 
   useEffect(() => {
     if (modal && !dialog.current?.open) dialog.current?.showModal();
     if (!modal && dialog.current?.open) dialog.current.close();
   }, [modal]);
+
+  async function signInWithGoogle() {
+    setAuthError("");
+    setAuthBusy("signin");
+    try {
+      await signInWithPopup(getFirebaseAuth(), new GoogleAuthProvider());
+    } catch (err) {
+      const code = authCode(err);
+      if (code !== "auth/popup-closed-by-user" && code !== "auth/cancelled-popup-request") {
+        setAuthError(authMessage(err));
+      }
+    } finally {
+      setAuthBusy(null);
+    }
+  }
+
+  async function logOut() {
+    setAuthError("");
+    setAuthBusy("signout");
+    try {
+      await signOut(getFirebaseAuth());
+    } catch (err) {
+      setAuthError(authMessage(err));
+    } finally {
+      setAuthBusy(null);
+    }
+  }
 
   function openUpload() {
     setError("");
@@ -230,18 +307,28 @@ export default function Home() {
             <p>Great sound starts<br />with showing up.</p>
             <span className="note-line" />
           </div>
-          <button className="account-button" onClick={() => setModal("account")}>
-            <span className="avatar"><Icon name="user" /></span>
-            <span>My Account<small>Demo workspace</small></span>
-            <span className="account-dot" />
-          </button>
+          {user ? (
+            <button className="account-button" onClick={() => { setAuthError(""); setModal("account"); }}>
+              <span className="avatar"><Icon name="user" /></span>
+              <span className="account-label">
+                <span>{user.displayName || user.email}</span>
+                <small>Signed in with Google</small>
+              </span>
+              <span className="account-dot signed-in" />
+            </button>
+          ) : (
+            <button className="google-signin block" onClick={() => { setAuthError(""); setModal("account"); }}>
+              <span className="g-mark"><GoogleMark /></span>
+              Sign in with Google
+            </button>
+          )}
         </div>
       </aside>
 
       <main className="main-content">
         <header className="masthead">
           <span className="masthead-rule" /><Brand />
-          <span className="masthead-rule" /><span className="demo-badge">DEMO</span>
+          <span className="masthead-rule" />
         </header>
 
         <section className="welcome" aria-labelledby="welcome-heading">
@@ -494,22 +581,37 @@ export default function Home() {
           )}
 
           {modal === "account" && (
-            <>
-              <span className="eyebrow">YOUR SPACE TO PRACTICE</span>
-              <h2 id="dialog-title">Welcome to the demo.</h2>
-              <p className="dialog-intro">No sign-in needed. Explore the sample projects or upload a recording to try the analyzer.</p>
-              <div className="account-info">
-                <Icon name="user" size={30} />
-                <div><strong>Guest musician</strong><span>Local demo workspace</span></div>
-              </div>
-              <p className="upload-help">
-                Projects and analysis results live in this tab and reset on refresh.
-                There is no account or cloud storage connected yet. Download any analysis you want to keep.
-              </p>
-              <button className="primary-button full-width" onClick={() => setModal(null)}>
-                Back to practice <Icon name="arrow" size={18} />
-              </button>
-            </>
+            user ? (
+              <>
+                <span className="eyebrow">YOUR SPACE TO PRACTICE</span>
+                <h2 id="dialog-title">You’re signed in.</h2>
+                <p className="dialog-intro">This account is connected to the Tunity Firebase project.</p>
+                <div className="account-info">
+                  <Icon name="user" size={30} />
+                  <div>
+                    <strong>{user.displayName || user.email}</strong>
+                    <span>{user.email}</span>
+                  </div>
+                </div>
+                {authError && <p className="error-message" role="alert">{authError}</p>}
+                <button className="secondary-button full-width" disabled={authBusy !== null} onClick={logOut}>
+                  {authBusy === "signout" ? <span className="spinner" /> : null}
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="eyebrow">YOUR SPACE TO PRACTICE</span>
+                <h2 id="dialog-title">Sign in to Tunity.</h2>
+                <p className="dialog-intro">Continue with your Google account.</p>
+                {authError && <p className="error-message" role="alert">{authError}</p>}
+                <button className="google-signin block" type="button" disabled={authBusy !== null}
+                  onClick={() => void signInWithGoogle()}>
+                  {authBusy === "signin" ? <span className="spinner" /> : <span className="g-mark"><GoogleMark /></span>}
+                  Sign in with Google
+                </button>
+              </>
+            )
           )}
         </div>
       </dialog>
