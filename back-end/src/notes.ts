@@ -1,4 +1,4 @@
-import type { AudioClip, PitchTrack, DetectedNote } from './back-end/types.ts';
+import type { AudioClip, PitchTrack, DetectedNote } from './types.ts';
 
 export const defaults = {
   tuningHz: 440, minFrequencyHz: 65, maxFrequencyHz: 1800,

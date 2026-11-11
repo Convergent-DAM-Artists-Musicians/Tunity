@@ -3,7 +3,7 @@ import { mkdtemp, writeFile, readFile, stat, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { AnalysisOptions, AudioClip, CrepeRuntimeOptions, PitchTrack } from './back-end/types.ts';
+import type { AnalysisOptions, AudioClip, CrepeRuntimeOptions, PitchTrack } from '../types.ts';
 
 export function validatePitchTrack(track: PitchTrack, clip: AudioClip): void {
   const duration = clip.samples.length / clip.sampleRate;
@@ -41,7 +41,7 @@ export async function estimatePitch(clip: AudioClip, options: AnalysisOptions = 
       minHz, maxHz, model, device, batchSize, threads }));
     await new Promise<void>((accept, reject) => {
       const proc = spawn(runtime.pythonPath ?? process.env.PYTHON_PATH ?? 'python', [
-        runtime.workerPath ?? fileURLToPath(new URL('../python/crepe_worker.py', import.meta.url)), '--request', requestPath,
+        runtime.workerPath ?? fileURLToPath(new URL('../../python/crepe_worker.py', import.meta.url)), '--request', requestPath,
       ], { shell: false, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
       let log = '', failure: Error | undefined;
       const remember = (chunk: Buffer) => { log = (log + chunk.toString()).slice(-6000); };

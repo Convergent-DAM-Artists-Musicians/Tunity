@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:profile": "node --test --test-isolation=none tests/profile-model.test.mjs"
   },
   "dependencies": {
+    "firebase": "^9.14.0",
     "next": "16.4.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"

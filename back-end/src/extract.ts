@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
-import type { AudioClip } from './back-end/types.ts';
+import type { AudioClip } from './types.ts';
 
 export type ExtractOptions = {
   startSec: number;
