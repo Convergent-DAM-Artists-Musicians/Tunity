@@ -1,0 +1,20 @@
+{
+  "id": "42-triplets",
+  "sourceStartSec": 124.91,
+  "durationSec": 4.210000000000008,
+  "notes": 16,
+  "onsets": {
+    "tp": 15,
+    "fp": 1,
+    "fn": 1,
+    "precision": 0.9375,
+    "recall": 0.9375,
+    "f1": 0.9375,
+    "maeMs": 19.266666666669686
+  },
+  "alignment": {
+    "correct": 15,
+    "total": 16,
+    "accuracy": 0.9375
+  }
+}

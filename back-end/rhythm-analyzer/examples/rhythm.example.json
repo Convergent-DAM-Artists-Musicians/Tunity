@@ -1,0 +1,186 @@
+{
+  "events": [
+    {
+      "id": "n0",
+      "kind": "note",
+      "startBeat": 0,
+      "durationBeats": 1,
+      "measure": "1",
+      "beat": 1,
+      "midi": 60
+    },
+    {
+      "id": "n1",
+      "kind": "note",
+      "startBeat": 1,
+      "durationBeats": 1,
+      "measure": "1",
+      "beat": 2,
+      "midi": 60
+    },
+    {
+      "id": "n2",
+      "kind": "note",
+      "startBeat": 2,
+      "durationBeats": 0.5,
+      "measure": "1",
+      "beat": 3,
+      "midi": 61
+    },
+    {
+      "id": "n3",
+      "kind": "note",
+      "startBeat": 2.5,
+      "durationBeats": 0.5,
+      "measure": "1",
+      "beat": 3.5,
+      "midi": 61
+    },
+    {
+      "id": "n4",
+      "kind": "note",
+      "startBeat": 3.0,
+      "durationBeats": 0.25,
+      "measure": "1",
+      "beat": 4.0,
+      "midi": 62
+    },
+    {
+      "id": "n5",
+      "kind": "note",
+      "startBeat": 3.25,
+      "durationBeats": 0.25,
+      "measure": "1",
+      "beat": 4.25,
+      "midi": 62
+    },
+    {
+      "id": "n6",
+      "kind": "note",
+      "startBeat": 3.5,
+      "durationBeats": 0.25,
+      "measure": "1",
+      "beat": 4.5,
+      "midi": 63
+    },
+    {
+      "id": "n7",
+      "kind": "note",
+      "startBeat": 3.75,
+      "durationBeats": 0.25,
+      "measure": "1",
+      "beat": 4.75,
+      "midi": 63
+    },
+    {
+      "id": "n8",
+      "kind": "note",
+      "startBeat": 4.0,
+      "durationBeats": 1.5,
+      "measure": "2",
+      "beat": 1.0,
+      "midi": 64,
+      "notation": {
+        "type": "quarter",
+        "dots": 1
+      }
+    },
+    {
+      "id": "rest",
+      "kind": "rest",
+      "startBeat": 5.5,
+      "durationBeats": 0.5,
+      "measure": "2",
+      "beat": 2.5
+    },
+    {
+      "id": "n9",
+      "kind": "note",
+      "startBeat": 6.0,
+      "durationBeats": 0.5,
+      "measure": "2",
+      "beat": 3.0,
+      "midi": 64
+    },
+    {
+      "id": "n10",
+      "kind": "note",
+      "startBeat": 6.5,
+      "durationBeats": 0.3333333333333333,
+      "measure": "2",
+      "beat": 3.5,
+      "midi": 60,
+      "notation": {
+        "type": "eighth",
+        "actualNotes": 3,
+        "normalNotes": 2
+      }
+    },
+    {
+      "id": "n11",
+      "kind": "note",
+      "startBeat": 6.833333333333333,
+      "durationBeats": 0.3333333333333333,
+      "measure": "2",
+      "beat": 3.833333333333333,
+      "midi": 60,
+      "notation": {
+        "type": "eighth",
+        "actualNotes": 3,
+        "normalNotes": 2
+      }
+    },
+    {
+      "id": "n12",
+      "kind": "note",
+      "startBeat": 7.166666666666666,
+      "durationBeats": 0.3333333333333333,
+      "measure": "2",
+      "beat": 4.166666666666666,
+      "midi": 61,
+      "notation": {
+        "type": "eighth",
+        "actualNotes": 3,
+        "normalNotes": 2
+      }
+    },
+    {
+      "id": "n13",
+      "kind": "note",
+      "startBeat": 7.499999999999999,
+      "durationBeats": 2,
+      "measure": "2",
+      "beat": 4.499999999999999,
+      "midi": 61,
+      "tiedIds": [
+        "n13-a",
+        "n13-b"
+      ]
+    },
+    {
+      "id": "n14",
+      "kind": "note",
+      "startBeat": 9.5,
+      "durationBeats": 1,
+      "measure": "3",
+      "beat": 2.5,
+      "midi": 62
+    }
+  ],
+  "tempoMap": [
+    {
+      "beat": 0,
+      "bpm": 120
+    }
+  ],
+  "meterMap": [
+    {
+      "beat": 0,
+      "numerator": 4,
+      "denominator": 4
+    }
+  ],
+  "rhythmOptions": {
+    "alignmentMode": "automatic"
+  }
+}

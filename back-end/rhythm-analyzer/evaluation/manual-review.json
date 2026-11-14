@@ -1,0 +1,25 @@
+{
+  "method": "Agent visual inspection of waveform and 512-sample spectrograms, source timing labels shown, detector predictions hidden. This is not an independent musician listening study.",
+  "uncertaintyMs": 25,
+  "alignmentWindows": [
+    {"clip":"05", "noteIndices":[0,13], "view":"05-review-2.png", "sourceStartSec":2.374, "sourceEndSec":7.413, "checked":"14 attacks; pitch transitions with continuous energy around 6.76/6.93s, and a long rest after 3.8s. MIDI note order independently agrees."},
+    {"clip":"09", "noteIndices":[0,21], "views":["09-review-5.png","09-review-12.png","09-review-18.png","09-review-20.png"], "checked":"Quarter notes, repeated pitches and long final note. First soft attack begins about 5.10-5.15s. The source 19.104s label is later than the visible onset around 19.04s; primary metrics retain original label."},
+    {"clip":"10", "noteIndices":[0,23], "view":"10-review-0.png", "checked":"24 attacks and score correspondences, including leading score rest, fast eighth notes and long releases. Timings visibly agree within roughly 25ms; the first breath attack is diffuse."},
+    {"clip":"15", "noteIndices":[0,13], "view":"15-review-0.png", "checked":"14 attacks, repeated tongued pitches and explicit sixteenth rests; matches PDF page 1. Short sounding note n13 is present in the original performance, not an injected error."},
+    {"clip":"33", "noteIndices":[0,12], "view":"33-review-0.png", "checked":"13 attack/transition boundaries, short repeated semitone motion and a rest. Extra transient at 6.554s lies outside this alignment window; retained in full-take onset evaluation."}
+  ],
+  "annotationDefects": [
+    {"clip":"09", "timeSec":26.987, "decision":"breath/noise, no stable harmonic note; absent in the printed trumpet score"},
+    {"clip":"09", "timeSec":31.90, "decision":"visible reattack, two repeated D5 notes in score; original annotation merges them"},
+    {"clip":"09", "timeSec":39.364, "decision":"breath/noise after release, no stable harmonic note; absent in score"},
+    {"clip":"05", "timeSec":21.566, "decision":"slurred/unstable boundary begins around 21.50-21.57; timing definition is ambiguous"}
+  ],
+  "supplementaryTuplets": {
+    "clip":"42-triplets", "sourceRangeSec":[124.91,129.12],
+    "notation":"PDF page 6: preceding eighth in measure 38, two sextuplet groups in measure 39, eighth triplet in measure 40. Both subdivisions are 1/3 quarter-note beat; preserve group notation.",
+    "checkedOnsetsSec":[124.957,125.359,125.620,125.881,126.137,126.380,126.618,126.885,127.135,127.379,127.617,127.837,128.070,128.324,128.603,128.825],
+    "uncertaintyMs":35,
+    "notes":"Continuous harmonic transitions and shallow articulations. Do not equate acoustic boundary type with proven tongue use. A prior crop at 125.2s cut a preceding note; corrected by including that whole note, without changing detector parameters."
+  },
+  "excludedCandidate": "09 at 106-118s: MIDI near-third timing did not match printed triplet notation. Not counted as a real triplet test."
+}

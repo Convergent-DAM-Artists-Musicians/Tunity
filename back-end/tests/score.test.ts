@@ -5,10 +5,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
-import { parseMusicXml, referenceForScorePassage } from '../src/score-xml.ts';
-import { importSheetMusic, readMusicXmlFile } from '../src/score-import.ts';
-import { analyzeFixture } from './helpers.ts';
-import { synthesize } from '../src/fixtures.ts';
+import { parseMusicXml, referenceForScorePassage } from '../src/score/score-xml.ts';
+import { importSheetMusic, readMusicXmlFile } from '../src/score/score-import.ts';
+import { analyzeFixture } from '../src/helpers.ts';
+import { synthesize } from '../fixtures/fixtures.ts';
 const JSZip = createRequire(import.meta.url)('jszip');
 const note = (step = 'A', duration = 4, extra = '', pitchExtra = '') => `<note>${extra}<pitch><step>${step}</step>${pitchExtra}<octave>4</octave></pitch><duration>${duration}</duration><voice>1</voice></note>`;
 const attrs = '<attributes><divisions>4</divisions><time><beats>4</beats><beat-type>4</beat-type></time></attributes>';
@@ -139,12 +139,12 @@ test('PDF OMR subprocess contract, error handling, and review flag', async () =>
 });
 
 test('example MusicXML with a standard external DTD imports without fetching it', async () => {
-  const xml = await readFile(new URL('../examples/scale.musicxml', import.meta.url), 'utf8');
+  const xml = await readFile(new URL('../fixtures/scale.musicxml', import.meta.url), 'utf8');
   assert.equal(parseMusicXml(xml).notes.length, 3);
 });
 
 test('trumpet example converts written C5 D5 E5 to sounding Bb4 C5 D5 exactly once', async () => {
-  const imported = await importSheetMusic(fileURLToPath(new URL('../examples/trumpet-bb.musicxml', import.meta.url)));
+  const imported = await importSheetMusic(fileURLToPath(new URL('../fixtures/trumpet-bb.musicxml', import.meta.url)));
   assert.deepEqual(imported.notes.map(n => n.midi), [70, 72, 74]);
   const reference = referenceForScorePassage(imported, 0, imported.durationSec, 0.3);
   assert.deepEqual(reference.map(n => n.midi), [70, 72, 74]);

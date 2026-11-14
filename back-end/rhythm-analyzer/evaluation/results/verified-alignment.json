@@ -1,0 +1,177 @@
+[
+  {
+    "id": "05",
+    "split": "development",
+    "engine": "oracle",
+    "total": 14,
+    "correct": 14,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9353688141923411,
+    "findings": []
+  },
+  {
+    "id": "05",
+    "split": "development",
+    "engine": "detected",
+    "total": 14,
+    "correct": 14,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9197577276524626,
+    "findings": [
+      {
+        "kind": "late",
+        "expectedId": "n13",
+        "timingErrorMs": 72.03216374268884
+      }
+    ]
+  },
+  {
+    "id": "09",
+    "split": "development",
+    "engine": "oracle",
+    "total": 22,
+    "correct": 22,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9100272108843512,
+    "findings": [
+      {
+        "kind": "late",
+        "expectedId": "n0",
+        "timingErrorMs": 101.41666666666626
+      }
+    ]
+  },
+  {
+    "id": "09",
+    "split": "development",
+    "engine": "detected",
+    "total": 22,
+    "correct": 21,
+    "wrong": 1,
+    "missing": 1,
+    "accuracy": 0.9545454545454546,
+    "confidence": 0.9437500000000004,
+    "findings": [
+      {
+        "kind": "late",
+        "expectedId": "n5",
+        "timingErrorMs": 74.99999999999929
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "split": "test",
+    "engine": "oracle",
+    "total": 24,
+    "correct": 24,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9527689075630245,
+    "findings": []
+  },
+  {
+    "id": "10",
+    "split": "test",
+    "engine": "detected",
+    "total": 24,
+    "correct": 23,
+    "wrong": 1,
+    "missing": 1,
+    "accuracy": 0.9583333333333334,
+    "confidence": 0.9136275862068968,
+    "findings": [
+      {
+        "kind": "incorrect_duration",
+        "expectedId": "n0",
+        "durationErrorMs": -153.42911877394616
+      },
+      {
+        "kind": "extra_note"
+      },
+      {
+        "kind": "incorrect_duration",
+        "expectedId": "n8",
+        "durationErrorMs": -262.3045977011493
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "split": "test",
+    "engine": "oracle",
+    "total": 14,
+    "correct": 14,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9546938775510212,
+    "findings": [
+      {
+        "kind": "incorrect_duration",
+        "expectedId": "n13",
+        "durationErrorMs": -349.2857142857133
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "split": "test",
+    "engine": "detected",
+    "total": 14,
+    "correct": 14,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9547382305194798,
+    "findings": [
+      {
+        "kind": "incorrect_duration",
+        "expectedId": "n13",
+        "durationErrorMs": -335.80965909090924
+      }
+    ]
+  },
+  {
+    "id": "33",
+    "split": "test",
+    "engine": "oracle",
+    "total": 13,
+    "correct": 13,
+    "wrong": 0,
+    "missing": 0,
+    "accuracy": 1,
+    "confidence": 0.9328051948051955,
+    "findings": []
+  },
+  {
+    "id": "33",
+    "split": "test",
+    "engine": "detected",
+    "total": 13,
+    "correct": 12,
+    "wrong": 1,
+    "missing": 1,
+    "accuracy": 0.9230769230769231,
+    "confidence": 0.9302014652014644,
+    "findings": [
+      {
+        "kind": "early",
+        "expectedId": "n5",
+        "timingErrorMs": -90.44551282051304
+      },
+      {
+        "kind": "early",
+        "expectedId": "n7",
+        "timingErrorMs": -82.3108974358968
+      }
+    ]
+  }
+]

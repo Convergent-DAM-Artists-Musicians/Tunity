@@ -5,7 +5,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { extractAudioClip } from '../src/extract.ts';
-import { synthesize } from '../src/fixtures.ts';
+import { synthesize } from '../fixtures/fixtures.ts';
 
 test('extraction rejects invalid intervals and sample rates before spawning', async () => {
   await assert.rejects(extractAudioClip('unused.wav', { startSec: -1, endSec: 2 }));

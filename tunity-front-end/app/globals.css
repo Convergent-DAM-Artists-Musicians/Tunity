@@ -285,3 +285,10 @@ input::file-selector-button { border: 1px solid #51463e; padding: 10px 8px; marg
     transition-duration: .01ms !important;
   }
 }
+
+.rhythm-table-scroll { overflow: auto; max-height: 320px; margin: 14px 0 24px; border: 1px solid #5b4939; border-radius: 6px; }
+.rhythm-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+.rhythm-table th, .rhythm-table td { padding: 10px 12px; border-bottom: 1px solid #44392f; vertical-align: top; min-width: 90px; }
+.rhythm-table th { color: #edc9a8; background: #30271f; position: sticky; top: 0; }
+.rhythm-table td { color: #cfbba3; }
+.rhythm-table td:nth-child(2) { min-width: 150px; color: #edc9a8; }
