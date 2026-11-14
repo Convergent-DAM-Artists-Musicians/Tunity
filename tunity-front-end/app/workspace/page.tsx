@@ -12,6 +12,10 @@ type Note = {
 };
 
 type Result = {
+  rhythmEngine?: string;
+  alignment?: { confidence: number; tempoScale: number; ambiguous: boolean };
+  rhythmEvents?: {expectedId:string;kind:"note"|"rest";measure:string;beat:number;rhythmLabel:string;labelSource:string;targetStartSec:number;targetEndSec:number;actualStartSec?:number;actualEndSec?:number;timingErrorMs?:number}[];
+  rhythmGroups?: {id:string;label:string;status:string;message:string;confidence:number}[];
   hasReference: boolean;
   durationSec: number;
   detectedNotes: Note[];
@@ -19,6 +23,10 @@ type Result = {
     kind: string;
     message: string;
     startSec: number;
+    confidence?: number;
+    status?: string;
+    measure?: string;
+    beat?: number;
   }[];
   quality: {
     voicedConfidenceFraction: number;
@@ -123,6 +131,7 @@ export default function Home() {
   const [modal, setModal] = useState<"upload" | "project" | "account" | null>(null);
   const [selected, setSelected] = useState<Project | null>(null);
   const [audio, setAudio] = useState<File | null>(null);
+  const [analysisMode, setAnalysisMode] = useState("rhythm");
   const [reference, setReference] = useState<File | null>(null);
   const [uploadSemester, setUploadSemester] = useState("Fall ’26");
   const [busy, setBusy] = useState(false);
@@ -161,6 +170,7 @@ export default function Home() {
     try {
       const form = new FormData();
       form.append("audio", audio);
+      form.append("mode", analysisMode);
       if (reference) form.append("reference", reference);
 
       const response = await fetch("/api/analyze", {
@@ -393,7 +403,7 @@ export default function Home() {
               <span className="eyebrow">MAKE ROOM FOR PROGRESS</span>
               <h2 id="dialog-title">Let’s hear it.</h2>
               <p className="dialog-intro">
-                Upload a solo recording for real note detection. Add a reference to get pitch and timing feedback.
+                Upload a solo recording. Choose rhythm analysis and add a reviewed score reference to compare note timing, durations, and rests.
               </p>
 
               <label className="field-label">Project name
@@ -420,6 +430,11 @@ export default function Home() {
                     {semesters.slice(1).map(s => <option key={s}>{s}</option>)}
                   </select>
                 </label>
+                <label className="field-label">Analysis
+                  <select value={analysisMode} disabled={busy} onChange={e => setAnalysisMode(e.target.value)}>
+                    <option value="rhythm">Rhythm</option><option value="pitch">Pitch (in development)</option>
+                  </select>
+                </label>
                 <label className="field-label">Reference JSON <span className="optional">optional</span>
                   <input type="file" accept=".json,application/json" disabled={busy}
                     onChange={e => setReference(e.target.files?.[0] || null)} />
@@ -427,7 +442,7 @@ export default function Home() {
               </div>
 
               <p className="upload-help">
-                One melodic line, up to 25 MB. Analyzes the first 120 seconds. Reference format:
+                One melodic line, up to 25 MB. Analyzes the first 120 seconds. A structured score lets us label whole, half, quarter, eighth, sixteenth, dotted notes and tuplets. For measure and beat feedback, use a reviewed MusicXML import exported as JSON. Timed references also work:
                 <code>{'{ "notes": [{ "id": "a4", "midi": 69, "startSec": 0.1, "endSec": 0.9 }] }'}</code>
               </p>
               {error && <p className="error-message" role="alert">{error}</p>}
@@ -436,7 +451,7 @@ export default function Home() {
                 {busy ? <><span className="spinner" /> Listening to your recording…</> : <>Analyze recording <Icon name="arrow" size={18} /></>}
               </button>
               <p className="privacy-note" role="status">
-                {busy ? "Real model analysis can take up to 3 minutes. Keep this tab open." : "Processed on this server. Uploaded files are deleted after analysis. Results stay in this tab."}
+                {busy ? "Analysis can take up to 3 minutes. Keep this tab open." : "Processed on this server. Uploaded files are deleted after analysis. Results stay in this tab."}
               </p>
             </form>
           )}
@@ -449,13 +464,13 @@ export default function Home() {
 
               {result ? (
                 <>
-                  <div className="result-badge"><i /> Analyzed with CREPE
+                  <div className="result-badge"><i /> {result.rhythmEngine ? "Rhythm analysis" : "Analyzed with CREPE"}
                     <span>{result.hasReference ? "Reference comparison" : "Note detection"}</span>
                   </div>
                   <div className="result-stats">
                     <div><strong>{result.durationSec.toFixed(1)}<small>s</small></strong><span>Clip length</span></div>
                     <div><strong>{result.detectedNotes.length}</strong><span>Notes detected</span></div>
-                    <div><strong>{Math.round(result.quality.voicedConfidenceFraction * 100)}<small>%</small></strong><span>Confident voiced frames</span></div>
+                    <div><strong>{Math.round(result.quality.voicedConfidenceFraction * 100)}<small>%</small></strong><span>{result.rhythmEngine ? "Boundary evidence" : "Confident voiced frames"}</span></div>
                   </div>
 
                   <h3 className="result-heading">{result.hasReference ? "Practice feedback" : "Your detected notes"}</h3>
@@ -465,21 +480,48 @@ export default function Home() {
                         {result.findings.map((f, i) => (
                           <li key={i}>
                             <span>{f.startSec.toFixed(2)}s</span>
-                            <div><strong>{f.kind.replaceAll("_", " ")}</strong><p>{f.message}</p></div>
+                            <div><strong>{f.kind.replaceAll("_", " ")}</strong><p>{f.message}</p>{f.measure && <small>Measure {f.measure} · beat {f.beat} · </small>}{f.confidence !== undefined && <small>{f.status === "review" ? "Review suggested · " : ""}{Math.round(f.confidence * 100)}% evidence</small>}</div>
                           </li>
                         ))}
                       </ul>
                     ) : (
                       <p className="success-message">
                         <Icon name="check" size={18} />
-                        No pitch or timing issues found against this reference. Review confidence warnings below.
+                        No issues were flagged by this analyzer. Review confidence warnings below.
                       </p>
                     )
                   )}
 
+                  {!!result.rhythmEvents?.length && (
+                    <section aria-label="Written rhythm and performed timing">
+                      <h3 className="result-heading">Your rhythm, note by note</h3>
+                      <p className="upload-help">Written values come from your reference score. Played lengths and timing differences come from the recording. A quarter note is one beat in 4/4; the beat unit depends on the meter.</p>
+                      <div className="rhythm-table-scroll" tabIndex={0}>
+                        <table className="rhythm-table">
+                          <thead><tr><th scope="col">Measure · beat</th><th scope="col">Written rhythm</th><th scope="col">Target length</th><th scope="col">Played length</th><th scope="col">Onset timing</th></tr></thead>
+                          <tbody>{result.rhythmEvents.map(e => (
+                            <tr key={e.expectedId}>
+                              <td>{e.measure} · {Number(e.beat.toFixed(3))}</td>
+                              <td>{e.rhythmLabel}</td>
+                              <td>{(e.targetEndSec-e.targetStartSec).toFixed(3)}s</td>
+                              <td>{e.kind === "rest" ? "Expected silence" : e.actualStartSec === undefined ? "Not matched" : `${(e.actualEndSec!-e.actualStartSec).toFixed(3)}s`}</td>
+                              <td>{e.timingErrorMs === undefined ? "—" : Math.abs(e.timingErrorMs) < .5 ? "On target" : `${Math.round(Math.abs(e.timingErrorMs))} ms ${e.timingErrorMs > 0 ? "late" : "early"}`}</td>
+                            </tr>
+                          ))}</tbody>
+                        </table>
+                      </div>
+                    </section>
+                  )}
+                  {!!result.rhythmGroups?.length && (
+                    <section aria-label="Tuplet timing">
+                      <h3 className="result-heading">Triplets and other tuplets</h3>
+                      <ul className="findings">{result.rhythmGroups.map(g => <li key={g.id}><div><strong>{g.label} · {g.status === "within_tolerance" ? "within tolerance" : g.status.replaceAll("_", " ")}</strong><p>{g.message}</p><small>{Math.round(g.confidence*100)}% evidence</small></div></li>)}</ul>
+                    </section>
+                  )}
+
                   <div className="note-chips">
                     {result.detectedNotes.slice(0, 40).map((n, i) => (
-                      <span key={i}>{noteName(n.midi)}<small>{n.startSec.toFixed(2)}s</small></span>
+                      <span key={i}>{result.rhythmEngine ? `Note ${i + 1}` : noteName(n.midi)}<small>{n.startSec.toFixed(2)}s</small></span>
                     ))}
                   </div>
                   {result.detectedNotes.length > 40 && (
