@@ -1,5 +1,2 @@
-import { getFirestore } from "firebase/firestore";
-import { getFirebaseAuth } from "./firebase";
-export function getFirebaseDb() {
-  return getFirestore(getFirebaseAuth().app);
-}
+// Share the configured database, including optional emulator settings.
+export { getFirebaseDb } from "./firebase";

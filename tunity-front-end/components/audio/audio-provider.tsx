@@ -15,13 +15,13 @@ import {
   watchRecordings,
 } from "@/lib/audio-repository";
 import {
-  MAX_RECORDINGS,
-  prepareAudio,
   type Recording,
 } from "@/lib/audio-model";
 
 import { watchSheets, deleteSheet } from "@/lib/sheet-repository";
-import { prepareSheet, sheetSlot, type Sheet, type SheetChoice } from "@/lib/sheet-model";
+import { type Sheet, type SheetChoice } from "@/lib/sheet-model";
+
+import { useBandAccount } from "../accounts/account-provider";
 
 type AudioContextValue = {
   sheets: Sheet[];
@@ -39,9 +39,10 @@ type AudioContextValue = {
 const AudioContext = createContext<AudioContextValue | null>(null);
 export function AudioProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  // Auth boundaries dispose guest/account bytes and object URLs immediately.
+  if (!user) throw new Error("Sign in before accessing recordings.");
+  // Leaving the account or reaching the paywall disposes all local file URLs.
   return (
-    <AudioSession key={user?.uid || "guest"} uid={user?.uid || null}>
+    <AudioSession key={user.uid} uid={user.uid}>
       {children}
     </AudioSession>
   );
@@ -50,9 +51,10 @@ function AudioSession({
   uid,
   children,
 }: {
-  uid: string | null;
+  uid: string;
   children: ReactNode;
 }) {
+  const { status, announceStart } = useBandAccount();
   const [sheets, setSheets] = useState<Sheet[]>([]);
   const [sheetsLoading, setSheetsLoading] = useState(!!uid);
   const [sheetsError, setSheetsError] = useState("");
@@ -152,46 +154,14 @@ function AudioSession({
       throw new Error(
         "Load your saved recordings successfully before uploading.",
       );
-    if ((uid ? recordings.length : urls.current.size) >= MAX_RECORDINGS)
-      throw new Error(
-        `Delete a recording first. The demo allows ${MAX_RECORDINGS} recordings per ${uid ? "account" : "guest session"}.`,
-      );
+    if (!status.canUpload) throw new Error("Your trial upload allowance or trial time has ended. Upgrade to upload more.");
     if (sheet.kind !== "none" && (sheetsLoading || sheetsError))
       throw new Error("Load your sheet music library first, or choose No sheet music.");
     working.current = true;
     setSaving(true);
     try {
-      if (uid) {
-        await saveRecording(uid, file, title, sheet);
-      } else {
-        const { info, bytes } = await prepareAudio(file, title);
-        const pdf = sheet.kind === "new" ? await prepareSheet(sheet.file) : null;
-        const existing = sheet.kind === "existing" ? sheets.find(s => s.key === sheet.key && s.slot === sheet.slot) : undefined;
-        if (sheet.kind === "existing" && !existing) throw new Error("That sheet music is no longer available.");
-        const added = pdf ? { slot: sheetSlot(sheets.map(s => s.slot)), key: crypto.randomUUID(), name: pdf.name } : undefined;
-        if (!mounted.current) throw new Error("Your session changed. Please reopen the upload.");
-        const sheetMusic = added || (existing ? { slot: existing.slot, key: existing.key, name: existing.name } : undefined);
-        if (pdf && added) {
-          const pdfUrl = URL.createObjectURL(new Blob([pdf.bytes], { type: "application/pdf" }));
-          sheetUrls.current.add(pdfUrl);
-          setSheets(current => [...current, { ...added, size: pdf.size, url: pdfUrl }]);
-        }
-        const url = URL.createObjectURL(
-          new Blob([new Uint8Array(bytes)], { type: info.contentType }),
-        );
-        urls.current.add(url);
-        setRecordings((current) => [
-          ...current,
-          {
-            ...info,
-            sheetMusic,
-            id: crypto.randomUUID(),
-            createdAt: new Date().toISOString(),
-            saved: false,
-            url,
-          },
-        ]);
-      }
+      const result = await saveRecording(uid, file, title, sheet);
+      if (mounted.current && result.firstUpload) announceStart();
       if (!mounted.current) throw new Error("Your session changed. Check the previous account before retrying.");
     } finally {
       working.current = false;
@@ -206,25 +176,14 @@ function AudioSession({
   }
   async function remove(id: string) {
     await mutate(async () => {
-      if (uid) await deleteRecording(uid, id);
-      else {
-        const entry = recordings.find(r => r.id === id);
-        if (entry) { URL.revokeObjectURL(entry.url); urls.current.delete(entry.url); }
-        setRecordings(current => current.filter(r => r.id !== id));
-      }
+      await deleteRecording(uid, id);
     });
   }
   async function removeSheet(key: string) {
     await mutate(async () => {
       const sheet = sheets.find(s => s.key === key);
       if (!sheet) return;
-      if (uid) await deleteSheet(uid, sheet);
-      else {
-        if (recordings.some(r => r.sheetMusic?.key === key))
-          throw new Error("Delete recordings that use this PDF before deleting the PDF.");
-        URL.revokeObjectURL(sheet.url); sheetUrls.current.delete(sheet.url);
-        setSheets(current => current.filter(s => s.key !== key));
-      }
+      await deleteSheet(uid, sheet);
     });
   }
   return (

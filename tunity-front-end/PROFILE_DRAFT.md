@@ -1,3 +1,5 @@
+> **trial-accounts update:** Guest access has been removed. Use [TRIAL_ACCOUNTS.md](TRIAL_ACCOUNTS.md) for current authentication, trial, subscription demo, and Firestore rules setup.
+
 # Tunity profiles draft
 
 Based on `user-profiles` at `ed43ed9` (your teammate's Google sign-in integration).

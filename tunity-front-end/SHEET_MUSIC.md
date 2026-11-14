@@ -1,3 +1,5 @@
+> **trial-accounts update:** Guest access has been removed. Use [TRIAL_ACCOUNTS.md](TRIAL_ACCOUNTS.md) for current authentication, trial, subscription demo, and Firestore rules setup.
+
 # Optional sheet music for practice uploads
 
 Combined installer for your pasted profile/landing code. No earlier audio or sheet installer is required.

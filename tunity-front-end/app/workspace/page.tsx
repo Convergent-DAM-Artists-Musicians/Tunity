@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { useAuth } from "@/components/auth-provider";
+import { useBandAccount } from "@/components/accounts/account-provider";
 import { useAudio } from "@/components/audio/audio-provider";
 import { AudioLibrary } from "@/components/audio/audio-library";
 import { SheetPicker } from "@/components/audio/sheet-music";
@@ -79,17 +81,6 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   );
 }
 
-function GoogleMark() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
-      <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62Z" />
-      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33A9 9 0 0 0 9 18Z" />
-      <path fill="#FBBC05" d="M3.97 10.71A5.41 5.41 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3.01-2.33Z" />
-      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.96l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58Z" />
-    </svg>
-  );
-}
-
 function Brand() {
   return (
     <span className="brand">
@@ -138,14 +129,15 @@ export default function Home() {
   const [sheet, setSheet] = useState<SheetChoice>({ kind: "none" });
   const [runAnalysis, setRunAnalysis] = useState(false);
   const { upload: uploadAudio, loading: libraryLoading, error: libraryError } = useAudio();
-  const [audio, setAudio] = useState<File | null>(null);
   const [analysisMode, setAnalysisMode] = useState("rhythm");
+  const [audio, setAudio] = useState<File | null>(null);
   const [reference, setReference] = useState<File | null>(null);
   const [uploadSemester, setUploadSemester] = useState("Fall ’26");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const { user, loading: authLoading, authError, authBusy, signInWithGoogle, logOut, setAuthError } = useAuth();
+  const { user, loading: authLoading, authError, authBusy, logOut, setAuthError } = useAuth();
+  const { status, showUpgrade } = useBandAccount();
   const dialog = useRef<HTMLDialogElement>(null);
   const audioInput = useRef<HTMLInputElement>(null);
 
@@ -155,6 +147,7 @@ export default function Home() {
   }, [modal]);
 
   function openUpload() {
+    if (!status.canUpload) { showUpgrade(); return; }
     setSheet({ kind: "none" });
     setAudio(null);
     setReference(null);
@@ -197,6 +190,7 @@ export default function Home() {
           if (reference) form.append("reference", reference);
           const response = await fetch("/api/analyze", {
             method: "POST",
+            headers: { authorization: `Bearer ${await getFirebaseAuth().currentUser!.getIdToken()}` },
             body: form,
             signal: AbortSignal.timeout(240_000),
           });
@@ -225,7 +219,7 @@ export default function Home() {
         setNotice(
           user
             ? "Recording saved to your profile and analyzed."
-            : "Guest recording added and analyzed. It is not saved to Firebase.",
+            : "Recording saved and analyzed.",
         );
       } else {
         setModal(null);
@@ -233,7 +227,7 @@ export default function Home() {
           setNotice(
             user
               ? "Recording saved to your profile."
-              : "Recording added for this session only. It is not saved to Firebase.",
+              : "Recording saved to your band.",
           );
       }
       setAudio(null);
@@ -305,16 +299,11 @@ export default function Home() {
               <span className="avatar"><Icon name="user" /></span>
               <span className="account-label">
                 <span>{user.displayName || user.email}</span>
-                <small>Signed in with Google</small>
+                <small>Shared band account</small>
               </span>
               <span className="account-dot signed-in" />
             </button>
-          ) : (
-            <button className="google-signin block" onClick={() => { setAuthError(""); setModal("account"); }}>
-              <span className="g-mark"><GoogleMark /></span>
-              Sign in with Google
-            </button>
-          )}
+          ) : null}
         </div>
       </aside>
 
@@ -434,7 +423,7 @@ export default function Home() {
 
           <footer className="workspace-footer">
             <Brand /><span>Made for the moments between the notes.</span>
-            <span>Local demo · projects stay in this tab</span>
+            <span>Current practice session</span>
           </footer>
         </section>
       </main>
@@ -452,7 +441,7 @@ export default function Home() {
               <h2 id="dialog-title">Let’s hear it.</h2>
               <p className="dialog-intro">
                 Upload short audio or video. Signed-in uploads save to your
-                profile; guest uploads stay in this tab.
+                shared band account.
               </p>
 
               <label className="field-label">
@@ -505,7 +494,7 @@ export default function Home() {
                   disabled={busy || (!!audio && (audio.type.startsWith("video/") || /\.(mp4|mov)$/i.test(audio.name)))}
                   onChange={(e) => setRunAnalysis(e.target.checked)}
                 />{" "}
-                Also analyze audio (requires the Python analyzer; PDF references are not sent)
+                Also analyze audio (choose Rhythm or Pitch below; PDF uploads are not sent for analysis)
               </label>
               <div className="upload-options">
                 <label className="field-label">
@@ -578,7 +567,7 @@ export default function Home() {
                   </>
                 ) : (
                   <>
-                    {user ? "Save to my profile" : "Add to this session"}{" "}
+                    {user ? "Save to my band" : "Save to my band"}{" "}
                     <Icon name="arrow" size={18} />
                   </>
                 )}
@@ -586,7 +575,7 @@ export default function Home() {
               <p className="privacy-note" role="status">
                 {busy
                   ? "Saving your file; optional model analysis can take up to 3 minutes. Keep this tab open."
-                  : "Signed-in recordings are saved to Firebase. Guest recordings remain only in this tab. Analysis results remain session-only."}
+                  : "Recordings and sheet music are saved to your shared band account. Analysis results currently remain session-only."}
               </p>
             </form>
           )}
@@ -694,42 +683,7 @@ export default function Home() {
             </>
           )}
 
-          {modal === "account" && (
-            user ? (
-              <>
-                <span className="eyebrow">YOUR SPACE TO PRACTICE</span>
-                <h2 id="dialog-title">You’re signed in.</h2>
-                <p className="dialog-intro">This account is connected to the Tunity Firebase project.</p>
-                <div className="account-info">
-                  <Icon name="user" size={30} />
-                  <div>
-                    <strong>{user.displayName || user.email}</strong>
-                    <span>{user.email}</span>
-                  </div>
-                </div>
-                {authError && <p className="error-message" role="alert">{authError}</p>}
-                <Link className="primary-button full-width" href="/profile">View my profile <Icon name="arrow" size={16} /></Link>
-                <button className="secondary-button full-width" disabled={authBusy !== null} onClick={logOut}>
-                  {authBusy === "signout" ? <span className="spinner" /> : null}
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <>
-                <span className="eyebrow">YOUR SPACE TO PRACTICE</span>
-                <h2 id="dialog-title">Sign in to Tunity.</h2>
-                <p className="dialog-intro">Sign in with Google, or keep practicing as a guest. An account is optional.</p>
-                {authError && <p className="error-message" role="alert">{authError}</p>}
-                <button className="google-signin block" type="button" disabled={authBusy !== null}
-                  onClick={() => void signInWithGoogle()}>
-                  {authBusy === "signin" ? <span className="spinner" /> : <span className="g-mark"><GoogleMark /></span>}
-                  Sign in with Google
-                </button>
-                <button className="secondary-button full-width" disabled={authBusy !== null} onClick={() => setModal(null)}>Continue as guest</button>
-                <Link className="guest-profile-link" href="/profile">Explore your practice preferences →</Link>
-              </>
-            )
-          )}
+          {modal === "account" && <><h2 id="dialog-title">Your band account</h2><p className="dialog-intro">{user?.email}</p><p>Recordings, sheet music, progress, and feedback are shared by everyone signed in to this band account.</p><Link className="primary-button" href="/profile">Band account and sign-in settings</Link><button className="secondary-button full-width" disabled={!!authBusy} onClick={() => void logOut()}>Sign out</button>{authError && <p role="alert">{authError}</p>}</>}
         </div>
       </dialog>
     </div>

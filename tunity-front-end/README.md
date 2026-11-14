@@ -1,3 +1,5 @@
+> **trial-accounts update:** Guest access has been removed. Use [TRIAL_ACCOUNTS.md](TRIAL_ACCOUNTS.md) for current authentication, trial, subscription demo, and Firestore rules setup.
+
 # Tunity frontend
 
 The Next.js demo UI follows the Tunity mockup with a dark sidebar, red welcome panel, semester filters, project search, Files, Trash/restore, and recording analysis dialogs.

@@ -1,3 +1,4 @@
+import { practiceAccess } from "@/lib/server/practice-access";
 import { execFile } from "node:child_process";
 import { mkdtemp, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -14,6 +15,8 @@ const MAX_UPLOAD = MAX_AUDIO_BYTES;
 let busy = false;
 
 export async function POST(request: Request) {
+  const denied = await practiceAccess(request);
+  if (denied) return denied;
   if (busy) {
     return Response.json(
       { error: "The analyzer is busy. Please try again shortly." },
@@ -39,11 +42,7 @@ export async function POST(request: Request) {
     const audio = form.get("audio");
     const reference = form.get("reference");
     const mode = form.get("mode") ?? "rhythm";
-    if (mode !== "rhythm" && mode !== "pitch")
-      return Response.json(
-        { error: "Choose rhythm or pitch analysis." },
-        { status: 400 },
-      );
+    if (mode !== "rhythm" && mode !== "pitch") return Response.json({error:"Choose rhythm or pitch analysis."},{status:400});
 
     if (!(audio instanceof File) || !audio.size || audio.size > MAX_UPLOAD) {
       return Response.json(

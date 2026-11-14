@@ -5,14 +5,16 @@ import { useAuth } from "@/components/auth-provider";
 import {
   AUDIO_ACCEPT,
   AUDIO_LIMIT_LABEL,
-  MAX_RECORDINGS,
 } from "@/lib/audio-model";
 import { useAudio } from "./audio-provider";
 import "./audio.css";
 import { SheetPicker, SheetReference, SheetLibrary } from "./sheet-music";
 import { type SheetChoice } from "@/lib/sheet-model";
 
+import { useBandAccount } from "../accounts/account-provider";
+
 export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
+  const { account, status } = useBandAccount();
   const { user, loading: authLoading } = useAuth();
   const { recordings, loading, saving, error, upload, remove, retry } =
     useAudio();
@@ -41,7 +43,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
       setMessage(
         user
           ? "Recording saved to your profile."
-          : "Recording added to this guest session. It was not saved to Firebase.",
+          : "Sign in to save recordings.",
       );
       setFile(null);
       setSheet({ kind: "none" });
@@ -63,7 +65,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
       !window.confirm(
         user
           ? "Permanently delete this recording from your profile?"
-          : "Remove this recording from this guest session?",
+          : "Remove this recording?",
       )
     )
       return;
@@ -92,18 +94,18 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
           <h2 id={`${instanceId}-heading`}>
             My recordings{" "}
             <span>
-              {recordings.length}/{MAX_RECORDINGS}
+              {recordings.length} saved
             </span>
           </h2>
           <p>
             {user
-              ? "Saved privately to your musician profile."
-              : "Guest session · files stay in this tab and reset on refresh."}
+              ? "Saved to your shared band account."
+              : "Sign in to view your band’s recordings."}
           </p>
         </div>
         <button
           className="primary-button"
-          disabled={unavailable || recordings.length >= MAX_RECORDINGS}
+          disabled={unavailable || !status.canUpload}
           onClick={() => {
             setActionError("");
             if (onUpload) onUpload();
@@ -113,20 +115,10 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
           + Add recording
         </button>
       </div>
-      <div className="audio-library-quota">
-        <span>
-          Demo allowance · {AUDIO_LIMIT_LABEL} per file · {MAX_RECORDINGS}{" "}
-          recordings
-        </span>
-        <progress
-          aria-label="Recording slots used"
-          max={MAX_RECORDINGS}
-          value={recordings.length}
-        />
-      </div>
+      <div className="audio-library-quota"><span>{account.plan === "demo" ? "Unlimited recording uploads" : `${account.uploadCount}/5 trial uploads used`} · {AUDIO_LIMIT_LABEL} per file</span></div>
       <p className="audio-library-demo-link">
         <a href="/demo-tone.wav" download>
-          Download a 2-second demo tone
+          Download a 2-second sample recording
         </a>{" "}
         to try an upload.
       </p>
@@ -160,7 +152,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
               Add a short recording to listen back
               {user
                 ? " and keep it on your profile."
-                : ". You can try it without an account."}
+                : "."}
             </p>
           </div>
         </div>
@@ -182,7 +174,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
                     ? "Saved to profile"
                     : user
                       ? "Confirming save…"
-                      : "This tab only"}
+                      : "Confirming save…"}
                 </span>
               </div>
               <button
@@ -204,11 +196,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
           </article>
         ))}
       </div>
-      {recordings.length >= MAX_RECORDINGS && (
-        <p className="audio-library-status">
-          All five slots are in use. Delete a recording to make room.
-        </p>
-      )}
+      {!status.canUpload && <p className="audio-library-status">Five trial uploads used. Use Upgrade above to enable more uploads.</p>}
       <SheetLibrary />
       {!onUpload && (
         <dialog
@@ -234,7 +222,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
             <p className="dialog-intro">
               {user
                 ? "A short take, saved to your profile."
-                : "Try a short take. No account needed."}
+                : "A short take for your band."}
             </p>
             <form onSubmit={submit}>
               <label className="field-label">
@@ -258,8 +246,7 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
                 />
               </label>
               <p className="upload-help">
-                Up to {AUDIO_LIMIT_LABEL}. A short compressed MP3 is ideal for
-                this demo. Short MP4, MOV, and WebM videos are also supported.
+                Up to {AUDIO_LIMIT_LABEL}. A short compressed MP3 works well. Short MP4, MOV, and WebM videos are also supported.
               </p>
               <SheetPicker value={sheet} onChange={setSheet} disabled={saving} />
               {actionError && (
@@ -275,13 +262,13 @@ export function AudioLibrary({ onUpload }: { onUpload?: () => void }) {
                 {saving
                   ? "Saving recording…"
                   : user
-                    ? "Save to my profile"
-                    : "Add to this session"}
+                    ? "Save to my band"
+                    : "Save to my band"}
               </button>
               <p className="privacy-note">
                 {user
                   ? "Saved only after Firebase confirms the upload."
-                  : "Your recording will not be uploaded to Firebase."}
+                  : "Sign in to upload."}
               </p>
             </form>
           </div>

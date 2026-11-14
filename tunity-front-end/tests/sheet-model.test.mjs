@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { prepareSheet, sheetSlot, readSheetRef, MAX_SHEET_BYTES } from '../lib/sheet-model.ts';
+import { prepareSheet, readSheetRef, MAX_SHEET_BYTES } from '../lib/sheet-model.ts';
 import { validateAudioInfo, verifyAudioHeader } from '../lib/audio-model.ts';
 test('PDF validation rejects disguised, empty and oversized files before a write', async () => {
   for (const f of [new File(['no PDF'], 'fake.pdf'), new File(['%PDF-1.4'], 'score.exe'),
@@ -10,9 +10,10 @@ test('PDF validation rejects disguised, empty and oversized files before a write
   const result = await prepareSheet(new File(['%PDF-1.4\n%%EOF'], 'score.PDF'));
   assert.equal(result.size, result.bytes.length);
 });
-test('fixed PDF slots enforce quota; immutable keys distinguish reused slots', () => {
-  assert.equal(sheetSlot(['0','1','3','4']), '2');
-  assert.throws(() => sheetSlot(['0','1','2','3','4']), /full/);
+test('legacy and UUID sheet references stay readable; malformed references are rejected', () => {
+  const key=crypto.randomUUID();
+  assert.equal(readSheetRef({slot:key,key,name:'score.pdf'}).slot,key);
+  assert.equal(readSheetRef({slot:'0',key,name:'old.pdf'}).slot,'0');
   assert.equal(readSheetRef(undefined), undefined);
   assert.throws(() => readSheetRef({slot:'5', key:crypto.randomUUID(), name:'score.pdf'}));
   assert.throws(() => readSheetRef({slot:'0', key:'not-a-key', name:'score.pdf'}));

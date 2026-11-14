@@ -1,0 +1,125 @@
+// DEMO subscription rules. Owners may explicitly enable a demo plan; no billing is performed.
+// Replace the demo upgrade transition with trusted billing before production payments.
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function owner(uid) { return request.auth != null && request.auth.uid == uid && request.auth.token.firebase.sign_in_provider != 'anonymous'; }
+  function accountPath(uid) { return /databases/$(database)/documents/accounts/$(uid); }
+  function recordPath(uid,id) { return /databases/$(database)/documents/userProfiles/$(uid)/recordings/$(id); }
+  function sheetPath(uid,id) { return /databases/$(database)/documents/userProfiles/$(uid)/sheetMusic/$(id); }
+  function active(a) { return a.plan == 'demo' || a.trialStartedAt == null || request.time < a.trialStartedAt + duration.value(30,'d'); }
+  function access(uid) { return owner(uid) && exists(accountPath(uid)) && active(get(accountPath(uid)).data); }
+  function readable(uid) { return owner(uid) && (!exists(accountPath(uid)) || active(get(accountPath(uid)).data)); }
+  function uuid(id) { return id is string && id.matches('^[a-f0-9-]{36}$'); }
+  function mediaId(id) { return id is string && (uuid(id) || id.matches('^[0-4]$')); }
+  function legacyCount(uid) {
+    return (get(recordPath(uid,'0')) != null ? 1 : 0) + (get(recordPath(uid,'1')) != null ? 1 : 0)
+      + (get(recordPath(uid,'2')) != null ? 1 : 0) + (get(recordPath(uid,'3')) != null ? 1 : 0) + (get(recordPath(uid,'4')) != null ? 1 : 0);
+  }
+  function legacyTime(uid,id) { let r = get(recordPath(uid,id)); return r == null ? request.time : r.data.createdAt; }
+  function earlier(a,b) { return a < b ? a : b; }
+  function legacyStart(uid) { return legacyCount(uid) == 0 ? null : earlier(legacyTime(uid,'0'),earlier(legacyTime(uid,'1'),earlier(legacyTime(uid,'2'),earlier(legacyTime(uid,'3'),legacyTime(uid,'4'))))); }
+  function legacyUses(uid,id,key) { let r = get(recordPath(uid,id)); return r != null && r.data.get('sheetMusic',{}).get('key','') == key ? 1 : 0; }
+  function legacyRefs(uid,key) { return legacyUses(uid,'0',key)+legacyUses(uid,'1',key)+legacyUses(uid,'2',key)+legacyUses(uid,'3',key)+legacyUses(uid,'4',key); }
+  function uses(uid,a,key) { return key in a.sheetUses ? a.sheetUses[key] : legacyRefs(uid,key); }
+  function changeUse(uid,a,b,key,delta) { return b.sheetUses is map
+    && b.sheetUses.diff(a.sheetUses).affectedKeys().hasOnly([key])
+    && b.sheetUses[key] == uses(uid,a,key)+delta && b.sheetUses[key] >= 0; }
+  match /accounts/{uid} {
+    function validInitial() {
+      let a = request.resource.data;
+      return a.keys().hasAll(['bandName','plan','createdAt','trialStartedAt','uploadCount','noticeAcceptedAt','demoUpgradedAt','lastUploadId','lastDeleteId','sheetUses'])
+        && a.keys().hasOnly(['bandName','plan','createdAt','trialStartedAt','uploadCount','noticeAcceptedAt','demoUpgradedAt','lastUploadId','lastDeleteId','sheetUses'])
+        && a.bandName == 'Your band' && a.plan == 'trial' && a.createdAt == request.time
+        && a.uploadCount == legacyCount(uid) && a.trialStartedAt == legacyStart(uid)
+        && a.noticeAcceptedAt == null && a.demoUpgradedAt == null && a.lastUploadId == '' && a.lastDeleteId == '' && a.sheetUses == {};
+    }
+    function uploadChange(a,b) {
+      let p = recordPath(uid,b.lastUploadId);
+      let r = getAfter(p).data;
+      return b.diff(a).affectedKeys().hasOnly(['uploadCount','trialStartedAt','lastUploadId','sheetUses'])
+        && active(a) && (a.plan == 'demo' || a.uploadCount < 5)
+        && b.uploadCount == a.uploadCount+1 && uuid(b.lastUploadId)
+        && !exists(p) && r.createdAt == request.time
+        && b.trialStartedAt == (a.trialStartedAt == null ? request.time : a.trialStartedAt)
+        && ('sheetMusic' in r ? changeUse(uid,a,b,r.sheetMusic.key,1) : b.sheetUses == a.sheetUses);
+    }
+    function deletionChange(a,b) {
+      let p = recordPath(uid,b.lastDeleteId);
+      let r = get(p).data;
+      return b.diff(a).affectedKeys().hasOnly(['lastDeleteId','sheetUses']) && active(a)
+        && mediaId(b.lastDeleteId) && exists(p) && getAfter(p) == null
+        && 'sheetMusic' in r && changeUse(uid,a,b,r.sheetMusic.key,-1);
+    }
+    allow get: if owner(uid);
+    allow create: if owner(uid) && validInitial();
+    allow update: if owner(uid) && (
+      (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['bandName','noticeAcceptedAt'])
+        && active(resource.data) && request.resource.data.bandName is string
+        && request.resource.data.bandName.size() > 0 && request.resource.data.bandName.size() <= 80
+        && request.resource.data.noticeAcceptedAt == (resource.data.noticeAcceptedAt == null ? request.time : resource.data.noticeAcceptedAt))
+      || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['plan','demoUpgradedAt'])
+        && resource.data.plan == 'trial' && request.resource.data.plan == 'demo' && request.resource.data.demoUpgradedAt == request.time)
+      || (uuid(request.resource.data.lastUploadId) && uploadChange(resource.data,request.resource.data))
+      || (mediaId(request.resource.data.lastDeleteId) && deletionChange(resource.data,request.resource.data)));
+    // No deletes, counter resets, client-supplied trial dates, or account recreation.
+  }
+  match /userProfiles/{uid} {
+      function validProfile() {
+        let p = request.resource.data;
+        return p.keys().hasAll(['preferredName', 'instrument', 'experience', 'goal', 'dailyMinutes', 'updatedAt'])
+          && p.keys().hasOnly(['preferredName', 'instrument', 'experience', 'goal', 'dailyMinutes', 'updatedAt'])
+          && p.preferredName is string && p.preferredName.size() <= 60
+          && p.instrument in ['Trumpet', 'Trombone', 'French horn', 'Tuba', 'Flute', 'Clarinet', 'Saxophone', 'Violin', 'Voice', 'Other']
+          && p.experience in ['Just starting', 'Finding my rhythm', 'Building confidence', 'Experienced player']
+          && p.goal is string && p.goal.size() <= 300
+          && p.dailyMinutes is int && p.dailyMinutes >= 5 && p.dailyMinutes <= 120
+          && p.updatedAt == request.time;
+      }
+
+    allow get: if access(uid);
+    allow create, update: if access(uid) && validProfile();
+    match /recordings/{id} {
+      function validLink(r) {
+        let s = r.get('sheetMusic',{});
+        return !('sheetMusic' in r) || (s is map && s.keys().hasAll(['slot','key','name'])
+          && s.keys().hasOnly(['slot','key','name']) && mediaId(s.slot) && uuid(s.key) && s.name is string
+          && getAfter(sheetPath(uid,s.slot)).data.key == s.key && getAfter(sheetPath(uid,s.slot)).data.name == s.name);
+      }
+      function validRecording() {
+        let r = request.resource.data;
+        let a = get(accountPath(uid)).data;
+        let b = getAfter(accountPath(uid)).data;
+        return uuid(id) && r.keys().hasAll(['name','title','contentType','size','audio','createdAt'])
+          && r.keys().hasOnly(['name','title','contentType','size','audio','createdAt','sheetMusic'])
+          && r.name is string && r.name.size() > 0 && r.name.size() <= 180
+          && r.title is string && r.title.size() > 0 && r.title.size() <= 180
+          && r.contentType in ['audio/mpeg','audio/wav','audio/mp4','audio/aac','audio/flac','audio/ogg','audio/webm','video/mp4','video/quicktime','video/webm']
+          && r.size is int && r.size > 0 && r.size <= 512000 && r.audio is bytes && r.audio.size() == r.size
+          && r.createdAt == request.time && b.uploadCount == a.uploadCount+1 && b.lastUploadId == id && validLink(r);
+      }
+      allow get, list: if readable(uid);
+      allow create: if access(uid) && validRecording();
+      allow delete: if access(uid) && mediaId(id) && (!('sheetMusic' in resource.data)
+        || (getAfter(accountPath(uid)).data.lastDeleteId == id
+          && uses(uid,getAfter(accountPath(uid)).data,resource.data.sheetMusic.key) == uses(uid,get(accountPath(uid)).data,resource.data.sheetMusic.key)-1));
+    }
+    match /sheetMusic/{id} {
+      function validPDF() {
+        let s = request.resource.data;
+        let a = getAfter(accountPath(uid)).data;
+        let r = getAfter(recordPath(uid,a.lastUploadId)).data;
+        return uuid(id) && s.keys().hasAll(['key','name','size','pdf','contentType','createdAt','conversionStatus'])
+          && s.keys().hasOnly(['key','name','size','pdf','contentType','createdAt','conversionStatus'])
+          && s.key == id && s.name is string && s.name.size() > 0 && s.name.size() <= 180
+          && s.size is int && s.size > 0 && s.size <= 512000 && s.pdf is bytes && s.pdf.size() == s.size
+          && s.contentType == 'application/pdf' && s.createdAt == request.time && s.conversionStatus == 'not_requested'
+          && a.uploadCount == get(accountPath(uid)).data.uploadCount+1 && r.sheetMusic.slot == id && r.sheetMusic.key == s.key;
+      }
+      allow get, list: if readable(uid);
+      allow create: if access(uid) && validPDF();
+      allow delete: if access(uid) && mediaId(id) && uses(uid,get(accountPath(uid)).data,resource.data.key) == 0;
+    }
+  }
+ }
+}

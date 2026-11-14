@@ -1,6 +1,5 @@
 /** Tiny Firestore-only MVP. Keep binary well below Firestore's 1 MiB document limit. */
 export const MAX_AUDIO_BYTES = 500 * 1024;
-export const MAX_RECORDINGS = 5;
 export const AUDIO_LIMIT_LABEL = "500 KiB";
 export const AUDIO_ACCEPT = ".mp3,.wav,.m4a,.aac,.flac,.ogg,.webm,.mp4,.mov";
 export const AUDIO_TYPES = [
@@ -49,7 +48,7 @@ export function validateAudioInfo(
     file.size > MAX_AUDIO_BYTES
   )
     throw new Error(
-      `Choose a nonempty audio file up to ${AUDIO_LIMIT_LABEL}. Try a short compressed MP3 for the demo.`,
+      `Choose a nonempty audio file up to ${AUDIO_LIMIT_LABEL}. Try a short compressed MP3.`,
     );
   const extension = file.name.split(".").pop()?.toLowerCase() || "";
   const contentType = extension === "webm" && file.type?.startsWith("video/")
@@ -91,14 +90,6 @@ export function verifyAudioHeader(contentType: string, bytes: Uint8Array) {
     throw new Error(
       "This file does not match its audio format or video container. Please choose a valid recording.",
     );
-}
-export function firstAvailableSlot(occupied: Iterable<string>): string {
-  const used = new Set(occupied);
-  for (let slot = 0; slot < MAX_RECORDINGS; slot++)
-    if (!used.has(String(slot))) return String(slot);
-  throw new Error(
-    `Your profile has ${MAX_RECORDINGS} recordings. Delete one before uploading another.`,
-  );
 }
 export async function prepareAudio(file: File, title = "") {
   const info = validateAudioInfo(file, title);

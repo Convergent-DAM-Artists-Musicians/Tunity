@@ -3,8 +3,6 @@ import assert from "node:assert/strict";
 import {
   AUDIO_TYPES,
   MAX_AUDIO_BYTES,
-  MAX_RECORDINGS,
-  firstAvailableSlot,
   validateAudioInfo,
   verifyAudioHeader,
   prepareAudio,
@@ -41,12 +39,6 @@ test("rejects unsupported filenames and overlong labels", () => {
   assert.throws(() =>
     validateAudioInfo({ name: "tone.wav", size: 100 }, "x".repeat(101)),
   );
-});
-test("allocates only one of five reusable quota slots and rejects the sixth recording", () => {
-  assert.equal(MAX_RECORDINGS, 5);
-  assert.equal(firstAvailableSlot([]), "0");
-  assert.equal(firstAvailableSlot(["0", "2", "3", "4"]), "1");
-  assert.throws(() => firstAvailableSlot(["0", "1", "2", "3", "4"]), /Delete/);
 });
 test("rejects text renamed as audio", () => {
   const data = new TextEncoder().encode(
