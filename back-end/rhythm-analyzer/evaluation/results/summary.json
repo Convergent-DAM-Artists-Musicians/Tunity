@@ -1,0 +1,359 @@
+{
+  "protocol": "ACCEPTANCE.md",
+  "onsets": [
+    {
+      "id": "05",
+      "split": "development",
+      "tolerances": {
+        "25": {
+          "tp": 167,
+          "fp": 13,
+          "fn": 14,
+          "precision": 0.9277777777777778,
+          "recall": 0.9226519337016574,
+          "f1": 0.925207756232687,
+          "maeMs": 6.8682634730539895
+        },
+        "50": {
+          "tp": 178,
+          "fp": 2,
+          "fn": 3,
+          "precision": 0.9888888888888889,
+          "recall": 0.9834254143646409,
+          "f1": 0.9861495844875346,
+          "maeMs": 8.438202247191125
+        },
+        "100": {
+          "tp": 180,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1.0,
+          "recall": 0.994475138121547,
+          "f1": 0.997229916897507,
+          "maeMs": 8.927777777777873
+        }
+      }
+    },
+    {
+      "id": "09",
+      "split": "development",
+      "tolerances": {
+        "25": {
+          "tp": 44,
+          "fp": 11,
+          "fn": 12,
+          "precision": 0.8,
+          "recall": 0.7857142857142857,
+          "f1": 0.7927927927927928,
+          "maeMs": 7.545454545454219
+        },
+        "50": {
+          "tp": 53,
+          "fp": 2,
+          "fn": 3,
+          "precision": 0.9636363636363636,
+          "recall": 0.9464285714285714,
+          "f1": 0.954954954954955,
+          "maeMs": 12.094339622641174
+        },
+        "100": {
+          "tp": 54,
+          "fp": 1,
+          "fn": 2,
+          "precision": 0.9818181818181818,
+          "recall": 0.9642857142857143,
+          "f1": 0.972972972972973,
+          "maeMs": 13.055555555555229
+        }
+      }
+    },
+    {
+      "id": "10",
+      "split": "test",
+      "tolerances": {
+        "25": {
+          "tp": 159,
+          "fp": 8,
+          "fn": 10,
+          "precision": 0.9520958083832335,
+          "recall": 0.9408284023668639,
+          "f1": 0.9464285714285714,
+          "maeMs": 4.767295597484151
+        },
+        "50": {
+          "tp": 165,
+          "fp": 2,
+          "fn": 4,
+          "precision": 0.9880239520958084,
+          "recall": 0.9763313609467456,
+          "f1": 0.9821428571428571,
+          "maeMs": 5.69696969696961
+        },
+        "100": {
+          "tp": 166,
+          "fp": 1,
+          "fn": 3,
+          "precision": 0.9940119760479041,
+          "recall": 0.9822485207100592,
+          "f1": 0.9880952380952381,
+          "maeMs": 6.054216867469781
+        }
+      }
+    },
+    {
+      "id": "15",
+      "split": "test",
+      "tolerances": {
+        "25": {
+          "tp": 115,
+          "fp": 8,
+          "fn": 7,
+          "precision": 0.9349593495934959,
+          "recall": 0.9426229508196722,
+          "f1": 0.9387755102040817,
+          "maeMs": 4.869565217391478
+        },
+        "50": {
+          "tp": 119,
+          "fp": 4,
+          "fn": 3,
+          "precision": 0.967479674796748,
+          "recall": 0.9754098360655737,
+          "f1": 0.9714285714285714,
+          "maeMs": 5.689075630252321
+        },
+        "100": {
+          "tp": 122,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.991869918699187,
+          "recall": 1.0,
+          "f1": 0.9959183673469387,
+          "maeMs": 7.0901639344264495
+        }
+      }
+    },
+    {
+      "id": "33",
+      "split": "test",
+      "tolerances": {
+        "25": {
+          "tp": 59,
+          "fp": 12,
+          "fn": 10,
+          "precision": 0.8309859154929577,
+          "recall": 0.855072463768116,
+          "f1": 0.8428571428571429,
+          "maeMs": 7.13559322033898
+        },
+        "50": {
+          "tp": 68,
+          "fp": 3,
+          "fn": 1,
+          "precision": 0.9577464788732394,
+          "recall": 0.9855072463768116,
+          "f1": 0.9714285714285714,
+          "maeMs": 10.779411764705857
+        },
+        "100": {
+          "tp": 69,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.971830985915493,
+          "recall": 1.0,
+          "f1": 0.9857142857142858,
+          "maeMs": 11.376811594202875
+        }
+      }
+    }
+  ],
+  "heldoutMicro": {
+    "25": {
+      "tp": 333,
+      "fp": 28,
+      "fn": 27,
+      "precision": 0.9224376731301939,
+      "recall": 0.925,
+      "f1": 0.9237170596393898
+    },
+    "50": {
+      "tp": 352,
+      "fp": 9,
+      "fn": 8,
+      "precision": 0.9750692520775623,
+      "recall": 0.9777777777777777,
+      "f1": 0.9764216366158114
+    },
+    "100": {
+      "tp": 357,
+      "fp": 4,
+      "fn": 3,
+      "precision": 0.9889196675900277,
+      "recall": 0.9916666666666667,
+      "f1": 0.9902912621359223
+    }
+  },
+  "heldoutVerifiedAlignment": {
+    "oracle": {
+      "correct": 51,
+      "total": 51,
+      "accuracy": 1.0
+    },
+    "detected": {
+      "correct": 49,
+      "total": 51,
+      "accuracy": 0.9607843137254902
+    }
+  },
+  "syntheticErrors": {
+    "early": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "extra_note": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "incorrect_duration": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "late": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "misplaced_rest": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "missing_note": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "uneven_tuplet": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "editedRealErrors": {
+    "early": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "extra_note": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "incorrect_duration": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "late": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "misplaced_rest": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "missing_note": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "cleanControls": {
+    "falseFindings": 0,
+    "notes": 94
+  },
+  "supplementaryTriplets": {
+    "id": "42-triplets",
+    "sourceStartSec": 124.91,
+    "durationSec": 4.210000000000008,
+    "notes": 16,
+    "onsets": {
+      "tp": 15,
+      "fp": 1,
+      "fn": 1,
+      "precision": 0.9375,
+      "recall": 0.9375,
+      "f1": 0.9375,
+      "maeMs": 19.266666666669686
+    },
+    "alignment": {
+      "correct": 15,
+      "total": 16,
+      "accuracy": 0.9375
+    }
+  },
+  "gates": {
+    "heldout_onset_precision_recall_f1": true,
+    "each_heldout_onset_f1": true,
+    "oracle_alignment": true,
+    "detected_alignment": true,
+    "synthetic_error_each_kind": true,
+    "real_edit_error_each_kind": true,
+    "clean_false_findings": true,
+    "continuous_slur_and_timbre_controls": true
+  },
+  "passed": true,
+  "implementationSha256": {
+    "python/rhythm_worker.py": "d948d6b43cd87029e65dff770c093038cda5c93a815f54e409759ce666104765",
+    "src/alignment.ts": "0f30592b784ce64f70dfbdff76cb422f1045a0f676edb3bab93fcb831780fb5b",
+    "src/cli.ts": "b09878087da193486b1b4aca13899e11fb947910ba238837df125f7529abfde8",
+    "src/index.ts": "54027f374289fb84153c8492f918290aca9f4157709e52b8d4d90093c827c9b1",
+    "src/notation.ts": "6eead120c1557cd44aea24fbb21ef2a460b12b2ceb8f733a5d3d5d7b2969b658",
+    "src/types.ts": "8d7cd9c45ecfd9e5a4afa3c14548ff4ed8ad8eb48ab8c524d95984c6c0a3d1fd"
+  }
+}
