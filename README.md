@@ -67,7 +67,7 @@ npm run dev
 
 ### Optional: enable recording analysis
 
-The sample projects, filtering, Files view, and Trash/restore work without the analyzer. Real uploads additionally need backend npm dependencies, a compatible Python environment with `torch`, `torchaudio`, and `torchcrepe`, and FFmpeg. Set `PYTHON_PATH` to that environment's absolute Python executable **before starting Next.js**. On macOS the Python command is usually `python3`.
+The sample projects, filtering, Files view, and Trash/restore work without the analyzer. Rhythm uploads need backend npm dependencies, the CPU Python dependencies in `back-end/rhythm-analyzer/requirements.txt`, and FFmpeg. See [rhythm setup, usage and evaluation](back-end/rhythm-analyzer/README.md). Pitch mode separately requires `torch`, `torchaudio`, and `torchcrepe`. Set `PYTHON_PATH` to that environment's absolute Python executable **before starting Next.js**. On macOS the Python command is usually `python3`.
 
 See [the frontend setup guide](tunity-front-end/README.md#optional-backend-connection) for the full connection and server variable details. For PyTorch on macOS, use the macOS installation command from the [official installation selector](https://pytorch.org/get-started/locally/); the Linux CPU-wheel index is not the macOS installation route. Keep `back-end` beside `tunity-front-end`, or configure `TUNITY_BACKEND_DIR`.
 
@@ -79,13 +79,13 @@ See [the frontend README](tunity-front-end/README.md) for useful development com
 
 ## Backend analyzer reference
 
-An independent copy of the original music analyzer. The original `music-analyzer` folder is preserved. This edition replaces its basic YIN pitch estimator with **torchcrepe**, the PyTorch implementation of CREPE. It retains audio extraction, sheet-music import, note alignment, and the same seven requested feedback categories, plus missing/extra notes.
+The integrated rhythm analyzer uses a separate CPU spectral/energy/YIN boundary detector and score-aware alignment. It retains the existing extraction, score import and workspace API. Pitch analysis continues through the existing torchcrepe path. See [rhythm documentation](back-end/rhythm-analyzer/README.md) and [measured results](back-end/rhythm-analyzer/evaluation/REPORT.md).
 
-**Scope:** one player, one pitched melodic line, offline clips up to 120 seconds. No accompaniment, band transcription, or timbre-quality grading. This is a working integration baseline, not a trumpet-accuracy claim.
+**Scope:** one player, one pitched melodic line, offline clips up to 120 seconds. No accompaniment, band transcription, or timbre-quality grading. Rhythm accuracy claims are limited to the recorded evaluation set and checked score passages in the linked report.
 
-## Setup
+## Pitch analyzer setup
 
-Requirements:
+For rhythm use the CPU-only setup linked above. Pitch requirements:
 
 - Node.js 24+ (native TypeScript execution).
 - A Python version supported by your chosen PyTorch distribution.
