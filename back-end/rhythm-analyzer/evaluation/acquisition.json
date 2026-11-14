@@ -1,0 +1,146 @@
+[
+  {
+    "path": "data/05_Entertainer_tpt_tpt/AuSep_1_tpt_05_Entertainer.wav",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/05_Entertainer_tpt_tpt/AuSep_1_tpt_05_Entertainer.wav",
+    "split": "development",
+    "sha256": "c50d2082a00706b678066146ae28c8515a9a748e504742d996b87d2508cd0237"
+  },
+  {
+    "path": "data/05_Entertainer_tpt_tpt/Notes_1_tpt_05_Entertainer.txt",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/05_Entertainer_tpt_tpt/Notes_1_tpt_05_Entertainer.txt",
+    "split": "development",
+    "sha256": "f6dfdc81fc4f2b2f1c34335dadad5f6606ee0e2dc043188134707dceb6ddec14"
+  },
+  {
+    "path": "data/05_Entertainer_tpt_tpt/Sco_05_Entertainer_tpt_tpt.mid",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/05_Entertainer_tpt_tpt/Sco_05_Entertainer_tpt_tpt.mid",
+    "split": "development",
+    "sha256": "80fba68adbac937af58d549761cd369f1a9832b415527265bac43f1adcc6a42f"
+  },
+  {
+    "path": "data/05_Entertainer_tpt_tpt/Sco_05_Entertainer_tpt_tpt.pdf",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/05_Entertainer_tpt_tpt/Sco_05_Entertainer_tpt_tpt.pdf",
+    "split": "development",
+    "sha256": "1422cdab76d1611f2411161bef78e270d6bad54b4637a4a80d885cdc4cedff9b"
+  },
+  {
+    "path": "data/09_Jesus_tpt_vn/AuSep_1_tpt_09_Jesus.wav",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/09_Jesus_tpt_vn/AuSep_1_tpt_09_Jesus.wav",
+    "split": "development",
+    "sha256": "169771f29b43cfe5541c448ec5830e8addf6fecdff4a55a0d35a59c4b76293a5"
+  },
+  {
+    "path": "data/09_Jesus_tpt_vn/Notes_1_tpt_09_Jesus.txt",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/09_Jesus_tpt_vn/Notes_1_tpt_09_Jesus.txt",
+    "split": "development",
+    "sha256": "f24fbf69b669cda8102b63327f04c4fc574c4b8581ac8b82b0f9a3e0d786f85f"
+  },
+  {
+    "path": "data/09_Jesus_tpt_vn/Sco_09_Jesus_tpt_vn.mid",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/09_Jesus_tpt_vn/Sco_09_Jesus_tpt_vn.mid",
+    "split": "development",
+    "sha256": "f001394f65e65a01ffb464ed85619f10a698ff564185b8375990f71c7c7a5617"
+  },
+  {
+    "path": "data/09_Jesus_tpt_vn/Sco_09_Jesus_tpt_vn.pdf",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/09_Jesus_tpt_vn/Sco_09_Jesus_tpt_vn.pdf",
+    "split": "development",
+    "sha256": "883e08028ec74f5e233f2cb70e65ce8d417ed669ae404ed9d245feb9691b8382"
+  },
+  {
+    "path": "data/10_March_tpt_sax/AuSep_1_tpt_10_March.wav",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/10_March_tpt_sax/AuSep_1_tpt_10_March.wav",
+    "split": "test",
+    "sha256": "38eb95b89149c4e217e638eb0a3c258d224267ab0e2cb760c3dc4720461004f9"
+  },
+  {
+    "path": "data/10_March_tpt_sax/Notes_1_tpt_10_March.txt",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/10_March_tpt_sax/Notes_1_tpt_10_March.txt",
+    "split": "test",
+    "sha256": "bb782b27a9e3a137b54644ff27626aca2a19f0841a3660fe908f8d1b5cd8a8ac"
+  },
+  {
+    "path": "data/10_March_tpt_sax/Sco_10_March_tpt_sax.mid",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/10_March_tpt_sax/Sco_10_March_tpt_sax.mid",
+    "split": "test",
+    "sha256": "4a4cb453a25d8703d9fd70f454cb67dee845346126f3e982e00343634a18b0cc"
+  },
+  {
+    "path": "data/10_March_tpt_sax/Sco_10_March_tpt_sax.pdf",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/10_March_tpt_sax/Sco_10_March_tpt_sax.pdf",
+    "split": "test",
+    "sha256": "7bc009f1d8a5431e941f412bb6c4978235343399f623980034a94cb3ca453ba2"
+  },
+  {
+    "path": "data/15_Surprise_tpt_tpt_tbn/AuSep_1_tpt_15_Surprise.wav",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/15_Surprise_tpt_tpt_tbn/AuSep_1_tpt_15_Surprise.wav",
+    "split": "test",
+    "sha256": "dc8b2ed652ac11f98a8fa40b30195e0647433d4d91a55f89a73bfbfb9be10906"
+  },
+  {
+    "path": "data/15_Surprise_tpt_tpt_tbn/Notes_1_tpt_15_Surprise.txt",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/15_Surprise_tpt_tpt_tbn/Notes_1_tpt_15_Surprise.txt",
+    "split": "test",
+    "sha256": "f787f4a22621f76da7eeec853917bffce8b40e73a4a40f347cd0071d548221d8"
+  },
+  {
+    "path": "data/15_Surprise_tpt_tpt_tbn/Sco_15_Surprise_tpt_tpt_tbn.mid",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/15_Surprise_tpt_tpt_tbn/Sco_15_Surprise_tpt_tpt_tbn.mid",
+    "split": "test",
+    "sha256": "f7693f5950d8d7ed92ab09ba6cc0e653834b3afc53992a5273f58fe8f70abafa"
+  },
+  {
+    "path": "data/15_Surprise_tpt_tpt_tbn/Sco_15_Surprise_tpt_tpt_tbn.pdf",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/15_Surprise_tpt_tpt_tbn/Sco_15_Surprise_tpt_tpt_tbn.pdf",
+    "split": "test",
+    "sha256": "9ac6cfdf0a2b62b181cf6242d9a6ec41bbe3001bd4edec0c8488a392380c9847"
+  },
+  {
+    "path": "data/33_Elise_tpt_tpt_hn_tbn/AuSep_1_tpt_33_Elise.wav",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/33_Elise_tpt_tpt_hn_tbn/AuSep_1_tpt_33_Elise.wav",
+    "split": "test",
+    "sha256": "c777a8ff1c4f6fdbb94059bdbe7b9ea57b9965c2656cdfe8272c0c906a902647"
+  },
+  {
+    "path": "data/33_Elise_tpt_tpt_hn_tbn/Notes_1_tpt_33_Elise.txt",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/33_Elise_tpt_tpt_hn_tbn/Notes_1_tpt_33_Elise.txt",
+    "split": "test",
+    "sha256": "8f9ee4d95e435ab96955280818515d287795f059aba92bf390b0436baf40031e"
+  },
+  {
+    "path": "data/33_Elise_tpt_tpt_hn_tbn/Sco_33_Elise_tpt_tpt_hn_tbn.mid",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/33_Elise_tpt_tpt_hn_tbn/Sco_33_Elise_tpt_tpt_hn_tbn.mid",
+    "split": "test",
+    "sha256": "de0a9e3e3041c9b8a1b1c6938ab6bc0f95deecdbcc9cd9246511407f4ef2fc18"
+  },
+  {
+    "path": "data/33_Elise_tpt_tpt_hn_tbn/Sco_33_Elise_tpt_tpt_hn_tbn.pdf",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/33_Elise_tpt_tpt_hn_tbn/Sco_33_Elise_tpt_tpt_hn_tbn.pdf",
+    "split": "test",
+    "sha256": "9524ede37d4d9e09fd00648d4ce9349e0f57232ca2a7b655540633323aa5176c"
+  },
+  {
+    "path": "data/42_Arioso_tpt_tpt_hn_tbn_tba/AuSep_1_tpt_42_Arioso.wav",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/42_Arioso_tpt_tpt_hn_tbn_tba/AuSep_1_tpt_42_Arioso.wav",
+    "split": "supplementary",
+    "sha256": "8ba66b093805996b4f48bb89600d1cdb584a464ed9bcf24bb76fae9a3dff8e5a"
+  },
+  {
+    "path": "data/42_Arioso_tpt_tpt_hn_tbn_tba/Notes_1_tpt_42_Arioso.txt",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/42_Arioso_tpt_tpt_hn_tbn_tba/Notes_1_tpt_42_Arioso.txt",
+    "split": "supplementary",
+    "sha256": "c73c22bd427eb51ec5f0bb4a80db35e81069f7c47d8b0f17dd1f39174876c3df"
+  },
+  {
+    "path": "data/42_Arioso_tpt_tpt_hn_tbn_tba/Sco_42_Arioso_tpt_tpt_hn_tbn_tba.mid",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/42_Arioso_tpt_tpt_hn_tbn_tba/Sco_42_Arioso_tpt_tpt_hn_tbn_tba.mid",
+    "split": "supplementary",
+    "sha256": "6588d2a571379d4134eb3849ed0fc5b58c94068910123691813375a6f361216f"
+  },
+  {
+    "path": "data/42_Arioso_tpt_tpt_hn_tbn_tba/Sco_42_Arioso_tpt_tpt_hn_tbn_tba.pdf",
+    "url": "https://huggingface.co/datasets/Eredis02/URMP/resolve/58177a0/42_Arioso_tpt_tpt_hn_tbn_tba/Sco_42_Arioso_tpt_tpt_hn_tbn_tba.pdf",
+    "split": "supplementary",
+    "sha256": "82286711001ea8871153d779519220f371f01a01849b43f0bad14159c3ff1df5"
+  }
+]
