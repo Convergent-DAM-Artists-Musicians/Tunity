@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
+import { AudioProvider } from "@/components/audio/audio-provider";
 
 export const metadata: Metadata = {
   title: "Tunity — Your practice, in tune",
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider><AudioProvider>{children}</AudioProvider></AuthProvider>
       </body>
     </html>
   );

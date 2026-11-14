@@ -1,0 +1,13 @@
+.sheet-picker { border: 1px solid #65503a; border-radius: 8px; padding: 15px; margin: 18px 0; min-width: 0; }
+.sheet-picker legend { padding: 0 6px; color: #e4c7aa; font-size: 13px; }
+.sheet-picker select { width: 100%; max-width: 100%; background: #292624; color: #ead3bb; border: 1px solid #77614c; border-radius: 5px; padding: 10px; }
+.sheet-picker .field-label { margin-top: 12px; }
+.sheet-library { margin-top: 24px; padding-top: 20px; border-top: 1px solid #65503a; }
+.sheet-library h3 { color: #ead3bb; font-size: 16px; }
+.sheet-library h3 span { font-size: 11px; color: #baa087; }
+.sheet-library p, .sheet-reference { font-size: 11px; line-height: 1.8; color: #b8a08a; margin: 8px 0; overflow-wrap: anywhere; }
+.sheet-library a, .sheet-reference a { color: #e1af87; text-decoration: underline; overflow-wrap: anywhere; }
+.sheet-library article { display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 12px 0; }
+.sheet-library article > div { min-width: 0; }
+.sheet-library button { flex-shrink: 0; }
+.audio-recording video { width: 100%; max-height: 240px; background: #191715; }

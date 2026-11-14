@@ -1,0 +1,78 @@
+// Complete owner-only rules for this MVP: profiles, recordings, and sheet music.
+// Preserve unrelated collection rules when merging into an existing project.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /userProfiles/{uid} {
+      function owner() { return request.auth != null && request.auth.uid == uid; }
+      function validProfile() {
+        let p = request.resource.data;
+        return p.keys().hasAll(['preferredName', 'instrument', 'experience', 'goal', 'dailyMinutes', 'updatedAt'])
+          && p.keys().hasOnly(['preferredName', 'instrument', 'experience', 'goal', 'dailyMinutes', 'updatedAt'])
+          && p.preferredName is string && p.preferredName.size() <= 60
+          && p.instrument in ['Trumpet', 'Trombone', 'French horn', 'Tuba', 'Flute', 'Clarinet', 'Saxophone', 'Violin', 'Voice', 'Other']
+          && p.experience in ['Just starting', 'Finding my rhythm', 'Building confidence', 'Experienced player']
+          && p.goal is string && p.goal.size() <= 300
+          && p.dailyMinutes is int && p.dailyMinutes >= 5 && p.dailyMinutes <= 120
+          && p.updatedAt == request.time;
+      }
+      allow get: if owner();
+      allow create, update: if owner() && validProfile();
+      match /sheetMusic/{slot} {
+        function validSheet() {
+          let s = request.resource.data;
+          return slot.matches('^[0-4]$')
+            && s.keys().hasAll(['key', 'name', 'size', 'pdf', 'contentType', 'createdAt', 'conversionStatus'])
+            && s.keys().hasOnly(['key', 'name', 'size', 'pdf', 'contentType', 'createdAt', 'conversionStatus'])
+            && s.key is string && s.key.matches('^[a-f0-9-]{36}$')
+            && s.name is string && s.name.size() > 0 && s.name.size() <= 180
+            && s.contentType == 'application/pdf'
+            && s.size is int && s.size > 0 && s.size <= 512000
+            && s.pdf is bytes && s.pdf.size() == s.size
+            && s.createdAt == request.time && s.conversionStatus == 'not_requested';
+        }
+        function usedBy(id) {
+          let path = /databases/$(database)/documents/userProfiles/$(uid)/recordings/$(id);
+          return exists(path) && get(path).data.get('sheetMusic', {}).get('key', '') == resource.data.key;
+        }
+        allow get, list: if owner();
+        allow create: if owner() && validSheet();
+        allow delete: if owner() && slot.matches('^[0-4]$')
+          && !usedBy('0') && !usedBy('1') && !usedBy('2') && !usedBy('3') && !usedBy('4');
+        // No client updates: slot keys cannot be changed underneath recordings.
+      }
+      // Each user has five fixed recording slots. Binary files remain well below
+      // Firestore's 1 MiB document limit; no Cloud Storage bucket is required.
+      match /recordings/{slot} {
+        function validSheetLink(r) {
+          let s = r.get('sheetMusic', {});
+          return !('sheetMusic' in r) || (s is map
+            && s.keys().hasAll(['slot', 'key', 'name'])
+            && s.keys().hasOnly(['slot', 'key', 'name'])
+            && s.slot is string && s.slot.matches('^[0-4]$')
+            && s.key is string && s.key.matches('^[a-f0-9-]{36}$')
+            && s.name is string
+            && getAfter(/databases/$(database)/documents/userProfiles/$(uid)/sheetMusic/$(s.slot)).data.key == s.key
+            && getAfter(/databases/$(database)/documents/userProfiles/$(uid)/sheetMusic/$(s.slot)).data.name == s.name);
+        }
+        function validRecording() {
+          let r = request.resource.data;
+          return slot.matches('^[0-4]$')
+            && r.keys().hasAll(['name', 'title', 'contentType', 'size', 'audio', 'createdAt'])
+            && r.keys().hasOnly(['name', 'title', 'contentType', 'size', 'audio', 'createdAt', 'sheetMusic'])
+            && validSheetLink(r)
+            && r.name is string && r.name.size() > 0 && r.name.size() <= 180
+            && r.title is string && r.title.size() > 0 && r.title.size() <= 180
+            && r.contentType in ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/aac', 'audio/flac', 'audio/ogg', 'audio/webm', 'video/mp4', 'video/quicktime', 'video/webm']
+            && r.size is int && r.size > 0 && r.size <= 512000
+            && r.audio is bytes && r.audio.size() == r.size
+            && r.createdAt == request.time;
+        }
+        allow get, list: if owner();
+        allow create: if owner() && validRecording();
+        allow delete: if owner() && slot.matches('^[0-4]$');
+        // Immutable after creation: delete a slot before reusing it.
+      }
+    }
+  }
+}

@@ -3,6 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth-provider";
+import { useAudio } from "@/components/audio/audio-provider";
+import { AudioLibrary } from "@/components/audio/audio-library";
+import { SheetPicker } from "@/components/audio/sheet-music";
+import { AUDIO_ACCEPT, AUDIO_LIMIT_LABEL, validateAudioInfo } from "@/lib/audio-model";
+import { type SheetChoice } from "@/lib/sheet-model";
 
 type Note = {
   midi: number;
@@ -122,6 +127,9 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [modal, setModal] = useState<"upload" | "project" | "account" | null>(null);
   const [selected, setSelected] = useState<Project | null>(null);
+  const [sheet, setSheet] = useState<SheetChoice>({ kind: "none" });
+  const [runAnalysis, setRunAnalysis] = useState(false);
+  const { upload: uploadAudio, loading: libraryLoading, error: libraryError } = useAudio();
   const [audio, setAudio] = useState<File | null>(null);
   const [reference, setReference] = useState<File | null>(null);
   const [uploadSemester, setUploadSemester] = useState("Fall ’26");
@@ -138,14 +146,24 @@ export default function Home() {
   }, [modal]);
 
   function openUpload() {
+    setSheet({ kind: "none" });
+    setAudio(null);
+    setReference(null);
+    setRunAnalysis(false);
     setError("");
     setModal("upload");
   }
 
   function chooseAudio(file?: File) {
     if (!file) return;
-    if (file.size > 25 * 1024 * 1024 || !file.size) {
-      setError("Choose a nonempty recording under 25 MB.");
+    try {
+      const info = validateAudioInfo(file, prompt);
+      if (info.contentType.startsWith("video/")) setRunAnalysis(false);
+    } catch (err) {
+      setAudio(null);
+      setError(
+        err instanceof Error ? err.message : "Choose a valid audio file.",
+      );
       return;
     }
     setAudio(file);
@@ -154,49 +172,77 @@ export default function Home() {
 
   async function analyze(event: React.FormEvent) {
     event.preventDefault();
-    if (!audio || busy) return;
+    if (!audio || busy || authLoading) return;
     setBusy(true);
     setError("");
-
+    let uploaded = false;
     try {
-      const form = new FormData();
-      form.append("audio", audio);
-      if (reference) form.append("reference", reference);
-
-      const response = await fetch("/api/analyze", {
-        method: "POST",
-        body: form,
-        signal: AbortSignal.timeout(240_000),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Analysis failed. Please try again.");
+      await uploadAudio(audio, prompt, sheet);
+      uploaded = true;
+      let data: Result | undefined;
+      if (runAnalysis && !audio.type.startsWith("video/") && !/\.(mp4|mov)$/i.test(audio.name)) {
+        try {
+          const form = new FormData();
+          form.append("audio", audio);
+          if (reference) form.append("reference", reference);
+          const response = await fetch("/api/analyze", {
+            method: "POST",
+            body: form,
+            signal: AbortSignal.timeout(240_000),
+          });
+          const result = await response.json();
+          if (!response.ok)
+            throw new Error(result.error || "Analysis could not complete.");
+          data = result;
+        } catch {
+          setNotice(
+            "Your recording was uploaded, but analysis could not complete. You can still play it in My recordings.",
+          );
+        }
       }
-
-      const project: Project = {
-        id: crypto.randomUUID(),
-        name: prompt.trim() || audio.name.replace(/\.[^.]+$/, ""),
-        semester: uploadSemester,
-        file: audio.name,
-        date: "Just now",
-        result: data,
-      };
-
-      setProjects(items => [project, ...items]);
-      setSelected(project);
-      setModal("project");
+      if (data) {
+        const project: Project = {
+          id: crypto.randomUUID(),
+          name: prompt.trim() || audio.name.replace(/\.[^.]+$/, ""),
+          semester: uploadSemester,
+          file: audio.name,
+          date: "Just now",
+          result: data,
+        };
+        setProjects((items) => [project, ...items]);
+        setSelected(project);
+        setModal("project");
+        setNotice(
+          user
+            ? "Recording saved to your profile and analyzed."
+            : "Guest recording added and analyzed. It is not saved to Firebase.",
+        );
+      } else {
+        setModal(null);
+        if (!runAnalysis)
+          setNotice(
+            user
+              ? "Recording saved to your profile."
+              : "Recording added for this session only. It is not saved to Firebase.",
+          );
+      }
       setAudio(null);
       setReference(null);
+      setSheet({ kind: "none" });
       setPrompt("");
+      setRunAnalysis(false);
       setView("Home");
       setSemester("All");
       setSearch("");
-      setNotice("Your recording has been analyzed.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Upload was not confirmed. Reload your library before retrying.",
+      );
     } finally {
       setBusy(false);
+      if (uploaded) setAudio(null);
     }
   }
 
@@ -290,6 +336,8 @@ export default function Home() {
           </div>
         </section>
 
+        <AudioLibrary onUpload={openUpload} />
+        {notice && <p className="audio-library-status" role="status">{notice}</p>}
         <section className="workspace" aria-label="Project library">
           <div className="section-title">
             <div>
@@ -393,50 +441,137 @@ export default function Home() {
               <span className="eyebrow">MAKE ROOM FOR PROGRESS</span>
               <h2 id="dialog-title">Let’s hear it.</h2>
               <p className="dialog-intro">
-                Upload a solo recording for real note detection. Add a reference to get pitch and timing feedback.
+                Upload short audio or video. Signed-in uploads save to your
+                profile; guest uploads stay in this tab.
               </p>
 
-              <label className="field-label">Project name
-                <input value={prompt} maxLength={100} disabled={busy}
-                  onChange={e => setPrompt(e.target.value)} placeholder="e.g. Autumn recital · Take 4" />
+              <label className="field-label">
+                Project name
+                <input
+                  value={prompt}
+                  maxLength={100}
+                  disabled={busy}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="e.g. Autumn recital · Take 4"
+                />
               </label>
 
-              <button type="button" className={`drop-zone ${audio ? "has-file" : ""}`}
-                disabled={busy} onClick={() => audioInput.current?.click()}
-                onDragOver={e => e.preventDefault()}
-                onDrop={e => { e.preventDefault(); if (!busy) chooseAudio(e.dataTransfer.files[0]); }}>
-                <span className="upload-icon"><Icon name={audio ? "check" : "upload"} size={26} /></span>
+              <button
+                type="button"
+                className={`drop-zone ${audio ? "has-file" : ""}`}
+                disabled={busy}
+                onClick={() => audioInput.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (!busy) chooseAudio(e.dataTransfer.files[0]);
+                }}
+              >
+                <span className="upload-icon">
+                  <Icon name={audio ? "check" : "upload"} size={26} />
+                </span>
                 <strong>{audio ? audio.name : "Drop a recording here"}</strong>
-                <span>{audio ? `${(audio.size / 1024 / 1024).toFixed(2)} MB · Click to replace` : "or click to browse · WAV, MP3, M4A, FLAC"}</span>
+                <span>
+                  {audio
+                    ? `${(audio.size / 1024 / 1024).toFixed(2)} MB · Click to replace`
+                    : "or click to browse · audio, MP4, MOV, WebM"}
+                </span>
               </button>
-              <input ref={audioInput} type="file" accept="audio/*,.wav,.mp3,.m4a,.flac,.ogg"
-                className="sr-only" aria-label="Choose recording" disabled={busy}
-                onChange={e => chooseAudio(e.target.files?.[0])} />
+              <input
+                ref={audioInput}
+                type="file"
+                accept={AUDIO_ACCEPT}
+                className="sr-only"
+                aria-label="Choose recording"
+                disabled={busy}
+                onChange={(e) => chooseAudio(e.target.files?.[0])}
+              />
 
+              <SheetPicker value={sheet} onChange={setSheet} disabled={busy} />
+              <label className="upload-help">
+                <input
+                  type="checkbox"
+                  checked={runAnalysis}
+                  disabled={busy || (!!audio && (audio.type.startsWith("video/") || /\.(mp4|mov)$/i.test(audio.name)))}
+                  onChange={(e) => setRunAnalysis(e.target.checked)}
+                />{" "}
+                Also analyze audio (requires the Python analyzer; PDF references are not sent)
+              </label>
               <div className="upload-options">
-                <label className="field-label">Semester
-                  <select value={uploadSemester} disabled={busy}
-                    onChange={e => setUploadSemester(e.target.value)}>
-                    {semesters.slice(1).map(s => <option key={s}>{s}</option>)}
+                <label className="field-label">
+                  Semester
+                  <select
+                    value={uploadSemester}
+                    disabled={busy}
+                    onChange={(e) => setUploadSemester(e.target.value)}
+                  >
+                    {semesters.slice(1).map((s) => (
+                      <option key={s}>{s}</option>
+                    ))}
                   </select>
                 </label>
-                <label className="field-label">Reference JSON <span className="optional">optional</span>
-                  <input type="file" accept=".json,application/json" disabled={busy}
-                    onChange={e => setReference(e.target.files?.[0] || null)} />
+                <label className="field-label">
+                  Advanced analysis JSON <span className="optional">optional</span>
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    disabled={busy || !runAnalysis}
+                    onChange={(e) => setReference(e.target.files?.[0] || null)}
+                  />
                 </label>
               </div>
 
               <p className="upload-help">
-                One melodic line, up to 25 MB. Analyzes the first 120 seconds. Reference format:
-                <code>{'{ "notes": [{ "id": "a4", "midi": 69, "startSec": 0.1, "endSec": 0.9 }] }'}</code>
+                Audio or video, up to {AUDIO_LIMIT_LABEL}. PDF sheet music is optional and separate from analysis. The advanced JSON
+                format is:
+                <code>
+                  {
+                    '{ "notes": [{ "id": "a4", "midi": 69, "startSec": 0.1, "endSec": 0.9 }] }'
+                  }
+                </code>
               </p>
-              {error && <p className="error-message" role="alert">{error}</p>}
+              {error && (
+                <p className="error-message" role="alert">
+                  {error}
+                </p>
+              )}
 
-              <button type="submit" className="primary-button full-width" disabled={!audio || busy}>
-                {busy ? <><span className="spinner" /> Listening to your recording…</> : <>Analyze recording <Icon name="arrow" size={18} /></>}
+              {user && libraryError && (
+                <p className="error-message" role="alert">
+                  {libraryError} Close this dialog and use Retry library.
+                </p>
+              )}
+              {libraryLoading && (
+                <p className="upload-help" role="status">
+                  Loading your recording slots…
+                </p>
+              )}
+              <button
+                type="submit"
+                className="primary-button full-width"
+                disabled={
+                  !audio ||
+                  busy ||
+                  authLoading ||
+                  libraryLoading ||
+                  (!!user && !!libraryError)
+                }
+              >
+                {busy ? (
+                  <>
+                    <span className="spinner" /> Uploading your recording…
+                  </>
+                ) : (
+                  <>
+                    {user ? "Save to my profile" : "Add to this session"}{" "}
+                    <Icon name="arrow" size={18} />
+                  </>
+                )}
               </button>
               <p className="privacy-note" role="status">
-                {busy ? "Real model analysis can take up to 3 minutes. Keep this tab open." : "Processed on this server. Uploaded files are deleted after analysis. Results stay in this tab."}
+                {busy
+                  ? "Saving your file; optional model analysis can take up to 3 minutes. Keep this tab open."
+                  : "Signed-in recordings are saved to Firebase. Guest recordings remain only in this tab. Analysis results remain session-only."}
               </p>
             </form>
           )}

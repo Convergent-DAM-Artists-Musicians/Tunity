@@ -3,13 +3,14 @@ import { mkdtemp, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { promisify } from "node:util";
+import { MAX_AUDIO_BYTES, prepareAudio } from "@/lib/audio-model";
 
 // Node.js is the default runtime.
 // Explicit runtime config conflicts with this repo's Cache Components setting.
 export const maxDuration = 240;
 
 const run = promisify(execFile);
-const MAX_UPLOAD = 25 * 1024 * 1024;
+const MAX_UPLOAD = MAX_AUDIO_BYTES;
 let busy = false;
 
 export async function POST(request: Request) {
@@ -20,9 +21,12 @@ export async function POST(request: Request) {
     );
   }
 
-  if (Number(request.headers.get("content-length")) > MAX_UPLOAD + 1024 * 1024) {
+  if (
+    Number(request.headers.get("content-length")) >
+    MAX_UPLOAD + 1024 * 1024
+  ) {
     return Response.json(
-      { error: "Please choose a recording under 25 MB." },
+      { error: "Please choose a recording up to 500 KiB." },
       { status: 413 },
     );
   }
@@ -37,12 +41,27 @@ export async function POST(request: Request) {
 
     if (!(audio instanceof File) || !audio.size || audio.size > MAX_UPLOAD) {
       return Response.json(
-        { error: "Choose a nonempty audio recording under 25 MB." },
+        { error: "Choose a nonempty audio recording up to 500 KiB." },
         { status: 400 },
       );
     }
 
-    if (reference && (!(reference instanceof File) || reference.size > 256 * 1024)) {
+    try {
+      const prepared = await prepareAudio(audio);
+      if (prepared.info.contentType.startsWith("video/")) throw new Error("Video uploads are supported for playback; analysis currently accepts audio only.");
+    } catch (error) {
+      return Response.json(
+        {
+          error: error instanceof Error ? error.message : "Invalid audio file.",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (
+      reference &&
+      (!(reference instanceof File) || reference.size > 256 * 1024)
+    ) {
       return Response.json(
         { error: "Reference JSON must be under 256 KB." },
         { status: 400 },
@@ -65,7 +84,10 @@ export async function POST(request: Request) {
     await writeFile(input, Buffer.from(await audio.arrayBuffer()));
 
     const args = [
-      resolve(process.env.TUNITY_BACKEND_DIR || "../back-end", "src/cli/web-demo.ts"),
+      resolve(
+        process.env.TUNITY_BACKEND_DIR || "../back-end",
+        "src/cli/web-demo.ts",
+      ),
       input,
     ];
 
@@ -87,9 +109,13 @@ export async function POST(request: Request) {
     return Response.json(JSON.parse(stdout));
   } catch (error) {
     console.error("Tunity analysis:", error);
-    return Response.json({
-      error: "Analysis could not complete. Check the recording and reference, and confirm that Node 24+, FFmpeg and the Python CREPE environment are configured. See the server log for details.",
-    }, { status: 422 });
+    return Response.json(
+      {
+        error:
+          "Analysis could not complete. Check the recording and reference, and confirm that Node 24+, FFmpeg and the Python CREPE environment are configured. See the server log for details.",
+      },
+      { status: 422 },
+    );
   } finally {
     try {
       if (folder) await rm(folder, { recursive: true, force: true });

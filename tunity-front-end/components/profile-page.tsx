@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "./auth-provider";
+import { AudioLibrary } from "./audio/audio-library";
 import {
   emptyProfile,
   instruments,
@@ -472,6 +473,7 @@ function ProfileDetails({
               </p>
             </form>
           </section>
+          {!preview && <AudioLibrary />}
           <section className="profile-card profile-journey">
             <div className="profile-section-heading">
               <div>
