@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { extractAudioClip } from './extract.ts';
-import { analyzeClip } from './analyzer.ts';
-import type { AnalysisOptions, ExpectedNote } from './types.ts';
+import { extractAudioClip } from '../extract.ts';
+import { analyzeClip } from '../analyzer.ts';
+import type { AnalysisOptions, ExpectedNote } from '../types.ts';
 
 const [input, referencePath, start, end, output] = process.argv.slice(2);
 if (!input || !referencePath || start === undefined || end === undefined || !output) {

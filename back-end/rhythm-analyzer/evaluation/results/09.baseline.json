@@ -1,0 +1,686 @@
+{
+  "notes": [
+    {
+      "startSec": 6.01,
+      "endSec": 6.76,
+      "midi": 67.24161575066722,
+      "frequencyHz": 397.504585488697,
+      "confidence": 0.9517387747764587,
+      "rmsDb": -47.828909465799256
+    },
+    {
+      "startSec": 7.13,
+      "endSec": 7.51,
+      "midi": 64.06583549081141,
+      "frequencyHz": 330.88345336914074,
+      "confidence": 0.9801294207572937,
+      "rmsDb": -48.533554954428396
+    },
+    {
+      "startSec": 8.26,
+      "endSec": 8.5,
+      "midi": 58.96537400584839,
+      "frequencyHz": 246.44824218749997,
+      "confidence": 0.9447821378707886,
+      "rmsDb": -48.86636945717861
+    },
+    {
+      "startSec": 8.790000000000001,
+      "endSec": 9.55,
+      "midi": 64.03162695736889,
+      "frequencyHz": 330.23028564453125,
+      "confidence": 0.9736133813858032,
+      "rmsDb": -46.31655338405987
+    },
+    {
+      "startSec": 9.84,
+      "endSec": 10.46,
+      "midi": 64.06706492731755,
+      "frequencyHz": 330.9069519042969,
+      "confidence": 0.977817714214325,
+      "rmsDb": -46.09151764746214
+    },
+    {
+      "startSec": 10.86,
+      "endSec": 11.28,
+      "midi": 57.06356023811453,
+      "frequencyHz": 220.80918884277344,
+      "confidence": 0.9407894015312195,
+      "rmsDb": -48.80970622997271
+    },
+    {
+      "startSec": 11.74,
+      "endSec": 12.3,
+      "midi": 59.07508301008901,
+      "frequencyHz": 248.01495361328122,
+      "confidence": 0.95009446144104,
+      "rmsDb": -47.748817983725914
+    },
+    {
+      "startSec": 12.6,
+      "endSec": 13.19,
+      "midi": 59.84278116363921,
+      "frequencyHz": 259.26041643003384,
+      "confidence": 0.9596216678619385,
+      "rmsDb": -47.391525858278456
+    },
+    {
+      "startSec": 14.42,
+      "endSec": 14.84,
+      "midi": 62.04068166028555,
+      "frequencyHz": 294.3556518554688,
+      "confidence": 0.9694250822067261,
+      "rmsDb": -48.89268776461474
+    },
+    {
+      "startSec": 14.92,
+      "endSec": 15.03,
+      "midi": 62.16425515462366,
+      "frequencyHz": 296.4642451231375,
+      "confidence": 0.9376916587352753,
+      "rmsDb": -49.607630714026456
+    },
+    {
+      "startSec": 15.55,
+      "endSec": 15.96,
+      "midi": 62.04706840916838,
+      "frequencyHz": 294.46426353903087,
+      "confidence": 0.9710161089897156,
+      "rmsDb": -48.86982275073195
+    },
+    {
+      "startSec": 16.19,
+      "endSec": 16.99,
+      "midi": 66.93685596389183,
+      "frequencyHz": 390.56829856040105,
+      "confidence": 0.9608219265937805,
+      "rmsDb": -43.90467859758196
+    },
+    {
+      "startSec": 17.150000000000002,
+      "endSec": 17.91,
+      "midi": 64.07600520199338,
+      "frequencyHz": 331.0778798645839,
+      "confidence": 0.9767396152019501,
+      "rmsDb": -46.00811338726337
+    },
+    {
+      "startSec": 18.080000000000002,
+      "endSec": 18.63,
+      "midi": 60.06829799565068,
+      "frequencyHz": 262.6597290039062,
+      "confidence": 0.940942108631134,
+      "rmsDb": -46.920652781059566
+    },
+    {
+      "startSec": 19.16,
+      "endSec": 19.25,
+      "midi": 59.073941966315935,
+      "frequencyHz": 247.99860766671324,
+      "confidence": 0.9140940606594086,
+      "rmsDb": -48.651812141563596
+    },
+    {
+      "startSec": 19.3,
+      "endSec": 19.5,
+      "midi": 59.057184027737414,
+      "frequencyHz": 247.75866699218756,
+      "confidence": 0.9529195427894592,
+      "rmsDb": -48.80756320583478
+    },
+    {
+      "startSec": 19.96,
+      "endSec": 20.74,
+      "midi": 64.06550177155117,
+      "frequencyHz": 330.8770751953126,
+      "confidence": 0.9807867407798767,
+      "rmsDb": -43.457806021265746
+    },
+    {
+      "startSec": 20.92,
+      "endSec": 21.61,
+      "midi": 62.051924676415396,
+      "frequencyHz": 294.546875,
+      "confidence": 0.9714449644088745,
+      "rmsDb": -47.71240390103283
+    },
+    {
+      "startSec": 21.95,
+      "endSec": 22.6,
+      "midi": 59.77715608925613,
+      "frequencyHz": 258.27951048177545,
+      "confidence": 0.9491605460643768,
+      "rmsDb": -46.03440327429289
+    },
+    {
+      "startSec": 22.84,
+      "endSec": 23.63,
+      "midi": 61.07624550042476,
+      "frequencyHz": 278.40606664789675,
+      "confidence": 0.9493296146392822,
+      "rmsDb": -44.34427738089089
+    },
+    {
+      "startSec": 23.78,
+      "endSec": 24.33,
+      "midi": 62.05156055012583,
+      "frequencyHz": 294.5406799316407,
+      "confidence": 0.9704650640487671,
+      "rmsDb": -48.70253595421947
+    },
+    {
+      "startSec": 24.88,
+      "endSec": 26.06,
+      "midi": 54.85736902100838,
+      "frequencyHz": 194.38958740234378,
+      "confidence": 0.9560132622718811,
+      "rmsDb": -47.45641401691369
+    },
+    {
+      "startSec": 27.47,
+      "endSec": 27.57,
+      "midi": 74.04510545439683,
+      "frequencyHz": 588.861755371094,
+      "confidence": 0.9185806512832642,
+      "rmsDb": -46.95702676940613
+    },
+    {
+      "startSec": 27.580000000000002,
+      "endSec": 29.29,
+      "midi": 71.05173691695337,
+      "frequencyHz": 495.3614501953125,
+      "confidence": 0.9718831181526184,
+      "rmsDb": -44.237590415876994
+    },
+    {
+      "startSec": 29.35,
+      "endSec": 30.08,
+      "midi": 71.87116264597974,
+      "frequencyHz": 519.3715820312502,
+      "confidence": 0.9510629177093506,
+      "rmsDb": -39.19765850522634
+    },
+    {
+      "startSec": 30.14,
+      "endSec": 31.88,
+      "midi": 74.06882928097656,
+      "frequencyHz": 589.6692504882811,
+      "confidence": 0.9793644547462463,
+      "rmsDb": -40.082686503897555
+    },
+    {
+      "startSec": 31.92,
+      "endSec": 32.6,
+      "midi": 74.0239965502446,
+      "frequencyHz": 588.1441948908696,
+      "confidence": 0.9810813665390015,
+      "rmsDb": -40.01507612580862
+    },
+    {
+      "startSec": 32.71,
+      "endSec": 34.38,
+      "midi": 71.97542730410686,
+      "frequencyHz": 522.5089680789857,
+      "confidence": 0.9500307142734528,
+      "rmsDb": -38.8755625949222
+    },
+    {
+      "startSec": 34.43,
+      "endSec": 35.19,
+      "midi": 71.02690064733004,
+      "frequencyHz": 494.6513145625166,
+      "confidence": 0.9520869851112366,
+      "rmsDb": -39.867029116384145
+    },
+    {
+      "startSec": 35.300000000000004,
+      "endSec": 35.9,
+      "midi": 69.05036543844433,
+      "frequencyHz": 441.2819213867187,
+      "confidence": 0.9665501117706299,
+      "rmsDb": -40.92844105281487
+    },
+    {
+      "startSec": 36.18,
+      "endSec": 36.97,
+      "midi": 74.06898338851475,
+      "frequencyHz": 589.6744995117189,
+      "confidence": 0.9491642117500305,
+      "rmsDb": -45.394744892783265
+    },
+    {
+      "startSec": 37.19,
+      "endSec": 37.33,
+      "midi": 62.216233555085054,
+      "frequencyHz": 297.35568400480025,
+      "confidence": 0.9520507156848907,
+      "rmsDb": -49.272376070241194
+    },
+    {
+      "startSec": 38.01,
+      "endSec": 38.75,
+      "midi": 66.19915718614322,
+      "frequencyHz": 374.27532958984375,
+      "confidence": 0.9433385729789734,
+      "rmsDb": -45.211332362098744
+    },
+    {
+      "startSec": 38.910000000000004,
+      "endSec": 39.11,
+      "midi": 62.26222779350234,
+      "frequencyHz": 298.14672851562494,
+      "confidence": 0.9548747539520264,
+      "rmsDb": -48.45745185060174
+    },
+    {
+      "startSec": 39.800000000000004,
+      "endSec": 40.42,
+      "midi": 74.21721062678441,
+      "frequencyHz": 594.7449332022978,
+      "confidence": 0.9098118245601654,
+      "rmsDb": -41.83782813857117
+    },
+    {
+      "startSec": 40.67,
+      "endSec": 42.32,
+      "midi": 71.05224350873907,
+      "frequencyHz": 495.37594561916154,
+      "confidence": 0.973908394575119,
+      "rmsDb": -38.19235690349532
+    },
+    {
+      "startSec": 42.45,
+      "endSec": 43.25,
+      "midi": 72.0493819109905,
+      "frequencyHz": 524.7457885742189,
+      "confidence": 0.9622161388397217,
+      "rmsDb": -38.7491216277312
+    },
+    {
+      "startSec": 43.35,
+      "endSec": 44.89,
+      "midi": 74.0523443986955,
+      "frequencyHz": 589.1080322265625,
+      "confidence": 0.9839116930961609,
+      "rmsDb": -39.161851913371684
+    },
+    {
+      "startSec": 45,
+      "endSec": 45.67,
+      "midi": 70.9196790377998,
+      "frequencyHz": 491.5972266986995,
+      "confidence": 0.9579202830791473,
+      "rmsDb": -39.056200927943664
+    },
+    {
+      "startSec": 45.82,
+      "endSec": 46.21,
+      "midi": 69.07481902499178,
+      "frequencyHz": 441.90567011171674,
+      "confidence": 0.9645520150661469,
+      "rmsDb": -41.89154078902196
+    },
+    {
+      "startSec": 46.21,
+      "endSec": 46.41,
+      "midi": 71.04410104006996,
+      "frequencyHz": 495.1430115040371,
+      "confidence": 0.9735074639320374,
+      "rmsDb": -38.68396815922014
+    },
+    {
+      "startSec": 46.410000000000004,
+      "endSec": 46.62,
+      "midi": 72.07103738391224,
+      "frequencyHz": 525.4025876006438,
+      "confidence": 0.9630113244056702,
+      "rmsDb": -38.669513467984615
+    },
+    {
+      "startSec": 46.660000000000004,
+      "endSec": 47.52,
+      "midi": 71.05786264954523,
+      "frequencyHz": 495.53675801660904,
+      "confidence": 0.9734100699424744,
+      "rmsDb": -39.48543203992932
+    },
+    {
+      "startSec": 47.52,
+      "endSec": 48.2,
+      "midi": 69.05233961326327,
+      "frequencyHz": 441.3322448730468,
+      "confidence": 0.9734103679656982,
+      "rmsDb": -40.84273421530732
+    },
+    {
+      "startSec": 48.28,
+      "endSec": 48.8,
+      "midi": 67.06673817174436,
+      "frequencyHz": 393.5094743846549,
+      "confidence": 0.9684727489948273,
+      "rmsDb": -40.99022356411439
+    },
+    {
+      "startSec": 50.11,
+      "endSec": 50.44,
+      "midi": 64.14529125854386,
+      "frequencyHz": 332.405548095703,
+      "confidence": 0.9606243371963501,
+      "rmsDb": -49.12893666991644
+    },
+    {
+      "startSec": 50.52,
+      "endSec": 50.68,
+      "midi": 64.03068939897683,
+      "frequencyHz": 330.21240234375,
+      "confidence": 0.9716470837593079,
+      "rmsDb": -48.63888761137382
+    },
+    {
+      "startSec": 51.5,
+      "endSec": 51.61,
+      "midi": 59.05538202143536,
+      "frequencyHz": 247.73287963867182,
+      "confidence": 0.9318028092384338,
+      "rmsDb": -49.539708391142156
+    },
+    {
+      "startSec": 52.02,
+      "endSec": 52.63,
+      "midi": 64.06010330468413,
+      "frequencyHz": 330.77391465156023,
+      "confidence": 0.9807045161724091,
+      "rmsDb": -47.175563885014505
+    },
+    {
+      "startSec": 52.68,
+      "endSec": 53.36,
+      "midi": 64.08312841510462,
+      "frequencyHz": 331.2141308547436,
+      "confidence": 0.978355199098587,
+      "rmsDb": -45.489045737866604
+    },
+    {
+      "startSec": 53.730000000000004,
+      "endSec": 53.88,
+      "midi": 56.83343149278856,
+      "frequencyHz": 217.89344787597656,
+      "confidence": 0.9519960880279541,
+      "rmsDb": -49.035689339844055
+    },
+    {
+      "startSec": 54.050000000000004,
+      "endSec": 54.22,
+      "midi": 57.06482282864086,
+      "frequencyHz": 220.82529306371936,
+      "confidence": 0.9721311926841736,
+      "rmsDb": -49.285420523232574
+    },
+    {
+      "startSec": 54.61,
+      "endSec": 55.1,
+      "midi": 59.05897814317985,
+      "frequencyHz": 247.78434409137182,
+      "confidence": 0.9355362355709076,
+      "rmsDb": -47.64821649249588
+    },
+    {
+      "startSec": 55.230000000000004,
+      "endSec": 56.03,
+      "midi": 59.885476360604834,
+      "frequencyHz": 259.90058608349096,
+      "confidence": 0.9600056707859039,
+      "rmsDb": -45.10096709821728
+    },
+    {
+      "startSec": 56.18,
+      "endSec": 56.6,
+      "midi": 61.93116831118812,
+      "frequencyHz": 292.49951171874994,
+      "confidence": 0.9497389197349548,
+      "rmsDb": -48.43774678908686
+    },
+    {
+      "startSec": 57.04,
+      "endSec": 57.76,
+      "midi": 74.08559995046662,
+      "frequencyHz": 590.2407468453608,
+      "confidence": 0.9653150737285614,
+      "rmsDb": -39.03656890376497
+    },
+    {
+      "startSec": 57.910000000000004,
+      "endSec": 58.49,
+      "midi": 62.052437668925464,
+      "frequencyHz": 294.5556030272425,
+      "confidence": 0.9667805135250092,
+      "rmsDb": -45.20392605937201
+    }
+  ],
+  "voicedConfidenceFraction": 0.9997271487039563,
+  "aligned": {
+    "matches": [
+      {
+        "expectedIndex": 1,
+        "detectedIndex": 0
+      },
+      {
+        "expectedIndex": 2,
+        "detectedIndex": 1
+      },
+      {
+        "expectedIndex": 3,
+        "detectedIndex": 2
+      },
+      {
+        "expectedIndex": 4,
+        "detectedIndex": 3
+      },
+      {
+        "expectedIndex": 5,
+        "detectedIndex": 4
+      },
+      {
+        "expectedIndex": 6,
+        "detectedIndex": 5
+      },
+      {
+        "expectedIndex": 7,
+        "detectedIndex": 6
+      },
+      {
+        "expectedIndex": 8,
+        "detectedIndex": 7
+      },
+      {
+        "expectedIndex": 10,
+        "detectedIndex": 8
+      },
+      {
+        "expectedIndex": 11,
+        "detectedIndex": 10
+      },
+      {
+        "expectedIndex": 12,
+        "detectedIndex": 11
+      },
+      {
+        "expectedIndex": 13,
+        "detectedIndex": 12
+      },
+      {
+        "expectedIndex": 14,
+        "detectedIndex": 13
+      },
+      {
+        "expectedIndex": 15,
+        "detectedIndex": 14
+      },
+      {
+        "expectedIndex": 16,
+        "detectedIndex": 16
+      },
+      {
+        "expectedIndex": 17,
+        "detectedIndex": 17
+      },
+      {
+        "expectedIndex": 18,
+        "detectedIndex": 18
+      },
+      {
+        "expectedIndex": 19,
+        "detectedIndex": 19
+      },
+      {
+        "expectedIndex": 20,
+        "detectedIndex": 20
+      },
+      {
+        "expectedIndex": 21,
+        "detectedIndex": 21
+      },
+      {
+        "expectedIndex": 22,
+        "detectedIndex": 22
+      },
+      {
+        "expectedIndex": 23,
+        "detectedIndex": 23
+      },
+      {
+        "expectedIndex": 24,
+        "detectedIndex": 24
+      },
+      {
+        "expectedIndex": 25,
+        "detectedIndex": 25
+      },
+      {
+        "expectedIndex": 26,
+        "detectedIndex": 27
+      },
+      {
+        "expectedIndex": 27,
+        "detectedIndex": 28
+      },
+      {
+        "expectedIndex": 28,
+        "detectedIndex": 29
+      },
+      {
+        "expectedIndex": 29,
+        "detectedIndex": 30
+      },
+      {
+        "expectedIndex": 30,
+        "detectedIndex": 31
+      },
+      {
+        "expectedIndex": 31,
+        "detectedIndex": 32
+      },
+      {
+        "expectedIndex": 32,
+        "detectedIndex": 33
+      },
+      {
+        "expectedIndex": 34,
+        "detectedIndex": 34
+      },
+      {
+        "expectedIndex": 35,
+        "detectedIndex": 35
+      },
+      {
+        "expectedIndex": 36,
+        "detectedIndex": 36
+      },
+      {
+        "expectedIndex": 37,
+        "detectedIndex": 37
+      },
+      {
+        "expectedIndex": 38,
+        "detectedIndex": 38
+      },
+      {
+        "expectedIndex": 39,
+        "detectedIndex": 39
+      },
+      {
+        "expectedIndex": 40,
+        "detectedIndex": 40
+      },
+      {
+        "expectedIndex": 41,
+        "detectedIndex": 41
+      },
+      {
+        "expectedIndex": 42,
+        "detectedIndex": 42
+      },
+      {
+        "expectedIndex": 43,
+        "detectedIndex": 43
+      },
+      {
+        "expectedIndex": 44,
+        "detectedIndex": 44
+      },
+      {
+        "expectedIndex": 46,
+        "detectedIndex": 45
+      },
+      {
+        "expectedIndex": 47,
+        "detectedIndex": 47
+      },
+      {
+        "expectedIndex": 48,
+        "detectedIndex": 48
+      },
+      {
+        "expectedIndex": 49,
+        "detectedIndex": 49
+      },
+      {
+        "expectedIndex": 50,
+        "detectedIndex": 50
+      },
+      {
+        "expectedIndex": 51,
+        "detectedIndex": 52
+      },
+      {
+        "expectedIndex": 52,
+        "detectedIndex": 53
+      },
+      {
+        "expectedIndex": 53,
+        "detectedIndex": 54
+      },
+      {
+        "expectedIndex": 54,
+        "detectedIndex": 55
+      },
+      {
+        "expectedIndex": 55,
+        "detectedIndex": 56
+      }
+    ],
+    "missing": [
+      0,
+      9,
+      33,
+      45
+    ],
+    "extra": [
+      9,
+      15,
+      26,
+      46,
+      51
+    ]
+  }
+}

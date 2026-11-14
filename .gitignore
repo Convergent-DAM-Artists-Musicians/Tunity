@@ -33,3 +33,5 @@ secrets.json
 tunity-demo-backup-*/
 tunity-profile-backup-*/
 .DS_Store
+# Reproducibly downloaded/generated rhythm evaluation media
+back-end/rhythm-analyzer/evaluation/data/

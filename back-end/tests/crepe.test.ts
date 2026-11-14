@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
-import { estimatePitch } from '../src/crepe.ts';
+import { estimatePitch } from '../src/pitch/crepe.ts';
 import { analyzeClip } from '../src/analyzer.ts';
-import { synthesize } from '../src/fixtures.ts';
+import { synthesize } from '../fixtures/fixtures.ts';
 const runtime = { pythonPath: process.execPath, workerPath: fileURLToPath(new URL('./fixtures/fake-crepe.ts', import.meta.url)) };
 const expected = [{ id: 'a4', midi: 69, startSec: 0.1, endSec: 0.5 }];
 test('async analyzer invokes the PCM/JSON worker contract', async () => {

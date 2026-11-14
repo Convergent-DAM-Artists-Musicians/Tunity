@@ -24,7 +24,7 @@ export type DetectedNote = {
 };
 
 export type IssueKind = 'wrong_note' | 'sharp' | 'flat' | 'early' | 'late'
-  | 'missed_entrance' | 'missing_note' | 'extra_note' | 'uneven_dynamics';
+  | 'uneven_tuplet' | 'incorrect_duration' | 'misplaced_rest' | 'missed_entrance' | 'missing_note' | 'extra_note' | 'uneven_dynamics';
 
 export type Finding = {
   kind: IssueKind;

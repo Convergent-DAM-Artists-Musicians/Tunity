@@ -66,3 +66,7 @@ Uploads are limited to 25 MB and the first 120 seconds. A recording alone return
 ## User profiles
 
 Open `/profile` or use **My profile** in the workspace. Guest access remains optional; signing in is only required for account-backed profile saves. See [PROFILE_DRAFT.md](PROFILE_DRAFT.md) for the draft UI, Firestore rules, and local emulator setup.
+
+### Rhythm analysis
+
+The workspace now defaults to Rhythm. This mode requires the CPU dependencies in `back-end/rhythm-analyzer/requirements.txt`, not Torch. Follow [the rhythm setup and evaluation guide](../back-end/rhythm-analyzer/README.md). Upload a reviewed structured score JSON for measure/beat feedback; without a reference the result contains acoustic boundaries only. The Torch setup above applies to Pitch mode.

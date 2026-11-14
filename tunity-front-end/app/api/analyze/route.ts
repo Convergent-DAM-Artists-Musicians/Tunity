@@ -38,6 +38,12 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const audio = form.get("audio");
     const reference = form.get("reference");
+    const mode = form.get("mode") ?? "rhythm";
+    if (mode !== "rhythm" && mode !== "pitch")
+      return Response.json(
+        { error: "Choose rhythm or pitch analysis." },
+        { status: 400 },
+      );
 
     if (!(audio instanceof File) || !audio.size || audio.size > MAX_UPLOAD) {
       return Response.json(
@@ -95,7 +101,8 @@ export async function POST(request: Request) {
       const refPath = join(folder, "reference.json");
       await writeFile(refPath, await reference.text());
       args.push(refPath);
-    }
+    } else args.push("");
+    args.push(mode);
 
     await access(args[0]);
 
@@ -112,7 +119,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          "Analysis could not complete. Check the recording and reference, and confirm that Node 24+, FFmpeg and the Python CREPE environment are configured. See the server log for details.",
+          "Analysis could not complete. Check the recording and reference, and confirm that Node 24+, FFmpeg and the Python environment for the selected analyzer are configured. See the server log for details.",
       },
       { status: 422 },
     );
