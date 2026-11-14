@@ -1,0 +1,68 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
+const lib=new URL('../lib/',import.meta.url).href,stub=new URL('./fixtures/firestore-memory.mjs',import.meta.url).href;
+const hooks=registerHooks({resolve(s,c,next){if(c.parentURL?.startsWith(lib)){if(s==='firebase/firestore'||s==='./practice-db')return{url:stub,shortCircuit:true};if(s.startsWith('./')&&!s.endsWith('.ts'))return next(s+'.ts',c);}return next(s,c)}});
+const { saveRecording,deleteRecording }=await import('../lib/audio-repository.ts');
+const { deleteSheet }=await import('../lib/sheet-repository.ts');
+const { ensureAccount,demoUpgrade,acceptNotice }=await import('../lib/account-repository.ts');
+const { state,Timestamp }=await import('./fixtures/firestore-memory.mjs');
+hooks.deregister();
+const uid='band',acc='accounts/band',rec=id=>`userProfiles/band/recordings/${id}`,sheet=id=>`userProfiles/band/sheetMusic/${id}`;
+const audio=()=>new File(['RIFF0000WAVEfmt '],'take.wav'),pdf=()=>new File(['%PDF-1.4\n%%EOF'],'score.pdf');
+test('first successful upload starts the clock; invalid PDF and deletion never reset it or quota',async()=>{
+ state.clear();await ensureAccount(uid);assert.equal(state.get(acc).trialStartedAt,null);
+ await assert.rejects(saveRecording(uid,audio(),'Bad',{kind:'new',file:new File(['bad'],'bad.pdf')}));
+ assert.equal(state.get(acc).uploadCount,0);assert.equal(state.get(acc).trialStartedAt,null);
+ const first=await saveRecording(uid,audio(),'First',{kind:'new',file:pdf()});
+ const start=state.get(acc).trialStartedAt;assert.equal(first.firstUpload,true);assert.equal(state.get(acc).uploadCount,1);
+ const reference=state.get(rec(first.id)).sheetMusic;
+ const second=await saveRecording(uid,audio(),'Second',{kind:'existing',...reference});
+ assert.equal(state.get(acc).sheetUses[reference.key],2);
+ assert.equal([...state.keys()].filter(k=>k.includes('/sheetMusic/')).length,1);
+ await assert.rejects(deleteSheet(uid,reference),/linked/);
+ await deleteRecording(uid,first.id);await deleteRecording(uid,second.id);
+ assert.equal(state.get(acc).sheetUses[reference.key],0);
+ await deleteSheet(uid,reference);assert.equal(state.has(sheet(reference.slot)),false);
+ assert.equal(state.get(acc).trialStartedAt,start);assert.equal(state.get(acc).uploadCount,2);
+ await assert.rejects(saveRecording(uid,audio(),'Stale',{kind:'existing',...reference}));
+ assert.equal(state.get(acc).uploadCount,2);
+});
+test('concurrent tabs cannot get a sixth free upload; demo permits more than five without deleting files',async()=>{
+ state.clear();await ensureAccount(uid);
+ for(let i=0;i<4;i++)await saveRecording(uid,audio(),'Take '+i);
+ const results=await Promise.allSettled([saveRecording(uid,audio(),'A'),saveRecording(uid,audio(),'B')]);
+ assert.equal(results.filter(r=>r.status==='fulfilled').length,1);
+ assert.equal(state.get(acc).uploadCount,5);
+ await demoUpgrade(uid);
+ for(let i=0;i<3;i++)await saveRecording(uid,audio(),'Premium '+i,{kind:'new',file:pdf()});
+ assert.equal(state.get(acc).uploadCount,8);
+ assert.equal([...state.keys()].filter(k=>k.includes('/recordings/')).length,8);
+ assert.equal([...state.keys()].filter(k=>k.includes('/sheetMusic/')).length,3);
+});
+test('legacy uploads migrate using earliest timestamp and keep reference deletion protected',async()=>{
+ state.clear();const key=crypto.randomUUID();
+ const reference={slot:'0',key,name:'old.pdf'};
+ state.set(rec('0'),{createdAt:new Timestamp(Date.now()-10000),sheetMusic:reference});
+ state.set(rec('1'),{createdAt:new Timestamp(Date.now()-20000),sheetMusic:reference});
+ state.set(sheet('0'),{key,name:'old.pdf'});
+ await ensureAccount(uid);assert.equal(state.get(acc).uploadCount,2);
+ assert.equal(state.get(acc).trialStartedAt.toMillis(),state.get(rec('1')).createdAt.toMillis());
+ await assert.rejects(deleteSheet(uid,reference),/linked/);
+ await deleteRecording(uid,'0');assert.equal(state.get(acc).sheetUses[key],1);
+ await deleteRecording(uid,'1');await deleteSheet(uid,reference);assert.equal(state.has(sheet('0')),false);
+});
+test('expired account rejects upload; demo upgrade restores it without rewriting trial history',async()=>{
+ state.clear();await ensureAccount(uid);const old=new Timestamp(Date.now()-31*86400000);
+ state.set(acc,{...state.get(acc),trialStartedAt:old,uploadCount:1});
+ await assert.rejects(saveRecording(uid,audio(),'Expired'),/ended/);
+ assert.equal(state.get(acc).uploadCount,1);
+ await demoUpgrade(uid);await saveRecording(uid,audio(),'Restored');
+ assert.equal(state.get(acc).trialStartedAt,old);assert.equal(state.get(acc).uploadCount,2);
+});
+test('onboarding validates band names and records acknowledgement without starting trial',async()=>{
+ state.clear();await ensureAccount(uid);await assert.rejects(acceptNotice(uid,''));
+ await acceptNotice(uid,'  Wind Ensemble  ');
+ assert.equal(state.get(acc).bandName,'Wind Ensemble');assert.ok(state.get(acc).noticeAcceptedAt);
+ assert.equal(state.get(acc).trialStartedAt,null);
+});

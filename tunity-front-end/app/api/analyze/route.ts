@@ -1,18 +1,22 @@
+import { practiceAccess } from "@/lib/server/practice-access";
 import { execFile } from "node:child_process";
 import { mkdtemp, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { promisify } from "node:util";
+import { MAX_AUDIO_BYTES, prepareAudio } from "@/lib/audio-model";
 
 // Node.js is the default runtime.
 // Explicit runtime config conflicts with this repo's Cache Components setting.
 export const maxDuration = 240;
 
 const run = promisify(execFile);
-const MAX_UPLOAD = 25 * 1024 * 1024;
+const MAX_UPLOAD = MAX_AUDIO_BYTES;
 let busy = false;
 
 export async function POST(request: Request) {
+  const denied = await practiceAccess(request);
+  if (denied) return denied;
   if (busy) {
     return Response.json(
       { error: "The analyzer is busy. Please try again shortly." },
@@ -25,7 +29,7 @@ export async function POST(request: Request) {
     MAX_UPLOAD + 1024 * 1024
   ) {
     return Response.json(
-      { error: "Please choose a recording under 25 MB." },
+      { error: "Please choose a recording up to 500 KiB." },
       { status: 413 },
     );
   }
@@ -38,15 +42,23 @@ export async function POST(request: Request) {
     const audio = form.get("audio");
     const reference = form.get("reference");
     const mode = form.get("mode") ?? "rhythm";
-    if (mode !== "rhythm" && mode !== "pitch")
-      return Response.json(
-        { error: "Choose rhythm or pitch analysis." },
-        { status: 400 },
-      );
+    if (mode !== "rhythm" && mode !== "pitch") return Response.json({error:"Choose rhythm or pitch analysis."},{status:400});
 
     if (!(audio instanceof File) || !audio.size || audio.size > MAX_UPLOAD) {
       return Response.json(
-        { error: "Choose a nonempty audio recording under 25 MB." },
+        { error: "Choose a nonempty audio recording up to 500 KiB." },
+        { status: 400 },
+      );
+    }
+
+    try {
+      const prepared = await prepareAudio(audio);
+      if (prepared.info.contentType.startsWith("video/")) throw new Error("Video uploads are supported for playback; analysis currently accepts audio only.");
+    } catch (error) {
+      return Response.json(
+        {
+          error: error instanceof Error ? error.message : "Invalid audio file.",
+        },
         { status: 400 },
       );
     }
