@@ -1,0 +1,15 @@
+{
+  "notes": [
+    { "id": "a4", "midi": 69, "startSec": 0.3, "endSec": 0.7, "dynamicsDb": 0 },
+    { "id": "b4", "midi": 71, "startSec": 0.95, "endSec": 1.35, "dynamicsDb": 0 },
+    { "id": "c5", "midi": 72, "startSec": 1.6, "endSec": 2.0, "dynamicsDb": 0 }
+  ],
+  "options": {
+    "tuningHz": 440,
+    "pitchToleranceCents": 25,
+    "timingToleranceMs": 70,
+    "missedEntranceMs": 250,
+    "dynamicsToleranceDb": 4,
+    "referenceOffsetSec": 0
+  }
+}

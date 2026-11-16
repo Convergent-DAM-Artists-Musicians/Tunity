@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<score-partwise version="4.0">
+  <work><work-title>Controlled trumpet timing test — concert pitch</work-title></work>
+  <part-list>
+    <score-part id="P1"><part-name>Trumpet sample — concert pitch</part-name></score-part>
+  </part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes>
+        <!-- Ten duration units per quarter; at quarter=60, each unit is 0.1 seconds. -->
+        <divisions>10</divisions>
+        <key><fifths>0</fifths></key>
+        <time><beats>5</beats><beat-type>4</beat-type></time>
+        <clef><sign>G</sign><line>2</line></clef>
+      </attributes>
+      <direction placement="above">
+        <direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>60</per-minute></metronome></direction-type>
+        <sound tempo="60"/>
+      </direction>
+      <!-- Initial 0.5-second silence. Durations encode the exact constructed fixture. -->
+      <note><rest/><duration>5</duration><voice>1</voice><staff>1</staff></note>
+      <!-- Sounding C5, MIDI 72: 0.5–0.9 seconds. -->
+      <note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><staff>1</staff></note>
+      <note><rest/><duration>6</duration><voice>1</voice><staff>1</staff></note>
+      <!-- Sounding D5, MIDI 74: 1.5–1.9 seconds. -->
+      <note><pitch><step>D</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><staff>1</staff></note>
+      <note><rest/><duration>6</duration><voice>1</voice><staff>1</staff></note>
+      <!-- Sounding E5, MIDI 76: 2.5–2.9 seconds. -->
+      <note><pitch><step>E</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><staff>1</staff></note>
+      <note><rest/><duration>6</duration><voice>1</voice><staff>1</staff></note>
+      <!-- Sounding C5, MIDI 72: 3.5–3.9 seconds. -->
+      <note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><staff>1</staff></note>
+      <!-- Trailing silence to the end of the five-second recording. -->
+      <note><rest/><duration>11</duration><voice>1</voice><staff>1</staff></note>
+      <barline location="right"><bar-style>light-heavy</bar-style></barline>
+    </measure>
+  </part>
+</score-partwise>

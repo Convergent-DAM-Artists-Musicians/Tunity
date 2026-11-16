@@ -1,0 +1,49 @@
+{
+  "title": "Untitled score",
+  "parts": [
+    {
+      "id": "P1",
+      "name": "Trumpet in Bb"
+    }
+  ],
+  "selectedPartId": "P1",
+  "notes": [
+    {
+      "id": "P1-m1-n1",
+      "midi": 72,
+      "startSec": 0,
+      "endSec": 1
+    },
+    {
+      "id": "P1-m1-n2",
+      "midi": 74,
+      "startSec": 1,
+      "endSec": 2
+    },
+    {
+      "id": "P1-m1-n3",
+      "midi": 76,
+      "startSec": 2,
+      "endSec": 3
+    },
+    {
+      "id": "P1-m1-n4",
+      "midi": 72,
+      "startSec": 3,
+      "endSec": 4
+    }
+  ],
+  "tempoMap": [
+    {
+      "beat": 0,
+      "bpm": 60
+    }
+  ],
+  "durationSec": 4,
+  "warnings": [
+    "Review the imported melody, tempo and synchronization cue before using it to grade a performance.",
+    "Printed dynamics have no universal dB mapping; dynamics scoring is disabled until relative targets are supplied."
+  ],
+  "source": "musicxml",
+  "requiresReview": true
+}
