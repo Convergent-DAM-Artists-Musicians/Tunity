@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { getFirebaseAuth } from "@/lib/firebase";
+import { PerformanceReview } from "@/components/rhythm/rhythm-review";
 import { useAuth } from "@/components/auth-provider";
 import { useBandAccount } from "@/components/accounts/account-provider";
 import { useAudio } from "@/components/audio/audio-provider";
@@ -10,36 +11,21 @@ import { AudioLibrary } from "@/components/audio/audio-library";
 import { SheetPicker } from "@/components/audio/sheet-music";
 import { AUDIO_ACCEPT, AUDIO_LIMIT_LABEL, validateAudioInfo } from "@/lib/audio-model";
 import { type SheetChoice } from "@/lib/sheet-model";
+import { loadProfile } from "@/lib/profile";
+import { sessionPractice, type AnalysisResult, type ReviewFocus } from "@/lib/studio/analysis";
+import { cleanNotes } from "@/lib/studio/compare";
+import { instrumentForProfile } from "@/lib/studio/etude";
+import { listStudio, putStudio } from "@/lib/studio/studio-db";
+import type { CoachResult, EtudeResult, PracticePiece, StudyGuide as Guide, StudySource, TakeMessage } from "@/lib/studio/types";
+import { CoachPanel } from "@/components/studio/coach-panel";
+import { TakeComparison, type TakeOption } from "@/components/studio/take-comparison";
+import { EtudeWriter, type EtudeSeed } from "@/components/studio/etude-writer";
+import { etudePiece, SessionPracticeCard } from "@/components/studio/session-practice";
+import { StudyGuide } from "@/components/studio/study-guide";
+import { PieceDetail, PracticePieces } from "@/components/studio/practice-pieces";
+import type { FocusRequest } from "@/components/studio/evidence";
 
-type Note = {
-  midi: number;
-  startSec: number;
-  endSec: number;
-  confidence: number;
-};
-
-type Result = {
-  rhythmEngine?: string;
-  alignment?: { confidence: number; tempoScale: number; ambiguous: boolean };
-  rhythmEvents?: {expectedId:string;kind:"note"|"rest";measure:string;beat:number;rhythmLabel:string;labelSource:string;targetStartSec:number;targetEndSec:number;actualStartSec?:number;actualEndSec?:number;timingErrorMs?:number}[];
-  rhythmGroups?: {id:string;label:string;status:string;message:string;confidence:number}[];
-  hasReference: boolean;
-  durationSec: number;
-  detectedNotes: Note[];
-  findings: {
-    kind: string;
-    message: string;
-    startSec: number;
-    confidence?: number;
-    status?: string;
-    measure?: string;
-    beat?: number;
-  }[];
-  quality: {
-    voicedConfidenceFraction: number;
-    warnings: string[];
-  };
-};
+type Result = AnalysisResult;
 
 type Project = {
   id: string;
@@ -50,11 +36,23 @@ type Project = {
   sample?: boolean;
   trashed?: boolean;
   result?: Result;
+  audioFile?: File;
+  createdAt?: string;
+  pieceId?: string;
+  coach?: CoachResult;
+  chat?: TakeMessage[];
 };
+
+/** A score preloaded into the upload dialog, e.g. from a practice piece. */
+type ReferencePreset = { file: File; title: string; pieceId?: string };
+
+const today = () => new Date().toLocaleDateString(undefined, { month: "short", day: "numeric" });
+const studyKey = (file: File) => `${file.name}:${file.size}:${file.lastModified}`;
+const isScoreFile = (file?: File | null) => !!file && /\.(xml|musicxml|mxl)$/i.test(file.name);
 
 type IconName =
   | "home" | "folder" | "trash" | "search" | "plus" | "sliders"
-  | "user" | "music" | "arrow" | "close" | "upload" | "check";
+  | "user" | "music" | "arrow" | "close" | "upload" | "check" | "spark";
 
 function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   const paths: Record<IconName, React.ReactNode> = {
@@ -70,6 +68,7 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
     close: <path d="m6 6 12 12M6 18 18 6" />,
     upload: <path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6" />,
     check: <path d="m5 12 4 4L19 6" />,
+    spark: <path d="M12 2c.7 5.8 4.2 9.3 10 10-5.8.7-9.3 4.2-10 10-.7-5.8-4.2-9.3-10-10 5.8-.7 9.3-4.2 10-10Z" fill="currentColor" stroke="none" />,
   };
 
   return (
@@ -113,8 +112,7 @@ const seeds: Project[] = [
   id: `sample-${i}`, name, semester, date, file, sample: true,
 }));
 
-const noteName = (midi: number) =>
-  `${["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"][Math.round(midi) % 12]}${Math.floor(Math.round(midi) / 12) - 1}`;
+
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>(seeds);
@@ -124,12 +122,11 @@ export default function Home() {
   const [sort, setSort] = useState("recent");
   const [showFilters, setShowFilters] = useState(false);
   const [prompt, setPrompt] = useState("");
-  const [modal, setModal] = useState<"upload" | "project" | "account" | null>(null);
+  const [modal, setModal] = useState<"upload" | "project" | "account" | "etude" | "piece" | "study" | null>(null);
   const [selected, setSelected] = useState<Project | null>(null);
   const [sheet, setSheet] = useState<SheetChoice>({ kind: "none" });
   const [runAnalysis, setRunAnalysis] = useState(false);
   const { upload: uploadAudio, loading: libraryLoading, error: libraryError } = useAudio();
-  const [analysisMode, setAnalysisMode] = useState("rhythm");
   const [audio, setAudio] = useState<File | null>(null);
   const [reference, setReference] = useState<File | null>(null);
   const [uploadSemester, setUploadSemester] = useState("Fall ’26");
@@ -140,21 +137,131 @@ export default function Home() {
   const { status, showUpgrade } = useBandAccount();
   const dialog = useRef<HTMLDialogElement>(null);
   const audioInput = useRef<HTMLInputElement>(null);
+  const [pieces, setPieces] = useState<PracticePiece[]>([]);
+  const [selectedPiece, setSelectedPiece] = useState<PracticePiece | null>(null);
+  const [preset, setPreset] = useState<ReferencePreset | null>(null);
+  const [focus, setFocus] = useState<ReviewFocus>();
+  const [etudeSeed, setEtudeSeed] = useState<EtudeSeed>();
+  const [studySource, setStudySource] = useState<StudySource | null>(null);
+  const [studyFromUpload, setStudyFromUpload] = useState(false);
+  const [studyCache, setStudyCache] = useState<Record<string, Guide>>({});
+  const [instrument, setInstrument] = useState(instrumentForProfile());
 
   useEffect(() => {
     if (modal && !dialog.current?.open) dialog.current?.showModal();
     if (!modal && dialog.current?.open) dialog.current.close();
   }, [modal]);
 
-  function openUpload() {
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    Promise.all([listStudio<Project>("projects", user.uid), listStudio<PracticePiece>("pieces", user.uid)])
+      .then(([savedProjects, savedPieces]) => {
+        if (!active) return;
+        savedProjects.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
+        setProjects((items) => [...savedProjects.filter((s) => !items.some((i) => i.id === s.id)), ...items]);
+        setPieces(savedPieces);
+      })
+      .catch(() => { if (active) setNotice("Saved analyses and practice pieces could not be loaded in this browser."); });
+    loadProfile(user.uid).then((p) => { if (active && p) setInstrument(instrumentForProfile(p.instrument)); }).catch(() => {});
+    return () => { active = false; };
+  }, [user]);
+
+  function saveProject(project: Project) {
+    if (!user || project.sample) return;
+    putStudio("projects", { ...project, uid: user.uid })
+      .catch(() => setNotice("This browser could not save the analysis. Download the JSON to keep it."));
+  }
+
+  function updateProject(id: string, patch: Partial<Project>) {
+    setProjects((items) => items.map((p) => {
+      if (p.id !== id) return p;
+      const next = { ...p, ...patch };
+      saveProject(next);
+      return next;
+    }));
+    setSelected((s) => (s?.id === id ? { ...s, ...patch } : s));
+  }
+
+  async function savePiece(piece: PracticePiece) {
+    await putStudio("pieces", piece);
+    setPieces((items) => [piece, ...items.filter((p) => p.id !== piece.id)]);
+    setSelectedPiece((s) => (s?.id === piece.id ? piece : s));
+  }
+
+  function openProject(project: Project) {
+    setSelected(project);
+    setFocus(undefined);
+    setModal("project");
+  }
+
+  function openUpload(withReference?: ReferencePreset) {
     if (!status.canUpload) { showUpgrade(); return; }
     setSheet({ kind: "none" });
     setAudio(null);
-    setReference(null);
-    setRunAnalysis(false);
+    setReference(withReference?.file ?? null);
+    setPreset(withReference ?? null);
+    setRunAnalysis(!!withReference);
+    if (withReference) setPrompt(`${withReference.title} · Take ${projects.filter((p) => p.pieceId && p.pieceId === withReference.pieceId).length + 1}`);
     setError("");
     setModal("upload");
   }
+
+  function generatePractice() {
+    setEtudeSeed(undefined);
+    setModal("etude");
+  }
+
+  function practiceForTake(project: Project, result: Result, coachWeaknesses?: string[]) {
+    const session = sessionPractice(result, project.name);
+    const piece = pieces.find((p) => p.id === project.pieceId);
+    const weaknesses = coachWeaknesses?.length ? coachWeaknesses : session.weaknesses;
+    setEtudeSeed({
+      session: project.name,
+      weaknesses,
+      context: session.context,
+      summary: session.summary,
+      prompt: weaknesses.length ? "" : "Build fluency with this piece’s key, motifs and phrasing.",
+      instrument: piece?.instrument,
+      keyName: piece?.keyName,
+      timeSignature: piece?.meter ?? session.meter,
+      tempoBpm: piece?.tempoBpm ?? session.scoreBpm,
+      collection: project.name.slice(0, 40),
+    });
+    setModal("etude");
+  }
+
+  function openStudy(source: StudySource, fromUpload: boolean) {
+    setStudySource(source);
+    setStudyFromUpload(fromUpload);
+    setModal("study");
+  }
+
+  async function saveEtude(etude: EtudeResult, collection: string, request: string) {
+    if (!user) throw new Error("Sign in to save practice pieces.");
+    const piece = etudePiece(etude, collection, request, user.uid);
+    await savePiece(piece);
+    setView("Pieces");
+    setSelectedPiece(piece);
+    setModal("piece");
+    setNotice(`“${piece.title}” saved to Practice pieces.`);
+  }
+
+  async function saveStudiedScore(source: StudySource, guide: Guide) {
+    if (!user) throw new Error("Sign in to save practice pieces.");
+    const piece: PracticePiece = {
+      id: crypto.randomUUID(), uid: user.uid, title: guide.facts.title !== "Untitled score" ? guide.facts.title : source.title,
+      createdAt: new Date().toISOString(), source: "score", collection: "Scores", fileName: source.file.name,
+      file: source.file, xml: /\.(xml|musicxml)$/i.test(source.file.name) ? await source.file.text() : undefined,
+      reference: guide.reference, instrument: guide.facts.partName, tempoBpm: guide.facts.tempoBpm, meter: guide.facts.meter, study: guide,
+    };
+    await savePiece(piece);
+    setStudySource({ ...source, pieceId: piece.id });
+    if (studyFromUpload && reference === source.file) setPreset({ file: source.file, title: piece.title, pieceId: piece.id });
+  }
+
+  const requestFocus = (f: FocusRequest) => setFocus({ ...f, nonce: Date.now() });
+  const pieceFile = (piece: PracticePiece) => new File([piece.file], piece.fileName, { type: piece.file.type || "application/xml" });
 
   function chooseAudio(file?: File) {
     if (!file) return;
@@ -186,7 +293,6 @@ export default function Home() {
         try {
           const form = new FormData();
           form.append("audio", audio);
-          form.append("mode", analysisMode);
           if (reference) form.append("reference", reference);
           const response = await fetch("/api/analyze", {
             method: "POST",
@@ -210,12 +316,15 @@ export default function Home() {
           name: prompt.trim() || audio.name.replace(/\.[^.]+$/, ""),
           semester: uploadSemester,
           file: audio.name,
-          date: "Just now",
+          date: today(),
+          createdAt: new Date().toISOString(),
+          pieceId: preset?.pieceId,
           result: data,
+          audioFile: audio,
         };
         setProjects((items) => [project, ...items]);
-        setSelected(project);
-        setModal("project");
+        saveProject(project);
+        openProject(project);
         setNotice(
           user
             ? "Recording saved to your profile and analyzed."
@@ -230,8 +339,10 @@ export default function Home() {
               : "Recording saved to your band.",
           );
       }
+
       setAudio(null);
       setReference(null);
+      setPreset(null);
       setSheet({ kind: "none" });
       setPrompt("");
       setRunAnalysis(false);
@@ -252,9 +363,7 @@ export default function Home() {
 
   function trashProject() {
     if (!selected) return;
-    setProjects(items => items.map(p =>
-      p.id === selected.id ? { ...p, trashed: !p.trashed } : p
-    ));
+    updateProject(selected.id, { trashed: !selected.trashed });
     setNotice(selected.trashed ? "Project restored." : "Project moved to Trash.");
     setModal(null);
   }
@@ -268,20 +377,30 @@ export default function Home() {
   if (sort === "name") visible.sort((a, b) => a.name.localeCompare(b.name));
   const result = selected?.result;
 
+  const developmentExamples = process.env.NODE_ENV === "development" && user && view !== "Trash"
+    ? [
+        { id: "05-verified", name: "Practice Clip" },
+      ].filter(example => `${example.name} rhythm pitch articulation dynamics tempo`.toLowerCase().includes(search.toLowerCase()))
+    : [];
+  const displayedCount = visible.length + developmentExamples.length;
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <Link className="sidebar-brand" href="/workspace" aria-label="Tunity home"><Brand /></Link>
 
         <nav aria-label="Main navigation">
-          {(["Home", "Files", "Trash"] as const).map((item, i) => (
+          {(["Home", "Pieces", "Files", "Trash"] as const).map((item, i) => (
             <button key={item} className={`nav-item ${view === item ? "active" : ""}`}
               aria-current={view === item ? "page" : undefined}
               onClick={() => { setView(item); setSearch(""); setNotice(""); }}>
-              <Icon name={(["home", "folder", "trash"] as const)[i]} />
-              <span>{item}</span>
+              <Icon name={(["home", "spark", "folder", "trash"] as const)[i]} />
+              <span>{item === "Pieces" ? "Practice pieces" : item}</span>
               {item === "Files" && (
                 <span className="nav-count">{projects.filter(p => !p.trashed).length}</span>
+              )}
+              {item === "Pieces" && (
+                <span className="nav-count">{pieces.filter(p => !p.trashed).length}</span>
               )}
             </button>
           ))}
@@ -331,24 +450,39 @@ export default function Home() {
 
           <div className="hero-footer">
             <span>Record. Reflect. Find your rhythm.</span>
-            <button onClick={openUpload}>Upload a recording <Icon name="arrow" size={16} /></button>
+            <div className="hero-actions">
+              <button className="generate-project" onClick={generatePractice}><Icon name="spark" size={15} /> Generate practice</button>
+              <button onClick={() => openUpload()}>Upload a recording <Icon name="arrow" size={16} /></button>
+            </div>
           </div>
         </section>
 
-        <AudioLibrary onUpload={openUpload} />
+        <AudioLibrary onUpload={() => openUpload()} />
         {notice && <p className="audio-library-status" role="status">{notice}</p>}
-        <section className="workspace" aria-label="Project library">
+        <section className="workspace" aria-label={view === "Pieces" ? "Practice pieces" : "Project library"}>
+          {view === "Pieces" ? (
+            <PracticePieces pieces={pieces}
+              takeCounts={Object.fromEntries(pieces.map((p) => [p.id, projects.filter((t) => t.pieceId === p.id && !t.trashed).length]))}
+              onOpen={(piece) => { setSelectedPiece(piece); setModal("piece"); }}
+              onWrite={generatePractice}
+              onStudy={(file) => openStudy({ file, title: file.name.replace(/\.[^.]+$/, "") }, false)} />
+          ) : (<>
           <div className="section-title">
             <div>
               <span className="eyebrow">YOUR WORKSPACE</span>
               <h2>
                 {view === "Trash" ? "Trash" : view === "Files" ? "Your files" : "Your projects"}
-                <span>{visible.length.toString().padStart(2, "0")}</span>
+                <span>{displayedCount.toString().padStart(2, "0")}</span>
               </h2>
             </div>
-            <button className="new-project" onClick={openUpload}>
-              <Icon name="plus" size={17} /> New project
-            </button>
+            <div className="section-actions">
+              <button className="new-project generate-project" onClick={generatePractice}>
+                <Icon name="spark" size={17} /> Generate practice
+              </button>
+              <button className="new-project" onClick={() => openUpload()}>
+                <Icon name="plus" size={17} /> New project
+              </button>
+            </div>
           </div>
 
           <div className="toolbar">
@@ -390,13 +524,25 @@ export default function Home() {
             <span>{view === "Trash" ? "Restore a project whenever you’re ready." : "A new perspective on every performance."}</span>
             <span><i />{projects.some(p => !p.sample) ? "Session workspace" : "Sample projects"}</span>
           </div>
-          <p className="sr-only" role="status">{notice || `${visible.length} projects shown`}</p>
+          <p className="sr-only" role="status">{notice || `${displayedCount} projects shown`}</p>
 
-          {visible.length ? (
+          {displayedCount ? (
             <div className={`project-grid ${view === "Files" ? "file-list" : ""}`}>
+              {developmentExamples.map(example => (
+                <Link key={example.id} className="project-card development-folder"
+                  href={`/dev/performance?sample=${example.id}`}>
+                  <div className="card-top">
+                    <span className="project-symbol tone-0"><Icon name="folder" size={21} /></span>
+                    <span className="card-arrow"><Icon name="arrow" size={17} /></span>
+                  </div>
+                  <h3>{example.name}</h3>
+                  <div className="card-bottom"><span>Analysis &amp; recording</span><span>Sample</span></div>
+                  <div className="card-accent" />
+                </Link>
+              ))}
               {visible.map((project, i) => (
                 <button key={project.id} className="project-card"
-                  onClick={() => { setSelected(project); setModal("project"); }}>
+                  onClick={() => openProject(project)}>
                   <div className="card-top">
                     <span className={`project-symbol tone-${i % 4}`}>
                       <Icon name={view === "Files" ? "music" : "folder"} size={21} />
@@ -417,9 +563,11 @@ export default function Home() {
               <Icon name={view === "Trash" ? "trash" : "folder"} size={35} />
               <h3>{search ? "No matching projects" : view === "Trash" ? "A clean slate" : "Room for something new"}</h3>
               <p>{search ? "Try a different name or semester." : view === "Trash" ? "Projects you remove will appear here." : "Upload a recording to start this chapter."}</p>
-              {view !== "Trash" && <button className="primary-button" onClick={openUpload}>Upload a recording</button>}
+              {view !== "Trash" && <button className="primary-button" onClick={() => openUpload()}>Upload a recording</button>}
             </div>
           )}
+
+          </>)}
 
           <footer className="workspace-footer">
             <Brand /><span>Made for the moments between the notes.</span>
@@ -428,7 +576,7 @@ export default function Home() {
         </section>
       </main>
 
-      <dialog ref={dialog} className="project-dialog" aria-labelledby="dialog-title"
+      <dialog ref={dialog} className={`project-dialog ${modal === "project" && selected?.result ? "rhythm-dialog" : ""} ${modal === "etude" || modal === "piece" || modal === "study" ? "studio-dialog" : ""}`} aria-labelledby="dialog-title"
         onCancel={e => { if (busy) e.preventDefault(); else setModal(null); }}
         onClick={e => { if (e.target === dialog.current && !busy) setModal(null); }}>
         <div className="dialog-content">
@@ -436,7 +584,7 @@ export default function Home() {
             disabled={busy} onClick={() => setModal(null)}><Icon name="close" /></button>
 
           {modal === "upload" && (
-            <form onSubmit={analyze}>
+            <form className="upload-form" onSubmit={analyze}>
               <span className="eyebrow">MAKE ROOM FOR PROGRESS</span>
               <h2 id="dialog-title">Let’s hear it.</h2>
               <p className="dialog-intro">
@@ -494,7 +642,7 @@ export default function Home() {
                   disabled={busy || (!!audio && (audio.type.startsWith("video/") || /\.(mp4|mov)$/i.test(audio.name)))}
                   onChange={(e) => setRunAnalysis(e.target.checked)}
                 />{" "}
-                Also analyze audio (choose Rhythm or Pitch below; PDF uploads are not sent for analysis)
+                Analyze this performance · pitch, rhythm and expression together
               </label>
               <div className="upload-options">
                 <label className="field-label">
@@ -509,30 +657,41 @@ export default function Home() {
                     ))}
                   </select>
                 </label>
-                <label className="field-label">Analysis mode
-                  <select value={analysisMode} disabled={busy || !runAnalysis} onChange={e => setAnalysisMode(e.target.value)}>
-                    <option value="rhythm">Rhythm</option><option value="pitch">Pitch (in development)</option>
-                  </select>
-                </label>
-                <label className="field-label">
-                  Advanced analysis JSON <span className="optional">optional</span>
-                  <input
-                    type="file"
-                    accept=".json,application/json"
-                    disabled={busy || !runAnalysis}
-                    onChange={(e) => setReference(e.target.files?.[0] || null)}
-                  />
-                </label>
+                {preset ? (
+                  <div className="field-label">
+                    Reference score
+                    <span className="reference-chip">
+                      <span>♪ {preset.title}</span>
+                      <button type="button" className="text-button" disabled={busy}
+                        onClick={() => { setPreset(null); setReference(null); }}>Change</button>
+                    </span>
+                  </div>
+                ) : (
+                  <label className="field-label">
+                    Reference score <span className="optional">optional</span>
+                    <input
+                      type="file"
+                      accept=".json,.xml,.musicxml,.mxl"
+                      disabled={busy || !runAnalysis}
+                      onChange={(e) => setReference(e.target.files?.[0] || null)}
+                    />
+                  </label>
+                )}
               </div>
+              {isScoreFile(reference) && (
+                <p className="upload-help study-link">
+                  <button type="button" className="text-button" disabled={busy}
+                    onClick={() => {
+                      const piece = pieces.find((p) => p.id === preset?.pieceId);
+                      openStudy({ file: reference!, title: preset?.title || prompt.trim() || reference!.name.replace(/\.[^.]+$/, ""), pieceId: piece?.id }, true);
+                    }}>
+                    <Icon name="spark" size={14} /> Get a study guide before recording: hard passages, breathing points and a starting tempo
+                  </button>
+                </p>
+              )}
 
               <p className="upload-help">
-                Audio or video, up to {AUDIO_LIMIT_LABEL}. PDF sheet music is optional and separate from analysis. The advanced JSON
-                format is:
-                <code>
-                  {
-                    '{ "notes": [{ "id": "a4", "midi": 69, "startSec": 0.1, "endSec": 0.9 }] }'
-                  }
-                </code>
+                Audio or video, up to {AUDIO_LIMIT_LABEL}. Analysis accepts audio and an optional reviewed MusicXML, MXL or JSON score. PDF uploads are saved for viewing; their notes are not automatically extracted here.
               </p>
               {error && (
                 <p className="error-message" role="alert">
@@ -575,7 +734,7 @@ export default function Home() {
               <p className="privacy-note" role="status">
                 {busy
                   ? "Saving your file; optional model analysis can take up to 3 minutes. Keep this tab open."
-                  : "Recordings and sheet music are saved to your shared band account. Analysis results currently remain session-only."}
+                  : "Recordings and sheet music are saved to your shared band account. Analysis results and practice pieces are saved in this browser."}
               </p>
             </form>
           )}
@@ -588,7 +747,7 @@ export default function Home() {
 
               {result ? (
                 <>
-                  <div className="result-badge"><i /> {result.rhythmEngine ? "Rhythm analysis" : "Analyzed with CREPE"}
+                  <div className="result-badge"><i /> Performance analysis
                     <span>{result.hasReference ? "Reference comparison" : "Note detection"}</span>
                   </div>
                   <div className="result-stats">
@@ -597,60 +756,34 @@ export default function Home() {
                     <div><strong>{Math.round(result.quality.voicedConfidenceFraction * 100)}<small>%</small></strong><span>{result.rhythmEngine ? "Boundary evidence" : "Confident voiced frames"}</span></div>
                   </div>
 
-                  <h3 className="result-heading">{result.hasReference ? "Practice feedback" : "Your detected notes"}</h3>
-                  {result.hasReference && (
-                    result.findings.length ? (
-                      <ul className="findings">
-                        {result.findings.map((f, i) => (
-                          <li key={i}>
-                            <span>{f.startSec.toFixed(2)}s</span>
-                            <div><strong>{f.kind.replaceAll("_", " ")}</strong><p>{f.message}</p>{f.measure && <small>Measure {f.measure} · beat {f.beat} · </small>}{f.confidence !== undefined && <small>{f.status === "review" ? "Review suggested · " : ""}{Math.round(f.confidence * 100)}% evidence</small>}</div>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="success-message">
-                        <Icon name="check" size={18} />
-                        No issues were flagged by this analyzer. Review confidence warnings below.
-                      </p>
-                    )
-                  )}
+                  <SessionPracticeCard name={selected.name} findingCount={result.findings.length}
+                    onGenerate={() => practiceForTake(selected, result, selected.coach?.targets.map((t) => `${t.title}: ${t.observation}`))} />
 
-                  {!!result.rhythmEvents?.length && (
-                    <section aria-label="Written rhythm and performed timing">
-                      <h3 className="result-heading">Your rhythm, note by note</h3>
-                      <p className="upload-help">Written values come from your reference score. Played lengths and timing differences come from the recording. A quarter note is one beat in 4/4; the beat unit depends on the meter.</p>
-                      <div className="rhythm-table-scroll" tabIndex={0}>
-                        <table className="rhythm-table">
-                          <thead><tr><th scope="col">Measure · beat</th><th scope="col">Written rhythm</th><th scope="col">Target length</th><th scope="col">Played length</th><th scope="col">Onset timing</th></tr></thead>
-                          <tbody>{result.rhythmEvents.map(e => (
-                            <tr key={e.expectedId}>
-                              <td>{e.measure} · {Number(e.beat.toFixed(3))}</td>
-                              <td>{e.rhythmLabel}</td>
-                              <td>{(e.targetEndSec-e.targetStartSec).toFixed(3)}s</td>
-                              <td>{e.kind === "rest" ? "Expected silence" : e.actualStartSec === undefined ? "Not matched" : `${(e.actualEndSec!-e.actualStartSec).toFixed(3)}s`}</td>
-                              <td>{e.timingErrorMs === undefined ? "—" : Math.abs(e.timingErrorMs) < .5 ? "On target" : `${Math.round(Math.abs(e.timingErrorMs))} ms ${e.timingErrorMs > 0 ? "late" : "early"}`}</td>
-                            </tr>
-                          ))}</tbody>
-                        </table>
-                      </div>
-                    </section>
-                  )}
-                  {!!result.rhythmGroups?.length && (
-                    <section aria-label="Tuplet timing">
-                      <h3 className="result-heading">Triplets and other tuplets</h3>
-                      <ul className="findings">{result.rhythmGroups.map(g => <li key={g.id}><div><strong>{g.label} · {g.status === "within_tolerance" ? "within tolerance" : g.status.replaceAll("_", " ")}</strong><p>{g.message}</p><small>{Math.round(g.confidence*100)}% evidence</small></div></li>)}</ul>
-                    </section>
-                  )}
+                  <CoachPanel key={`coach-${selected.id}`} title={selected.name} result={result}
+                    coach={selected.coach} chat={selected.chat}
+                    onCoach={(coach) => updateProject(selected.id, { coach })}
+                    onChat={(chat) => updateProject(selected.id, { chat })}
+                    onFocus={requestFocus}
+                    onEtude={(weaknesses) => practiceForTake(selected, result, weaknesses)} />
 
-                  <div className="note-chips">
-                    {result.detectedNotes.slice(0, 40).map((n, i) => (
-                      <span key={i}>{result.rhythmEngine ? `Note ${i + 1}` : noteName(n.midi)}<small>{n.startSec.toFixed(2)}s</small></span>
-                    ))}
-                  </div>
-                  {result.detectedNotes.length > 40 && (
-                    <p className="upload-help">Showing the first 40 notes. Download the full result below.</p>
+                  <PerformanceReview key={selected.id}
+                    events={result.rhythmEvents?.length ? result.rhythmEvents : result.detectedNotes.map((n, i) => ({expectedId:`detected-${i}`,kind:"note" as const,measure:"Recording",beat:i+1,rhythmLabel:"Detected sound",targetStartSec:n.startSec,targetEndSec:n.endSec,actualStartSec:n.startSec,actualEndSec:n.endSec}))}
+                    findings={result.findings} groups={result.rhythmGroups} audio={selected.audioFile} alignment={result.alignment}
+                    insights={result.insights} hasReference={result.hasReference} focus={focus}
+                    onRetry={() => {
+                      const piece = pieces.find((p) => p.id === selected.pieceId);
+                      if (piece) openUpload({ file: pieceFile(piece), title: piece.title, pieceId: piece.id });
+                      else { openUpload(); setPrompt(selected.name); setRunAnalysis(true); }
+                    }}/>
+
+                  {!selected.sample && (
+                    <TakeComparison key={`compare-${selected.id}`} allowUpload
+                      current={{ id: selected.id, name: selected.name, date: selected.date, createdAt: selected.createdAt, result }}
+                      others={projects.filter((p): p is Project & { result: Result } => p.id !== selected.id && !p.trashed && !!p.result)
+                        .map((p): TakeOption => ({ id: p.id, name: p.name, date: p.date, createdAt: p.createdAt, result: p.result }))}
+                      onFocus={requestFocus} />
                   )}
+                  {!result.detectedNotes.length && <p className="upload-help">No reliable notes were detected. Check the recording level and try an isolated melody.</p>}
                   {result.quality.warnings.map((w, i) => <p className="analysis-warning" key={i}>{w}</p>)}
 
                   <button className="secondary-button" onClick={() => {
@@ -674,7 +807,7 @@ export default function Home() {
               )}
 
               <div className="dialog-bottom">
-                <span>{selected.sample ? "Sample · no audio attached" : "Session only · download to keep results"}</span>
+                <span>{selected.sample ? "Sample · no audio attached" : "Saved in this browser · download JSON to share"}</span>
                 <button className="text-button" onClick={trashProject}>
                   <Icon name={selected.trashed ? "folder" : "trash"} size={16} />
                   {selected.trashed ? "Restore project" : "Move to Trash"}
@@ -684,6 +817,45 @@ export default function Home() {
           )}
 
           {modal === "account" && <><h2 id="dialog-title">Your band account</h2><p className="dialog-intro">{user?.email}</p><p>Recordings, sheet music, progress, and feedback are shared by everyone signed in to this band account.</p><Link className="primary-button" href="/profile">Band account and sign-in settings</Link><button className="secondary-button full-width" disabled={!!authBusy} onClick={() => void logOut()}>Sign out</button>{authError && <p role="alert">{authError}</p>}</>}
+
+          {modal === "etude" && (
+            <EtudeWriter key={JSON.stringify(etudeSeed ?? {})} seed={etudeSeed} defaultInstrument={instrument}
+              collections={[...new Set(["Etudes", ...pieces.filter((p) => !p.trashed).map((p) => p.collection)])]}
+              onSave={saveEtude} />
+          )}
+
+          {modal === "piece" && selectedPiece && (
+            <PieceDetail key={selectedPiece.id} piece={selectedPiece}
+              collections={[...new Set(["Etudes", "Scores", ...pieces.map((p) => p.collection)])]}
+              takes={projects.filter((p) => p.pieceId === selectedPiece.id && !p.trashed && p.result)
+                .map((p) => ({ id: p.id, name: p.name, date: p.date, clean: cleanNotes(p.result!) }))}
+              onRecord={() => openUpload({ file: pieceFile(selectedPiece), title: selectedPiece.title, pieceId: selectedPiece.id })}
+              onStudy={() => openStudy({ file: pieceFile(selectedPiece), title: selectedPiece.title, pieceId: selectedPiece.id }, false)}
+              onUpdate={(patch) => {
+                void savePiece({ ...selectedPiece, ...patch }).then(() => {
+                  if (patch.trashed !== undefined) { setModal(null); setNotice(patch.trashed ? "Piece removed. Restore it from Removed." : "Piece restored."); }
+                }, () => setNotice("This browser could not save the piece."));
+              }}
+              onOpenTake={(id) => { const take = projects.find((p) => p.id === id); if (take) openProject(take); }} />
+          )}
+
+          {modal === "study" && studySource && (() => {
+            const piece = pieces.find((p) => p.id === studySource.pieceId);
+            return (
+              <StudyGuide key={studyKey(studySource.file)} source={studySource} instrument={piece?.instrument ?? instrument}
+                cached={piece?.study ?? studyCache[studyKey(studySource.file)]}
+                onResult={(guide) => {
+                  setStudyCache((c) => ({ ...c, [studyKey(studySource.file)]: guide }));
+                  if (piece) void savePiece({ ...piece, study: guide }).catch(() => {});
+                }}
+                onBack={studyFromUpload ? () => setModal("upload") : undefined}
+                onSave={piece ? undefined : (guide) => saveStudiedScore(studySource, guide)}
+                onRecord={() => {
+                  if (studyFromUpload) setModal("upload");
+                  else openUpload({ file: studySource.file, title: studySource.title, pieceId: studySource.pieceId });
+                }} />
+            );
+          })()}
         </div>
       </dialog>
     </div>

@@ -2,7 +2,10 @@ import { getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { TRIAL_MS } from "../account-model";
 // Token verification needs the public Firebase signing keys, not a service-account key file.
-export async function practiceAccess(request: Request): Promise<Response | null> {
+export async function practiceAccess(
+  request: Request,
+  { allowUnstartedTrial = false }: { allowUnstartedTrial?: boolean } = {},
+): Promise<Response | null> {
   const match = request.headers.get("authorization")?.match(/^Bearer (\S+)$/);
   if (!match) return Response.json({error:"Sign in to use the analyzer."},{status:401});
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "tunity-e6b39";
@@ -24,8 +27,17 @@ export async function practiceAccess(request: Request): Promise<Response | null>
     });
     if (!response.ok) return Response.json({error:"Your band account could not be loaded."},{status:403});
     const data = (await response.json()).fields;
-    const plan = data?.plan?.stringValue, start = Date.parse(data?.trialStartedAt?.timestampValue || "");
-    if (plan !== "demo" && !(plan === "trial" && Number.isFinite(start) && Date.now() < start + TRIAL_MS))
+    const plan = data?.plan?.stringValue;
+    const start = Date.parse(data?.trialStartedAt?.timestampValue || "");
+    const unstartedTrial =
+      plan === "trial" &&
+      data?.trialStartedAt?.nullValue === null &&
+      allowUnstartedTrial;
+    const activeTrial =
+      plan === "trial" &&
+      Number.isFinite(start) &&
+      Date.now() < start + TRIAL_MS;
+    if (plan !== "demo" && !unstartedTrial && !activeTrial)
       return Response.json({error:"Start your trial with an upload, or upgrade if your trial has ended."},{status:403});
     return null;
   } catch { return Response.json({error:"Account verification is temporarily unavailable. Try again."},{status:503}); }

@@ -11,6 +11,9 @@ type Context = { account: BandAccount; status: ReturnType<typeof accountStatus>;
 const AccountContext = createContext<Context | null>(null);
 export function AccountGate({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
+  const path = usePathname();
+  // Read-only local evaluation fixture; upload/API access remains authenticated.
+  if (process.env.NODE_ENV === "development" && path === "/dev/performance") return <>{children}</>;
   if (loading) return <main className="account-center" role="status">Checking your sign-in…</main>;
   if (!user) return <WelcomeRedirect/>;
   return <BandSession key={user.uid} uid={user.uid}>{children}</BandSession>;

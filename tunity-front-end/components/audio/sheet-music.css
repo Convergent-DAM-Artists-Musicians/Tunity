@@ -1,7 +1,16 @@
-.sheet-picker { border: 1px solid #65503a; border-radius: 8px; padding: 15px; margin: 18px 0; min-width: 0; }
-.sheet-picker legend { padding: 0 6px; color: #e4c7aa; font-size: 13px; }
+.sheet-picker { border: 1px solid #65503a; border-radius: 8px; padding: 12px 14px 10px; margin: 10px 0 12px; min-width: 0; }
+.sheet-picker legend { padding: 0 6px; color: #e4c7aa; font-size: 12px; }
 .sheet-picker select { width: 100%; max-width: 100%; background: #292624; color: #ead3bb; border: 1px solid #77614c; border-radius: 5px; padding: 10px; }
-.sheet-picker .field-label { margin-top: 12px; }
+.sheet-picker .field-label { gap: 6px; margin: 0 0 8px; }
+.sheet-picker > select { margin-bottom: 10px; }
+.sheet-picker .upload-help {
+  margin: 0 0 6px;
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sheet-picker .upload-help + .upload-help { margin-bottom: 2px; }
 .sheet-library { margin-top: 24px; padding-top: 20px; border-top: 1px solid #65503a; }
 .sheet-library h3 { color: #ead3bb; font-size: 16px; }
 .sheet-library h3 span { font-size: 11px; color: #baa087; }

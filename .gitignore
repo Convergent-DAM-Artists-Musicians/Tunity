@@ -35,3 +35,7 @@ tunity-profile-backup-*/
 .DS_Store
 # Reproducibly downloaded/generated rhythm evaluation media
 back-end/rhythm-analyzer/evaluation/data/
+
+# Regenerated performance evaluation results/media
+back-end/performance-analyzer/evaluation/results/
+back-end/performance-analyzer/evaluation/data/
