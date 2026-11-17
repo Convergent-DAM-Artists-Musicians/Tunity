@@ -57,10 +57,12 @@ export type ImportedScore = {
   requiresReview: boolean;
 };
 type BeatNote = { id: string; midi: number; start: number; end: number; voice: string; staff: string; tieStart: boolean; tieStop: boolean; measure: string; beat: number; notation: RhythmEvent['notation']; tiedIds: string[] };
-type ParsedPart = { notes: BeatNote[]; rests: (RhythmEvent & {voice: string; staff: string})[]; meters: RhythmScore['meterMap']; tempos: { beat: number; bpm: number }[]; dynamics: { beat: number; mark: string }[]; duration: number; warnings: Set<string> };
+type ParsedPart = { notes: BeatNote[]; rests: (RhythmEvent & {voice: string; staff: string})[]; meters: RhythmScore['meterMap']; tempos: { beat: number; bpm: number }[]; dynamics: { beat: number; mark: string }[]; hairpins: NonNullable<RhythmScore["hairpins"]>; duration: number; warnings: Set<string> };
 
 function parsePart(part: XmlNode): ParsedPart {
-  const result: ParsedPart = { notes: [], rests: [], meters: [], tempos: [], dynamics: [], duration: 0, warnings: new Set() };
+  const result: ParsedPart = { notes: [], rests: [], meters: [], tempos: [], dynamics: [], hairpins: [], duration: 0, warnings: new Set() };
+  const activeSlurs = new Set<string>();
+  const openHairpins = new Map<string, { startBeat: number; kind: "crescendo" | "diminuendo" }>();
   let divisions = 0, timeBeats = 0, transpose = 0, measureStart = 0;
   let noteNumber = 0, restNumber = 0, numerator = 4, denominator = 4;
   for (const measure of children(part, 'measure')) {
@@ -116,7 +118,18 @@ function parsePart(part: XmlNode): ParsedPart {
             const marks = children(n);
             if (marks.length === 1) result.dynamics.push({ beat, mark: name(marks[0])! });
           }
-          if (['wedge', 'words', 'pedal', 'octave-shift'].includes(name(n) ?? '')) {
+          if (name(n) === 'wedge') {
+            const key = `${value(e, 'staff') || '1'}:${n.attributes?.number || '1'}`;
+            const kind = n.attributes?.type;
+            if (kind === 'crescendo' || kind === 'diminuendo') openHairpins.set(key, {startBeat: beat, kind});
+            else if (kind === 'stop') {
+              const start = openHairpins.get(key);
+              if (start && beat > start.startBeat) result.hairpins.push({...start, endBeat: beat});
+              else result.warnings.add('Unmatched hairpin requires manual review.');
+              openHairpins.delete(key);
+            }
+          }
+          if (['words', 'pedal', 'octave-shift'].includes(name(n) ?? '')) {
             if (name(n) === 'octave-shift') throw new Error('Resolve octave-shift directions into explicit pitches before importing.');
             result.warnings.add('Text, pedal, and crescendo/diminuendo directions need manual performance review.');
           }
@@ -135,8 +148,15 @@ function parsePart(part: XmlNode): ParsedPart {
         const modification = child(e, 'time-modification');
         const notations = child(e, 'notations');
         const arts = notations && child(notations, 'articulations');
+        for (const slur of notations ? children(notations, 'slur') : []) {
+          const key = `${value(e, 'staff') || '1'}:${value(e, 'voice') || '1'}:${slur.attributes?.number || '1'}`;
+          if (slur.attributes?.type === 'stop') activeSlurs.delete(key);
+          if (slur.attributes?.type === 'start') activeSlurs.add(key);
+        }
+        const slurPrefix = `${value(e, 'staff') || '1'}:${value(e, 'voice') || '1'}:`;
         const notation: RhythmEvent['notation'] = { type: value(e, 'type') || undefined, dots: children(e, 'dot').length,
           ...(modification ? {actualNotes: positive(value(modification, 'actual-notes'), 'actual notes'), normalNotes: positive(value(modification, 'normal-notes'), 'normal notes')} : {}),
+          slurToNext: [...activeSlurs].some(key => key.startsWith(slurPrefix)),
           slur: !!notations && children(notations, 'slur').length > 0,
           articulation: [...(arts ? children(arts).map(a => name(a)!) : []), ...(notations && child(notations, 'fermata') ? ['fermata'] : [])] };
         if (child(e, 'rest')) {
@@ -244,14 +264,14 @@ export function parseMusicXml(xml: string, options: ScoreImportOptions = {}): Im
   const selectedStream = selected[0];
   const rhythmEvents: RhythmEvent[] = [
     ...joined.map(n => ({id:n.id, kind:'note' as const, midi:n.midi, startBeat:n.start, durationBeats:n.end-n.start,
-      measure:n.measure, beat:n.beat, notation:n.notation, tiedIds:n.tiedIds})),
+      dynamicsDb: notes.find(e => e.id === n.id)?.dynamicsDb, measure:n.measure, beat:n.beat, notation:n.notation, tiedIds:n.tiedIds})),
     ...parsed.rests.filter(r => r.voice===selectedStream.voice && r.staff===selectedStream.staff)
       .map(({voice,staff,...rest})=>rest),
   ].sort((a,b)=>a.startBeat-b.startBeat);
   const meterMap = parsed.meters.length ? parsed.meters : [{beat:0,numerator:4,denominator:4}];
   if (!parsed.meters.length) parsed.warnings.add('No meter found; rhythm positions assume 4/4. Confirm before grading.');
   if (meterMap[0].beat!==0) throw new Error('An initial meter is required for rhythm analysis.');
-  const rhythm: RhythmScore = {events:rhythmEvents, tempoMap, meterMap};
+  const rhythm: RhythmScore = { hairpins: parsed.hairpins,events:rhythmEvents, tempoMap, meterMap};
   return { title: value(root, 'movement-title') || (child(root, 'work') ? value(child(root, 'work')!, 'work-title') : '') || 'Untitled score',
     parts: metadata, selectedPartId: part.attributes!.id, notes, tempoMap, rhythm,
     durationSec: seconds(parsed.duration), warnings: [...parsed.warnings], source: 'musicxml', requiresReview: true };
@@ -279,5 +299,5 @@ export function rhythmForScorePassage(score: ImportedScore, startBeat: number, e
     {...map.filter(t=>t.beat<=startBeat).at(-1)!,beat:0},
     ...map.filter(t=>t.beat>startBeat && t.beat<endBeat).map(t=>({...t,beat:t.beat-startBeat})),
   ];
-  return {events:events.map(e=>({...e,startBeat:e.startBeat-startBeat})),tempoMap:shift(score.rhythm.tempoMap),meterMap:shift(score.rhythm.meterMap)};
+  return {hairpins:score.rhythm.hairpins?.filter(h=>h.startBeat>=startBeat && h.endBeat<=endBeat).map(h=>({...h,startBeat:h.startBeat-startBeat,endBeat:h.endBeat-startBeat})),events:events.map((e,i)=>({...e,startBeat:e.startBeat-startBeat,notation:{...e.notation,slurToNext:i<events.length-1 && e.notation?.slurToNext}})),tempoMap:shift(score.rhythm.tempoMap),meterMap:shift(score.rhythm.meterMap)};
 }

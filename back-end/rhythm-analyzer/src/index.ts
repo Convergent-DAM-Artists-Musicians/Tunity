@@ -189,6 +189,7 @@ export function rhythmFromTimedNotes(notes: ExpectedNote[]): RhythmScore {
       id: n.id,
       kind: "note",
       midi: n.midi,
+      dynamicsDb: n.dynamicsDb,
       startBeat: n.startSec,
       durationBeats: n.endSec - n.startSec,
       measure: "unknown",

@@ -10,18 +10,24 @@ export type RhythmEvent = {
   /** One-based beat in the notated meter (e.g. eighth-note beats in 6/8). */
   beat: number;
   midi?: number;
+  /** Optional relative loudness target, not an absolute dynamic-mark mapping. */
+  dynamicsDb?: number;
   notation?: {
     type?: string;
     dots?: number;
     actualNotes?: number;
     normalNotes?: number;
     slur?: boolean;
+    /** This note connects to the following note under a slur. */
+    slurToNext?: boolean;
     articulation?: string[];
   };
   /** All notated note IDs in a tie; one acoustic attack is expected. */
   tiedIds?: string[];
 };
 export type RhythmScore = {
+  /** Reviewed hairpin spans in quarter-note beats. */
+  hairpins?: { startBeat: number; endBeat: number; kind: "crescendo" | "diminuendo" }[];
   notationSource?: "score" | "timed_reference";
   events: RhythmEvent[];
   tempoMap: { beat: number; bpm: number }[];
