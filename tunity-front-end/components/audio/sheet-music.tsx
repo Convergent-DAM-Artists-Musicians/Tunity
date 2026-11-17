@@ -31,8 +31,8 @@ export function SheetPicker({ value, onChange, disabled }: {
         {sheets.map(s => <option key={s.key} value={s.key}>{s.name}</option>)}
       </select>
     </label>}
-    <p className="upload-help">PDFs up to 500 KiB · Reuse PDFs across your band’s recordings. Your take can always be uploaded without sheet music.</p>
-    <p className="upload-help">PDF references are stored for viewing. MXL conversion and sheet music analysis are not run by this upload.</p>
+    <p className="upload-help">PDFs up to 500 KiB · reusable across recordings · sheet music optional</p>
+    <p className="upload-help">Stored for viewing only · MXL conversion and analysis are not run here</p>
     {sheetsLoading && <p role="status">Loading sheet music…</p>}
     {sheetsError && <p role="alert" className="error-message">{sheetsError}</p>}
   </fieldset>;
