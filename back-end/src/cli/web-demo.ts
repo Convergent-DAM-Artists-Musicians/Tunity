@@ -1,3 +1,6 @@
+import { importSheetMusic } from "../score/score-import.ts";
+import { extname } from "node:path";
+import { analyzePerformance } from "../../performance-analyzer/src/index.ts";
 /** Local JSON bridge used by the Next.js demo API. */
 import { readFile } from "node:fs/promises";
 import { extractAudioClip } from "../extract.ts";
@@ -12,13 +15,13 @@ import type { RhythmScore, RhythmOptions } from "../../rhythm-analyzer/src/types
 import { defaults, segmentNotes } from "../notes.ts";
 import type { ExpectedNote, AnalysisOptions } from "../types.ts";
 
-const [audioPath, referencePath, mode = "rhythm"] = process.argv.slice(2);
+const [audioPath, referencePath, mode = "performance"] = process.argv.slice(2);
 
 try {
   if (!audioPath) throw new Error("An audio file is required.");
 
   const reference = referencePath
-    ? (JSON.parse(await readFile(referencePath, "utf8")) as {
+    ? (([".xml", ".musicxml", ".mxl"].includes(extname(referencePath).toLowerCase()) ? await importSheetMusic(referencePath) : JSON.parse(await readFile(referencePath, "utf8"))) as {
         warnings?: string[];
         requiresReview?: boolean;
         notes?: ExpectedNote[];
@@ -49,7 +52,9 @@ try {
     ffmpegPath: process.env.FFMPEG_PATH,
   });
 
-  if (mode === "rhythm") {
+  if (mode === "performance") {
+    console.log(JSON.stringify(await analyzePerformance(clip, reference)));
+  } else if (mode === "rhythm") {
     if (reference) {
       const score =
         reference.rhythm ??
