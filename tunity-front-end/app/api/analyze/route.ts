@@ -2,7 +2,7 @@ import { practiceAccess } from "@/lib/server/practice-access";
 import { execFile } from "node:child_process";
 import { mkdtemp, writeFile, rm, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { resolve, join } from "node:path";
+import { resolve, join, extname } from "node:path";
 import { promisify } from "node:util";
 import { MAX_AUDIO_BYTES, prepareAudio } from "@/lib/audio-model";
 
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
   if (
     Number(request.headers.get("content-length")) >
-    MAX_UPLOAD + 1024 * 1024
+    MAX_UPLOAD + 3 * 1024 * 1024
   ) {
     return Response.json(
       { error: "Please choose a recording up to 500 KiB." },
@@ -41,8 +41,7 @@ export async function POST(request: Request) {
     const form = await request.formData();
     const audio = form.get("audio");
     const reference = form.get("reference");
-    const mode = form.get("mode") ?? "rhythm";
-    if (mode !== "rhythm" && mode !== "pitch") return Response.json({error:"Choose rhythm or pitch analysis."},{status:400});
+    // All uploads receive the same analysis. Legacy mode fields are ignored.
 
     if (!(audio instanceof File) || !audio.size || audio.size > MAX_UPLOAD) {
       return Response.json(
@@ -65,15 +64,17 @@ export async function POST(request: Request) {
 
     if (
       reference &&
-      (!(reference instanceof File) || reference.size > 256 * 1024)
+      (!(reference instanceof File) || reference.size > 2 * 1024 * 1024)
     ) {
       return Response.json(
-        { error: "Reference JSON must be under 256 KB." },
+        { error: "Reference score must be under 2 MB." },
         { status: 400 },
       );
     }
 
-    if (reference instanceof File) {
+    const referenceExtension = reference instanceof File ? extname(reference.name).toLowerCase() : "";
+    if (reference && ![".json", ".xml", ".musicxml", ".mxl"].includes(referenceExtension)) return Response.json({error:"Use a reviewed JSON or MusicXML/MXL score. PDFs are stored separately."},{status:400});
+    if (reference instanceof File && referenceExtension === ".json") {
       try {
         JSON.parse(await reference.text());
       } catch {
@@ -97,11 +98,11 @@ export async function POST(request: Request) {
     ];
 
     if (reference instanceof File) {
-      const refPath = join(folder, "reference.json");
-      await writeFile(refPath, await reference.text());
+      const refPath = join(folder, `reference${referenceExtension}`);
+      await writeFile(refPath, Buffer.from(await reference.arrayBuffer()));
       args.push(refPath);
     } else args.push("");
-    args.push(mode);
+    args.push("performance");
 
     await access(args[0]);
 
@@ -118,7 +119,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          "Analysis could not complete. Check the recording and reference, and confirm that Node 24+, FFmpeg and the Python environment for the selected analyzer are configured. See the server log for details.",
+          "Analysis could not complete. Check the recording and reference, and confirm that Node 24+, FFmpeg and the Python environment for analysis are configured. See the server log for details.",
       },
       { status: 422 },
     );

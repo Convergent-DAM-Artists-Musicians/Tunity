@@ -22,7 +22,7 @@ function request(mode, reference, authorized = true) {
   if(reference)form.set('reference',new File([JSON.stringify(reference)],'reviewed-score.json'));
   return new Request('http://localhost/api/analyze',{method:'POST',headers:authorized?{authorization:'Bearer test'}:{},body:form});
 }
-test('merged analyzer preserves rhythm default, explicit pitch and reviewed JSON while requiring account access',async()=>{
+test('unified analyzer ignores legacy modes, preserves reviewed JSON and requires account access',async()=>{
   const previous=process.env.TUNITY_BACKEND_DIR;
   process.env.TUNITY_BACKEND_DIR=fileURLToPath(new URL('../../back-end/',import.meta.url));
   try {
@@ -30,15 +30,15 @@ test('merged analyzer preserves rhythm default, explicit pitch and reviewed JSON
     assert.equal((await POST(request(undefined,null,false))).status,401);
     assert.equal(calls.length,0);
     assert.equal((await POST(request(undefined))).status,200);
-    assert.equal(calls.at(-1).args.at(-1),'rhythm');
+    assert.equal(calls.at(-1).args.at(-1),'performance');
     assert.equal(calls.at(-1).args[2],''); // Preserve the CLI's reference argument position.
     const score={notes:[{id:'a4',midi:69,startSec:0,endSec:1}]};
     assert.equal((await POST(request('pitch',score))).status,200);
-    assert.equal(calls.at(-1).args.at(-1),'pitch');
+    assert.equal(calls.at(-1).args.at(-1),'performance');
     assert.deepEqual(calls.at(-1).reference,score);
     const count=calls.length;
-    assert.equal((await POST(request('unknown'))).status,400);
-    assert.equal(calls.length,count);
+    assert.equal((await POST(request('unknown'))).status,200);
+    assert.equal(calls.length,count+1);
   } finally {
     if(previous===undefined)delete process.env.TUNITY_BACKEND_DIR;else process.env.TUNITY_BACKEND_DIR=previous;
   }
