@@ -48,6 +48,13 @@ npm run dev -- --port 3001
 
 Then open `http://localhost:3001`.
 
+The **Practice Clip** folder in the signed-in development workspace, and the
+direct `/dev/performance` preview, include saved analyses and playable audio from
+`tunity-front-end/data/practice-clips/`. These files are versioned in Git and load
+on a fresh checkout with only the frontend setup above. No evaluation run, Python,
+FFmpeg, or backend installation is needed to view them. The preview is available
+with `npm run dev`; it is intentionally disabled in production builds.
+
 ### Starting again later
 
 You do not need to reinstall dependencies every time. From the repo root:
