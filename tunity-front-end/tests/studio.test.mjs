@@ -5,7 +5,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkEtude, etudeXml, findInstrument } from '../lib/studio/etude.ts';
+import { checkEtude, fitEtudeMeter, etudeXml, findInstrument, duration, measureDivisions } from '../lib/studio/etude.ts';
 import { compareTakes, comparable } from '../lib/studio/compare.ts';
 import { analysisDigest, findingRef, compactResult, sessionPractice, scoreStructure } from '../lib/studio/analysis.ts';
 import { scoreDigest, compactScore } from '../lib/studio/score.ts';
@@ -35,6 +35,26 @@ test('etude checks pad short bars, reject overfull bars and enforce range and me
   assert.match(checkEtude(draft([[note('C', 'whole', { octave: 7 })]]), trumpet).errors.join(' '), /outside/);
   assert.match(checkEtude(draft([[note('G', 'whole')]]), trumpet, 8).errors.join(' '), /exactly 8/);
   assert.match(checkEtude(draft([[note('G', 'eighth', { triplet: true }), note('A', 'eighth', { triplet: true }), note('B', 'half', { dotted: true })]]), trumpet).errors.join(' '), /triplet/);
+});
+
+test('generated overfull bars fit the meter without splitting triplets or mutating the source', () => {
+  const trumpet = findInstrument('Trumpet in B♭');
+  const triplet = ['C', 'D', 'E'].map(s => note(s, 'eighth', { triplet: true }));
+  const original = draft([
+    [note('G', 'whole'), note('A', 'eighth')], // Screenshot: 4.5 beats in 4/4.
+    [note('G', 'half', { dotted: true }), note('A', 'half')],
+    [...triplet, note('G', 'half', { dotted: true }), ...triplet],
+  ]);
+  const before = structuredClone(original);
+  const checked = checkEtude(fitEtudeMeter(original), trumpet, 3);
+  assert.deepEqual(original, before);
+  assert.deepEqual(checked.errors, []);
+  for (const m of checked.draft.measures)
+    assert.equal(m.notes.reduce((sum, n) => sum + duration(n), 0), measureDivisions(checked.draft));
+  assert.equal(checked.draft.measures[2].notes.filter(n => n.triplet).length, 3);
+  assert.ok(importXml(etudeXml(checked.draft, trumpet)).notes.length > 0);
+  const broken = draft([[...triplet.slice(0, 2), note('G', 'whole')]]);
+  assert.match(checkEtude(fitEtudeMeter(broken), trumpet).errors.join(' '), /triplet/);
 });
 
 test('generated etude MusicXML imports through the analyzer with key, accidentals, triplets, ties and transposition', () => {
@@ -127,7 +147,7 @@ test('analysis digest includes unflagged pitch, rhythm and score difficulty evid
   assert.ok(digest.scoreByMeasure[0].notesPerSecond > digest.scoreByMeasure[1].notesPerSecond);
 });
 
-test('session practice seeds weaknesses, range and tempo from the take', () => {
+test('session practice seeds mistakes and broad structure without source notes or motifs', () => {
   const late = (id, measure) => ({ category: 'rhythm', kind: 'late', expectedId: id, message: 'Late', startSec: Number(measure) });
   const result = take([late('a', '1'), late('b', '2'), { category: 'pitch', kind: 'sharp', expectedId: 'b', message: 'Sharp', startSec: 2 }],
     [event('a', '1', 80), event('b', '2', 90)]);
@@ -137,9 +157,13 @@ test('session practice seeds weaknesses, range and tempo from the take', () => {
   assert.deepEqual(s.weaknesses, ['Rhythm: late (2×, m. 1, 2)', 'Pitch: sharp (1×, m. 2)']);
   assert.equal(s.scoreBpm, 160);
   const context = JSON.parse(s.context);
-  assert.equal(context.range, 'B♭3–F4');
+  assert.equal(context.range, undefined);
   assert.deepEqual(context.rhythmValues, ['quarter']);
-  assert.deepEqual(context.melodyByMeasure, ['m1: F4 quarter', 'm2: B♭3 quarter']);
+  assert.equal(context.melodyByMeasure, undefined);
+  assert.equal(context.recurringMotifs, undefined);
+  assert.equal(context.estimatedKey, undefined);
+  assert.match(context.purpose, /Target the mistakes/);
+  assert.ok(!s.context.includes('F4'));
 });
 
 test('score structure finds meter, phrases, repeated motifs and key from the reference', () => {

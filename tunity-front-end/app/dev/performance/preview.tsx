@@ -68,7 +68,7 @@ export function Preview({ initialSample = "05-verified" }: { initialSample?: str
       weaknesses,
       context: session.context,
       summary: session.summary,
-      prompt: weaknesses.length ? "" : "Build fluency with this piece’s key, motifs and phrasing.",
+      prompt: weaknesses.length ? "" : "Write a new exercise with similar meter and phrasing, using original notes.",
       timeSignature: session.meter,
       tempoBpm: session.scoreBpm,
       collection: sample,

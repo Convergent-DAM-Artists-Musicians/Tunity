@@ -99,9 +99,9 @@ export function EtudeWriter({ seed, defaultInstrument, collections, onSave }: {
         <form className="etude-form" onSubmit={generate}>
           {context && (
             <div className="etude-session">
-              <span>Built on the structure of this sheet music</span>
-              <p>{seed?.summary || "Uses this take’s piece as the musical starting point."}</p>
-              <button type="button" disabled={busy} onClick={() => setContext("")}>Don’t match the piece</button>
+              <span>New exercise with a similar structure</span>
+              <p>{seed?.summary || "Uses the piece’s meter and phrasing, with new notes focused on the mistake."}</p>
+              <button type="button" disabled={busy} onClick={() => setContext("")}>Use a different structure</button>
             </div>
           )}
           {!!weaknesses.length && (

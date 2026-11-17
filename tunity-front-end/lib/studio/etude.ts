@@ -173,6 +173,50 @@ function spell(draft: EtudeDraft) {
 const pitchLabel = (midi: number) =>
   `${["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"][midi % 12]}${Math.floor(midi / 12) - 1}`;
 
+/** Final fallback for newly composed exercises only; never changes an uploaded score.
+ * Keep the opening figures, shorten an overflowing ordinary note, and preserve
+ * complete triplet groups. checkEtude still pads remaining space and validates.
+ */
+export function fitEtudeMeter(input: EtudeDraft): EtudeDraft {
+  const draft = structuredClone(input);
+  const capacity = measureDivisions(draft);
+  if (!Number.isFinite(capacity) || capacity <= 0) return draft;
+  for (const measure of draft.measures) {
+    if (measure.notes.reduce((sum, n) => sum + duration(n), 0) <= capacity) continue;
+    const groups: EtudeNote[][] = [];
+    let valid = true;
+    for (let i = 0; i < measure.notes.length;) {
+      const n = measure.notes[i];
+      const group = measure.notes.slice(i, i + (n.triplet ? 3 : 1));
+      if (n.triplet && (group.length !== 3 || group.some((g) => !g.triplet || g.type !== n.type || g.dotted))) {
+        valid = false; break;
+      }
+      groups.push(group);
+      i += group.length;
+    }
+    if (!valid) continue; // Malformed tuplets must still be rejected.
+    const kept: EtudeNote[] = [];
+    let remaining = capacity;
+    for (const group of groups) {
+      const length = group.reduce((sum, n) => sum + duration(n), 0);
+      if (length <= remaining) {
+        kept.push(...group); remaining -= length;
+      } else {
+        if (group.length === 1 && !group[0].triplet) {
+          const fill = REST_FILL.find((d) => d <= remaining);
+          if (fill) {
+            const [type, dotted] = REST_TYPE[fill];
+            kept.push({ ...group[0], type, dotted, tieToNext: false });
+          }
+        }
+        break;
+      }
+    }
+    if (kept.some((n) => !n.rest)) measure.notes = kept;
+  }
+  return draft;
+}
+
 /** Check an etude draft, repairing safe issues in place. Returns problems the model must fix. */
 export function checkEtude(input: EtudeDraft, instrument: Instrument, requestedMeasures?: number) {
   const draft: EtudeDraft = structuredClone(input);
