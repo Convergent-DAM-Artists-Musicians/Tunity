@@ -16,6 +16,7 @@
     "firebase": "13.3.0",
     "firebase-admin": "^14.5.1",
     "next": "16.4.1",
+    "opensheetmusicdisplay": "^1.9.9",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
