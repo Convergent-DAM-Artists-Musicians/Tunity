@@ -156,28 +156,21 @@ export function sessionPractice(result: AnalysisResult, title: string) {
   const scoreBpm = round(result.insights?.tempo?.find((t) => Number.isFinite(t.targetBpm))?.targetBpm);
   const structure = scoreStructure(result);
   const summary = [
-    structure?.key && `${structure.key} (estimated)`,
     structure?.meter,
     structure && `${structure.measureCount} measures`,
     structure?.phrases.length && `${structure.phrases.length} ${structure.phrases.length === 1 ? "phrase" : "phrases"}`,
-    structure?.motifs[0] && `recurring ${structure.motifs[0]}`,
     structure?.motion,
-    structure?.range && `range ${structure.range}`,
     scoreBpm && `♩=${scoreBpm}`,
   ].filter(Boolean).join(" · ");
   const context = structure ? JSON.stringify({
     piece: title.slice(0, 100),
-    pitchesAre: "concert (sounding) pitch",
-    estimatedKey: structure.key,
+    purpose: "Target the mistakes with a new exercise. Use only broad structural similarities; do not match the piece's notes or melody.",
     meter: structure.meter,
     measures: structure.measureCount,
     scoreTempoBpm: scoreBpm,
-    range: structure.range,
     phrases: structure.phrases,
-    recurringMotifs: structure.motifs,
     melodicMotion: structure.motion,
     rhythmValues: structure.rhythmValues,
-    melodyByMeasure: structure.outline,
   }) : `Practice for "${title.slice(0, 100)}"`;
   return { weaknesses, summary, context, scoreBpm, meter: structure?.meter };
 }

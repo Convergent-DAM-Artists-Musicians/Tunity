@@ -2,7 +2,7 @@ import { aiRoute, readJson, text } from "@/lib/server/ai-route";
 import { AiError, structured, type ChatMessage } from "@/lib/server/openai";
 import { importScore } from "@/lib/server/score-import";
 import {
-  checkEtude, ETUDE_SCHEMA, etudeXml, findInstrument, INSTRUMENTS, KEYS, TIME_SIGNATURES,
+  checkEtude, fitEtudeMeter, ETUDE_SCHEMA, etudeXml, findInstrument, INSTRUMENTS, KEYS, TIME_SIGNATURES,
   type EtudeDraft, type EtudeRequest,
 } from "@/lib/studio/etude";
 import { compactScore, pitchName } from "@/lib/studio/score";
@@ -42,7 +42,8 @@ Rules:
 - tempoBpm is quarter notes per minute, even in 6/8.
 - Write musical phrases with clear 2- or 4-bar shape, rests or long notes for breathing, and a cadence on the tonic at the end.
 - Target the student's focus and weaknesses directly; repeat the challenging figure with small variations rather than adding unrelated difficulty.
-- If a practice session is given, it describes the sheet music the student is learning, in concert pitch. Build the etude on that piece's structure: its key and scale (transposed to written pitch for the instrument), meter, phrase lengths, recurring rhythms, melodic motion and range. Develop its motifs (sequence, fragment, vary, slow down or augment them) so the skill transfers back to the piece, and give the weaknesses extra repetitions inside that framework. Never copy whole measures of the piece.
+- The student's mistake is the primary goal. Compose a new exercise that isolates and repeats that skill. Use original notes and melodies; do not match, reproduce, transpose, or validate against the source song's notes, motifs, or key.
+- If a practice session is given, use it only as broad structural inspiration: meter, phrase lengths, rhythmic density, pacing, and general melodic motion. Simplify freely to teach the targeted skill. Explicit user settings take priority; choose a comfortable key and range for the instrument otherwise. The new exercise does not need to agree with the source piece. Its own bars must still fill its selected meter exactly.
 - practiceTips: 2-4 short, concrete instructions (tempo steps, what to listen for). Do not claim the exercise fixes anything.` },
       { role: "user", content: JSON.stringify({
         request: req.prompt || "Write an etude targeting the weaknesses below.",
@@ -62,7 +63,7 @@ Rules:
       if (key) { draft.keyFifths = key.fifths; draft.mode = key.mode; }
       if (beats) { draft.beats = beats; draft.beatType = beatType; }
       if (req.tempoBpm) draft.tempoBpm = req.tempoBpm;
-      checked = checkEtude(draft, instrument, req.measures);
+      checked = checkEtude(attempt === 2 ? fitEtudeMeter(draft) : draft, instrument, req.measures);
       if (!checked.errors.length) break;
       messages.push(
         { role: "assistant", content: JSON.stringify(draft) },

@@ -221,7 +221,7 @@ export default function Home() {
       weaknesses,
       context: session.context,
       summary: session.summary,
-      prompt: weaknesses.length ? "" : "Build fluency with this piece’s key, motifs and phrasing.",
+      prompt: weaknesses.length ? "" : "Write a new exercise with similar meter and phrasing, using original notes.",
       instrument: piece?.instrument,
       keyName: piece?.keyName,
       timeSignature: piece?.meter ?? session.meter,
