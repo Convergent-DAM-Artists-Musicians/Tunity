@@ -11,6 +11,7 @@
     "test:audio": "node --test --test-isolation=none tests/audio-model.test.mjs",
     "test:sheet": "node --test --test-isolation=none tests/sheet-model.test.mjs tests/sheet-repository.test.mjs",
     "test:studio": "node --test --test-isolation=none tests/studio.test.mjs",
+    "test:practice-clips": "node --test tests/practice-clips.test.mjs",
     "test:accounts": "node --test --test-isolation=none tests/account-model.test.mjs tests/account-repository.test.mjs tests/analyze-mode.test.mjs"
   },
   "dependencies": {

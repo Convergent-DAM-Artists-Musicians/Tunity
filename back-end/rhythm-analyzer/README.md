@@ -91,7 +91,7 @@ npm test --prefix back-end
 .venv/bin/python -m unittest discover -s back-end/rhythm-analyzer/python -p 'test_*.py'
 ```
 
-`run.py` exits nonzero if an acceptance gate fails. Omit `--acquire` for subsequent local runs. Source audio stays in ignored `rhythm-analyzer/evaluation/data/`; the pinned URLs and SHA-256 checksums are in `acquisition.json`. Observe URMP's usage terms; audio is not redistributed in this repository. To re-run the original CREPE baseline, install its separate `back-end/requirements.txt` dependencies and add `--baseline`; delete `data/*.crepe.json` first to force fresh inference. Saved baseline results are included for comparison.
+`run.py` exits nonzero if an acceptance gate fails. Omit `--acquire` for subsequent local runs. Source downloads stay in ignored `rhythm-analyzer/evaluation/data/`; the pinned URLs and SHA-256 checksums are in `acquisition.json`. Selected prepared excerpts and saved performance analyses are bundled separately in `tunity-front-end/data/practice-clips/` so the development preview works on a fresh checkout. See that folder's README for provenance, and observe URMP's usage terms. To re-run the original CREPE baseline, install its separate `back-end/requirements.txt` dependencies and add `--baseline`; delete `data/*.crepe.json` first to force fresh inference. Saved baseline results are included for comparison.
 
 The runner produces full alignments, event detections, controlled WAVs, checked excerpt WAVs/scores and `results/summary.json`. For an actual trumpet demo after acquisition:
 

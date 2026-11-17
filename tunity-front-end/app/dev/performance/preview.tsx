@@ -90,7 +90,7 @@ export function Preview({ initialSample = "05-verified" }: { initialSample?: str
     const abort = new AbortController();
     Promise.all([
       fetch(`/api/dev-performance?sample=${sample}`, { signal: abort.signal }).then(async (r) => {
-        if (!r.ok) throw Error("Generate this evaluation fixture first.");
+        if (!r.ok) throw Error("Could not load this practice clip. Check that your checkout includes data/practice-clips.");
         return r.json();
       }),
       fetch(`/api/dev-performance?sample=${sample}&audio=1`, { signal: abort.signal }).then((r) => {
@@ -207,7 +207,7 @@ export function Preview({ initialSample = "05-verified" }: { initialSample?: str
           />
         </>
       ) : (
-        <p>Loading evaluation…</p>
+        <p>Loading practice clip…</p>
       )}
       <dialog ref={dialog} className="project-dialog studio-dialog" aria-labelledby="dialog-title"
         onClose={() => setSeed(undefined)}

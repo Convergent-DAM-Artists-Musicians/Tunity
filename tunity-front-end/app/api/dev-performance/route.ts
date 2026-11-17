@@ -1,18 +1,13 @@
 import { access, readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const RESULTS = resolve("../back-end/performance-analyzer/evaluation/results");
-const AUDIO_DIRS = [
-  resolve("../back-end/performance-analyzer/evaluation/data"),
-  resolve("../back-end/rhythm-analyzer/evaluation/data"),
-];
+// Checked-in demo assets travel with a clone; evaluation output is local-only.
+const FIXTURES = resolve("data/practice-clips");
+const RESULTS = resolve(FIXTURES, "results");
 
 async function audioPath(name: string) {
-  for (const dir of AUDIO_DIRS) {
-    const path = resolve(dir, `${name}.wav`);
-    try { await access(path); return path; } catch { /* try next */ }
-  }
-  return null;
+  const path = resolve(FIXTURES, "audio", `${name}.wav`);
+  try { await access(path); return path; } catch { return null; }
 }
 
 const FEATURED = [
@@ -66,7 +61,7 @@ export async function GET(request: Request) {
         headers: { "Cache-Control": "no-store" },
       });
     } catch {
-      return Response.json({ error: "Run the performance evaluation to generate fixtures." }, { status: 404 });
+      return Response.json({ error: "Bundled practice clips are missing or unreadable. Restore data/practice-clips from Git." }, { status: 500 });
     }
   }
 
@@ -84,7 +79,7 @@ export async function GET(request: Request) {
     });
   } catch {
     return Response.json(
-      { error: "Run the performance evaluation to generate this fixture." },
+      { error: "Practice clip not found in this checkout." },
       { status: 404 },
     );
   }
