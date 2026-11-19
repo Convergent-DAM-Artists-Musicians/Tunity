@@ -18,3 +18,8 @@ export async function analyzeFile(inputPath: string, extraction: ExtractOptions,
   const clip = await extractAudioClip(inputPath, extraction);
   return analyzeClip(clip, reference, options, runtime);
 }
+
+export { analyzeRhythmClip, detectRhythm, alignRhythm, rhythmFromTimedNotes, beatToSeconds, validateRhythmScore } from '../rhythm-analyzer/src/index.ts';
+export type * from '../rhythm-analyzer/src/types.ts';
+export { rhythmForScorePassage } from './score/score-xml.ts';
+export type { RhythmRuntime } from '../rhythm-analyzer/src/index.ts';

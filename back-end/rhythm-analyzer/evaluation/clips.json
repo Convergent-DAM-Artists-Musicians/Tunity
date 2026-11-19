@@ -1,0 +1,47 @@
+[
+  {
+    "id": "05",
+    "split": "development",
+    "audio": "data/05.wav",
+    "score": "data/05.score.json",
+    "truth": "data/05.truth.json",
+    "endSec": 58.875,
+    "source": "05_Entertainer_tpt_tpt"
+  },
+  {
+    "id": "09",
+    "split": "development",
+    "audio": "data/09.wav",
+    "score": "data/09.score.json",
+    "truth": "data/09.truth.json",
+    "endSec": 58.799,
+    "source": "09_Jesus_tpt_vn"
+  },
+  {
+    "id": "10",
+    "split": "test",
+    "audio": "data/10.wav",
+    "score": "data/10.score.json",
+    "truth": "data/10.truth.json",
+    "endSec": 58.564,
+    "source": "10_March_tpt_sax"
+  },
+  {
+    "id": "15",
+    "split": "test",
+    "audio": "data/15.wav",
+    "score": "data/15.score.json",
+    "truth": "data/15.truth.json",
+    "endSec": 52.814,
+    "source": "15_Surprise_tpt_tpt_tbn"
+  },
+  {
+    "id": "33",
+    "split": "test",
+    "audio": "data/33.wav",
+    "score": "data/33.score.json",
+    "truth": "data/33.truth.json",
+    "endSec": 46.266000000000005,
+    "source": "33_Elise_tpt_tpt_hn_tbn"
+  }
+]

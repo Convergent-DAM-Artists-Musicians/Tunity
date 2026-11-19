@@ -1,0 +1,24 @@
+// Reference profile rules. Merge this match block into the project's existing
+// Firestore rules; do not replace rules for recordings or other collections.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /userProfiles/{uid} {
+      function owner() { return request.auth != null && request.auth.uid == uid; }
+      function validProfile() {
+        let p = request.resource.data;
+        return p.keys().hasAll(['preferredName', 'instrument', 'experience', 'goal', 'dailyMinutes', 'updatedAt'])
+          && p.keys().hasOnly(['preferredName', 'instrument', 'experience', 'goal', 'dailyMinutes', 'updatedAt'])
+          && p.preferredName is string && p.preferredName.size() <= 60
+          && p.instrument in ['Trumpet', 'Trombone', 'French horn', 'Tuba', 'Flute', 'Clarinet', 'Saxophone', 'Violin', 'Voice', 'Other']
+          && p.experience in ['Just starting', 'Finding my rhythm', 'Building confidence', 'Experienced player']
+          && p.goal is string && p.goal.size() <= 300
+          && p.dailyMinutes is int && p.dailyMinutes >= 5 && p.dailyMinutes <= 120
+          && p.updatedAt == request.time;
+      }
+      allow get: if owner();
+      allow create, update: if owner() && validProfile();
+      // No collection-wide queries or deletion are needed by the draft.
+    }
+  }
+}

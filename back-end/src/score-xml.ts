@@ -1,5 +1,6 @@
 import { createRequire } from 'node:module';
 import type { ExpectedNote } from './types.ts';
+import type { RhythmScore, RhythmEvent } from '../rhythm-analyzer/src/types.ts';
 
 const require = createRequire(import.meta.url);
 const { xml2js } = require('xml-js') as { xml2js(xml: string, options: object): XmlNode };
@@ -51,18 +52,34 @@ export type ImportedScore = {
   selectedPartId: string;
   notes: ExpectedNote[];
   tempoMap: { beat: number; bpm: number }[];
+  rhythm: RhythmScore;
   durationSec: number;
   warnings: string[];
   source: 'musicxml' | 'omr';
   requiresReview: boolean;
 };
-type BeatNote = { id: string; midi: number; start: number; end: number; voice: string; staff: string; tieStart: boolean; tieStop: boolean };
-type ParsedPart = { notes: BeatNote[]; tempos: { beat: number; bpm: number }[]; dynamics: { beat: number; mark: string }[]; duration: number; warnings: Set<string> };
+type BeatNote = { id: string; midi: number; start: number; end: number; voice: string; staff: string; tieStart: boolean; tieStop: boolean; measure: string; beat: number; notation: RhythmEvent['notation']; tiedIds: string[] };
+type ParsedPart = { notes: BeatNote[]; rests: (RhythmEvent & {voice: string; staff: string})[]; meters: RhythmScore['meterMap']; tempos: { beat: number; bpm: number }[]; dynamics: { beat: number; mark: string }[]; hairpins: NonNullable<RhythmScore["hairpins"]>; duration: number; warnings: Set<string> };
 
 function parsePart(part: XmlNode, transpositionOverride?: number): ParsedPart {
-  const result: ParsedPart = { notes: [], tempos: [], dynamics: [], duration: 0, warnings: new Set() };
+  const result: ParsedPart = {
+    notes: [],
+    rests: [],
+    meters: [],
+    tempos: [],
+    dynamics: [],
+    hairpins: [],
+    duration: 0,
+    warnings: new Set()
+  };
+  const activeSlurs = new Set<string>();
+  const openHairpins = new Map<string, {
+    startBeat: number;
+    kind: "crescendo" | "diminuendo";
+  }>();
+  
   let divisions = 0, timeBeats = 0, transpose = 0, measureStart = 0;
-  let noteNumber = 0;
+  let noteNumber = 0, restNumber = 0, numerator = 4, denominator = 4;
   for (const measure of children(part, 'measure')) {
     let cursor = 0, furthest = 0, chordStart: number | undefined;
     for (const e of children(measure)) {
@@ -72,6 +89,9 @@ function parsePart(part: XmlNode, transpositionOverride?: number): ParsedPart {
         const time = child(e, 'time');
         if (time) {
           const beats = children(time, 'beats'), units = children(time, 'beat-type');
+          if (beats.length !== 1 || units.length !== 1 || text(beats[0]).includes('+')) throw new Error('Use a single meter per measure for rhythm analysis.');
+          numerator = positive(text(beats[0]), 'meter numerator'); denominator = positive(text(units[0]), 'meter denominator');
+          result.meters.push({beat: measureStart, numerator, denominator});
           if (!beats.length || beats.length !== units.length) throw new Error('Unsupported time signature.');
           timeBeats = beats.reduce((sum, b, i) => sum + text(b).split('+').reduce((n, v) => n + positive(v, 'beats'), 0)
             * 4 / positive(text(units[i]), 'beat-type'), 0);
@@ -113,7 +133,18 @@ function parsePart(part: XmlNode, transpositionOverride?: number): ParsedPart {
             const marks = children(n);
             if (marks.length === 1) result.dynamics.push({ beat, mark: name(marks[0])! });
           }
-          if (['wedge', 'words', 'pedal', 'octave-shift'].includes(name(n) ?? '')) {
+          if (name(n) === 'wedge') {
+            const key = `${value(e, 'staff') || '1'}:${n.attributes?.number || '1'}`;
+            const kind = n.attributes?.type;
+            if (kind === 'crescendo' || kind === 'diminuendo') openHairpins.set(key, {startBeat: beat, kind});
+            else if (kind === 'stop') {
+              const start = openHairpins.get(key);
+              if (start && beat > start.startBeat) result.hairpins.push({...start, endBeat: beat});
+              else result.warnings.add('Unmatched hairpin requires manual review.');
+              openHairpins.delete(key);
+            }
+          }
+          if (['words', 'pedal', 'octave-shift'].includes(name(n) ?? '')) {
             if (name(n) === 'octave-shift') throw new Error('Resolve octave-shift directions into explicit pitches before importing.');
             result.warnings.add('Text, pedal, and crescendo/diminuendo directions need manual performance review.');
           }
@@ -127,7 +158,28 @@ function parsePart(part: XmlNode, transpositionOverride?: number): ParsedPart {
         const start = chord ? chordStart! : cursor;
         if (!chord) { chordStart = start; cursor += duration; }
         furthest = Math.max(furthest, start + duration, cursor);
-        if (child(e, 'rest')) continue;
+        const measureLabel = measure.attributes?.number ?? String(result.meters.length);
+        const beat = 1 + start * denominator / 4;
+        const modification = child(e, 'time-modification');
+        const notations = child(e, 'notations');
+        const arts = notations && child(notations, 'articulations');
+        for (const slur of notations ? children(notations, 'slur') : []) {
+          const key = `${value(e, 'staff') || '1'}:${value(e, 'voice') || '1'}:${slur.attributes?.number || '1'}`;
+          if (slur.attributes?.type === 'stop') activeSlurs.delete(key);
+          if (slur.attributes?.type === 'start') activeSlurs.add(key);
+        }
+        const slurPrefix = `${value(e, 'staff') || '1'}:${value(e, 'voice') || '1'}:`;
+        const notation: RhythmEvent['notation'] = { type: value(e, 'type') || undefined, dots: children(e, 'dot').length,
+          ...(modification ? {actualNotes: positive(value(modification, 'actual-notes'), 'actual notes'), normalNotes: positive(value(modification, 'normal-notes'), 'normal notes')} : {}),
+          slurToNext: [...activeSlurs].some(key => key.startsWith(slurPrefix)),
+          slur: !!notations && children(notations, 'slur').length > 0,
+          articulation: [...(arts ? children(arts).map(a => name(a)!) : []), ...(notations && child(notations, 'fermata') ? ['fermata'] : [])] };
+        if (child(e, 'rest')) {
+          result.rests.push({id: `${part.attributes?.id}-m${measureLabel}-r${++restNumber}`, kind: 'rest',
+            startBeat: measureStart+start, durationBeats: duration, measure: measureLabel, beat, notation,
+            voice: value(e, 'voice') || '1', staff: value(e, 'staff') || '1'});
+          continue;
+        }
         const p = child(e, 'pitch');
         if (!p) throw new Error('Only pitched notes are supported.');
         const semitone = ({ C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 } as Record<string, number>)[value(p, 'step')];
@@ -140,9 +192,9 @@ function parsePart(part: XmlNode, transpositionOverride?: number): ParsedPart {
         result.notes.push({ id: `${part.attributes?.id ?? 'part'}-m${measure.attributes?.number ?? measureStart}-n${++noteNumber}`,
           midi, start: measureStart + start, end: measureStart + start + duration,
           voice: value(e, 'voice') || '1', staff: value(e, 'staff') || '1',
-          tieStart: ties.includes('start'), tieStop: ties.includes('stop') });
-        const notation = child(e, 'notations');
-        if (notation && children(notation).some(n => ['fermata', 'articulations', 'ornaments', 'technical'].includes(name(n)!))) {
+          tieStart: ties.includes('start'), tieStop: ties.includes('stop'), measure: measureLabel, beat, notation, tiedIds: [] });
+        result.notes.at(-1)!.tiedIds.push(result.notes.at(-1)!.id);
+        if (notations && children(notations).some(n => ['fermata', 'articulations', 'ornaments', 'technical'].includes(name(n)!))) {
           result.warnings.add('Fermatas, articulations, ornaments, and technique markings use nominal durations only; review them before grading.');
         }
       } else if (tag === 'barline') {
@@ -186,7 +238,7 @@ export function parseMusicXml(xml: string, options: ScoreImportOptions = {}): Im
     const previous = joined.at(-1);
     if (n.tieStop) {
       if (!previous?.tieStart || previous.midi !== n.midi || Math.abs(previous.end - n.start) > 1e-7) throw new Error('Broken tie in selected melody.');
-      previous.end = n.end; previous.tieStart = n.tieStart;
+      previous.end = n.end; previous.tieStart = n.tieStart; previous.tiedIds.push(...n.tiedIds);
     } else {
       if (previous?.tieStart) throw new Error('Unresolved tie in selected melody.');
       if (previous && n.start < previous.end - 1e-7) throw new Error('Selected melody contains chords or overlapping notes. Choose a monophonic part.');
@@ -227,8 +279,19 @@ export function parseMusicXml(xml: string, options: ScoreImportOptions = {}): Im
   parsed.warnings.add('Review the imported melody, tempo and synchronization cue before using it to grade a performance.');
   if (options.transpositionSemitones !== undefined) parsed.warnings.add(`User-specified written-to-sounding transposition: ${options.transpositionSemitones} semitones; replaces MusicXML transposition.`);
   if (!options.dynamicsDbByMark) parsed.warnings.add('Printed dynamics have no universal dB mapping; dynamics scoring is disabled until relative targets are supplied.');
+  const selectedStream = selected[0];
+  const rhythmEvents: RhythmEvent[] = [
+    ...joined.map(n => ({id:n.id, kind:'note' as const, midi:n.midi, startBeat:n.start, durationBeats:n.end-n.start,
+      dynamicsDb: notes.find(e => e.id === n.id)?.dynamicsDb, measure:n.measure, beat:n.beat, notation:n.notation, tiedIds:n.tiedIds})),
+    ...parsed.rests.filter(r => r.voice===selectedStream.voice && r.staff===selectedStream.staff)
+      .map(({voice,staff,...rest})=>rest),
+  ].sort((a,b)=>a.startBeat-b.startBeat);
+  const meterMap = parsed.meters.length ? parsed.meters : [{beat:0,numerator:4,denominator:4}];
+  if (!parsed.meters.length) parsed.warnings.add('No meter found; rhythm positions assume 4/4. Confirm before grading.');
+  if (meterMap[0].beat!==0) throw new Error('An initial meter is required for rhythm analysis.');
+  const rhythm: RhythmScore = { hairpins: parsed.hairpins,events:rhythmEvents, tempoMap, meterMap};
   return { title: value(root, 'movement-title') || (child(root, 'work') ? value(child(root, 'work')!, 'work-title') : '') || 'Untitled score',
-    parts: metadata, selectedPartId: part.attributes!.id, notes, tempoMap,
+    parts: metadata, selectedPartId: part.attributes!.id, notes, tempoMap, rhythm,
     durationSec: seconds(parsed.duration), warnings: [...parsed.warnings], source: 'musicxml', requiresReview: true };
 }
 
@@ -241,4 +304,18 @@ export function referenceForScorePassage(score: ImportedScore, startSec: number,
   if (overlap.some(n => n.startSec < startSec - 1e-7 || n.endSec > endSec + 1e-7)) throw new Error('Choose passage boundaries between complete notes; do not cut a note or tie.');
   if (overlap.length > 2000) throw new Error('Passage exceeds 2000 notes.');
   return overlap.map(n => ({ ...n, startSec: Math.max(0, n.startSec - startSec) + countInSec, endSec: n.endSec - startSec + countInSec }));
+}
+
+/** Beat-domain passage selection preserves notation and measure labels; ties cannot be cut. */
+export function rhythmForScorePassage(score: ImportedScore, startBeat: number, endBeat: number): RhythmScore {
+  if (![startBeat,endBeat].every(Number.isFinite) || startBeat<0 || endBeat<=startBeat)
+    throw new Error('Invalid rhythm passage.');
+  const events=score.rhythm.events.filter(e=>e.startBeat<endBeat-1e-7 && e.startBeat+e.durationBeats>startBeat+1e-7);
+  if(!events.length || events.some(e=>e.startBeat<startBeat-1e-7 || e.startBeat+e.durationBeats>endBeat+1e-7))
+    throw new Error('Choose passage boundaries between complete notes, ties, and rests.');
+  const shift=<T extends {beat:number}>(map:T[]):T[]=>[
+    {...map.filter(t=>t.beat<=startBeat).at(-1)!,beat:0},
+    ...map.filter(t=>t.beat>startBeat && t.beat<endBeat).map(t=>({...t,beat:t.beat-startBeat})),
+  ];
+  return {hairpins:score.rhythm.hairpins?.filter(h=>h.startBeat>=startBeat && h.endBeat<=endBeat).map(h=>({...h,startBeat:h.startBeat-startBeat,endBeat:h.endBeat-startBeat})),events:events.map((e,i)=>({...e,startBeat:e.startBeat-startBeat,notation:{...e.notation,slurToNext:i<events.length-1 && e.notation?.slurToNext}})),tempoMap:shift(score.rhythm.tempoMap),meterMap:shift(score.rhythm.meterMap)};
 }

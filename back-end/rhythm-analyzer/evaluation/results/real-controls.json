@@ -1,0 +1,2270 @@
+[
+  {
+    "id": "real-clean",
+    "onsets": {
+      "tp": 14,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "maeMs": 10.50000000000005
+    },
+    "expected": [],
+    "actual": [],
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "correctMatches": 14,
+    "matches": 14,
+    "alignment": {
+      "mode": "fixed",
+      "offsetSec": 0,
+      "tempoScale": 1,
+      "confidence": 0.9771428571428571,
+      "ambiguous": false,
+      "anchors": [
+        {
+          "scoreSec": 0,
+          "performanceSec": 0
+        },
+        {
+          "scoreSec": 7.413,
+          "performanceSec": 7.413
+        }
+      ],
+      "missingIds": [],
+      "extraIndices": []
+    },
+    "rhythmEvents": [
+      {
+        "expectedId": "r-n0",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "2.374 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 0,
+        "targetEndSec": 2.374
+      },
+      {
+        "expectedId": "n0",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.374,
+        "targetEndSec": 2.5709999999999997,
+        "detectedIndex": 0,
+        "actualStartSec": 2.375,
+        "actualEndSec": 2.575,
+        "timingErrorMs": 0.9999999999998899
+      },
+      {
+        "expectedId": "r-n1",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.5709999999999997,
+        "targetEndSec": 2.577
+      },
+      {
+        "expectedId": "n1",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.577,
+        "targetEndSec": 2.769,
+        "detectedIndex": 1,
+        "actualStartSec": 2.575,
+        "actualEndSec": 2.775,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n2",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.769,
+        "targetEndSec": 2.775
+      },
+      {
+        "expectedId": "n2",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2,
+        "rhythmLabel": "0.209 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.775,
+        "targetEndSec": 2.9839999999999995,
+        "detectedIndex": 2,
+        "actualStartSec": 2.775,
+        "actualEndSec": 2.975,
+        "timingErrorMs": 0
+      },
+      {
+        "expectedId": "r-n3",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.011 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.9839999999999995,
+        "targetEndSec": 2.995
+      },
+      {
+        "expectedId": "n3",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.995,
+        "targetEndSec": 3.4070000000000005,
+        "detectedIndex": 3,
+        "actualStartSec": 2.975,
+        "actualEndSec": 3.42,
+        "timingErrorMs": -20.000000000000018
+      },
+      {
+        "expectedId": "r-n4",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.4070000000000005,
+        "targetEndSec": 3.413
+      },
+      {
+        "expectedId": "n4",
+        "kind": "note",
+        "measure": "1",
+        "beat": 3.5,
+        "rhythmLabel": "0.157 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.413,
+        "targetEndSec": 3.57,
+        "detectedIndex": 4,
+        "actualStartSec": 3.42,
+        "actualEndSec": 3.59,
+        "timingErrorMs": 7.000000000000117
+      },
+      {
+        "expectedId": "r-n5",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.029 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.57,
+        "targetEndSec": 3.5989999999999998
+      },
+      {
+        "expectedId": "n5",
+        "kind": "note",
+        "measure": "1",
+        "beat": 4,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.5989999999999998,
+        "targetEndSec": 3.802,
+        "detectedIndex": 5,
+        "actualStartSec": 3.59,
+        "actualEndSec": 3.795,
+        "timingErrorMs": -8.999999999999897
+      },
+      {
+        "expectedId": "r-n6",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "1.707 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.802,
+        "targetEndSec": 5.509000000000001
+      },
+      {
+        "expectedId": "n6",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.509000000000001,
+        "targetEndSec": 5.706,
+        "detectedIndex": 6,
+        "actualStartSec": 5.495,
+        "actualEndSec": 5.71,
+        "timingErrorMs": -14.000000000001123
+      },
+      {
+        "expectedId": "r-n7",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.706,
+        "targetEndSec": 5.712
+      },
+      {
+        "expectedId": "n7",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1.5,
+        "rhythmLabel": "0.18 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.712,
+        "targetEndSec": 5.8919999999999995,
+        "detectedIndex": 7,
+        "actualStartSec": 5.71,
+        "actualEndSec": 5.895,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n8",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.8919999999999995,
+        "targetEndSec": 5.909
+      },
+      {
+        "expectedId": "n8",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.909,
+        "targetEndSec": 6.112,
+        "detectedIndex": 8,
+        "actualStartSec": 5.895,
+        "actualEndSec": 6.08,
+        "timingErrorMs": -14.000000000000234
+      },
+      {
+        "expectedId": "r-n9",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.018 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.112,
+        "targetEndSec": 6.13
+      },
+      {
+        "expectedId": "n9",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.13,
+        "targetEndSec": 6.542,
+        "detectedIndex": 9,
+        "actualStartSec": 6.08,
+        "actualEndSec": 6.545,
+        "timingErrorMs": -49.99999999999982
+      },
+      {
+        "expectedId": "r-n10",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.012 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.542,
+        "targetEndSec": 6.554
+      },
+      {
+        "expectedId": "n10",
+        "kind": "note",
+        "measure": "3",
+        "beat": 3.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.554,
+        "targetEndSec": 6.746,
+        "detectedIndex": 10,
+        "actualStartSec": 6.545,
+        "actualEndSec": 6.765,
+        "timingErrorMs": -9.000000000000341
+      },
+      {
+        "expectedId": "r-n11",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.746,
+        "targetEndSec": 6.763
+      },
+      {
+        "expectedId": "n11",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4,
+        "rhythmLabel": "0.171 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.763,
+        "targetEndSec": 6.934,
+        "detectedIndex": 11,
+        "actualStartSec": 6.765,
+        "actualEndSec": 6.94,
+        "timingErrorMs": 1.9999999999997797
+      },
+      {
+        "expectedId": "n12",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4.5,
+        "rhythmLabel": "0.16 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.934,
+        "targetEndSec": 7.094,
+        "detectedIndex": 12,
+        "actualStartSec": 6.94,
+        "actualEndSec": 7.115,
+        "timingErrorMs": 6.000000000000227
+      },
+      {
+        "expectedId": "r-n13",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.087 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.094,
+        "targetEndSec": 7.181
+      },
+      {
+        "expectedId": "n13",
+        "kind": "note",
+        "measure": "4",
+        "beat": 1,
+        "rhythmLabel": "0.232 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.181,
+        "targetEndSec": 7.413,
+        "detectedIndex": 13,
+        "actualStartSec": 7.17,
+        "actualEndSec": 7.435,
+        "timingErrorMs": -11.00000000000012
+      }
+    ],
+    "rhythmGroups": []
+  },
+  {
+    "id": "real-early",
+    "onsets": {
+      "tp": 12,
+      "fp": 2,
+      "fn": 2,
+      "precision": 0.8571428571428571,
+      "recall": 0.8571428571428571,
+      "f1": 0.8571428571428571,
+      "maeMs": 11.250000000000057
+    },
+    "expected": [
+      {
+        "kind": "early",
+        "expectedId": "n13"
+      },
+      {
+        "kind": "misplaced_rest",
+        "expectedId": "r-n13"
+      }
+    ],
+    "actual": [
+      {
+        "kind": "early",
+        "expectedId": "n13"
+      },
+      {
+        "kind": "misplaced_rest",
+        "expectedId": "r-n13"
+      }
+    ],
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "correctMatches": 14,
+    "matches": 14,
+    "alignment": {
+      "mode": "fixed",
+      "offsetSec": 0,
+      "tempoScale": 1,
+      "confidence": 0.974285714285714,
+      "ambiguous": false,
+      "anchors": [
+        {
+          "scoreSec": 0,
+          "performanceSec": 0
+        },
+        {
+          "scoreSec": 7.413,
+          "performanceSec": 7.413
+        }
+      ],
+      "missingIds": [],
+      "extraIndices": []
+    },
+    "rhythmEvents": [
+      {
+        "expectedId": "r-n0",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "2.374 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 0,
+        "targetEndSec": 2.374
+      },
+      {
+        "expectedId": "n0",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.374,
+        "targetEndSec": 2.5709999999999997,
+        "detectedIndex": 0,
+        "actualStartSec": 2.375,
+        "actualEndSec": 2.575,
+        "timingErrorMs": 0.9999999999998899
+      },
+      {
+        "expectedId": "r-n1",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.5709999999999997,
+        "targetEndSec": 2.577
+      },
+      {
+        "expectedId": "n1",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.577,
+        "targetEndSec": 2.769,
+        "detectedIndex": 1,
+        "actualStartSec": 2.575,
+        "actualEndSec": 2.775,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n2",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.769,
+        "targetEndSec": 2.775
+      },
+      {
+        "expectedId": "n2",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2,
+        "rhythmLabel": "0.209 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.775,
+        "targetEndSec": 2.9839999999999995,
+        "detectedIndex": 2,
+        "actualStartSec": 2.775,
+        "actualEndSec": 2.945,
+        "timingErrorMs": 0
+      },
+      {
+        "expectedId": "r-n3",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.011 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.9839999999999995,
+        "targetEndSec": 2.995
+      },
+      {
+        "expectedId": "n3",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.995,
+        "targetEndSec": 3.4070000000000005,
+        "detectedIndex": 3,
+        "actualStartSec": 2.945,
+        "actualEndSec": 3.42,
+        "timingErrorMs": -50.00000000000027
+      },
+      {
+        "expectedId": "r-n4",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.4070000000000005,
+        "targetEndSec": 3.413
+      },
+      {
+        "expectedId": "n4",
+        "kind": "note",
+        "measure": "1",
+        "beat": 3.5,
+        "rhythmLabel": "0.157 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.413,
+        "targetEndSec": 3.57,
+        "detectedIndex": 4,
+        "actualStartSec": 3.42,
+        "actualEndSec": 3.59,
+        "timingErrorMs": 7.000000000000117
+      },
+      {
+        "expectedId": "r-n5",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.029 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.57,
+        "targetEndSec": 3.5989999999999998
+      },
+      {
+        "expectedId": "n5",
+        "kind": "note",
+        "measure": "1",
+        "beat": 4,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.5989999999999998,
+        "targetEndSec": 3.802,
+        "detectedIndex": 5,
+        "actualStartSec": 3.59,
+        "actualEndSec": 3.795,
+        "timingErrorMs": -8.999999999999897
+      },
+      {
+        "expectedId": "r-n6",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "1.707 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.802,
+        "targetEndSec": 5.509000000000001
+      },
+      {
+        "expectedId": "n6",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.509000000000001,
+        "targetEndSec": 5.706,
+        "detectedIndex": 6,
+        "actualStartSec": 5.495,
+        "actualEndSec": 5.71,
+        "timingErrorMs": -14.000000000001123
+      },
+      {
+        "expectedId": "r-n7",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.706,
+        "targetEndSec": 5.712
+      },
+      {
+        "expectedId": "n7",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1.5,
+        "rhythmLabel": "0.18 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.712,
+        "targetEndSec": 5.8919999999999995,
+        "detectedIndex": 7,
+        "actualStartSec": 5.71,
+        "actualEndSec": 5.895,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n8",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.8919999999999995,
+        "targetEndSec": 5.909
+      },
+      {
+        "expectedId": "n8",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.909,
+        "targetEndSec": 6.112,
+        "detectedIndex": 8,
+        "actualStartSec": 5.895,
+        "actualEndSec": 6.08,
+        "timingErrorMs": -14.000000000000234
+      },
+      {
+        "expectedId": "r-n9",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.018 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.112,
+        "targetEndSec": 6.13
+      },
+      {
+        "expectedId": "n9",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.13,
+        "targetEndSec": 6.542,
+        "detectedIndex": 9,
+        "actualStartSec": 6.08,
+        "actualEndSec": 6.545,
+        "timingErrorMs": -49.99999999999982
+      },
+      {
+        "expectedId": "r-n10",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.012 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.542,
+        "targetEndSec": 6.554
+      },
+      {
+        "expectedId": "n10",
+        "kind": "note",
+        "measure": "3",
+        "beat": 3.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.554,
+        "targetEndSec": 6.746,
+        "detectedIndex": 10,
+        "actualStartSec": 6.545,
+        "actualEndSec": 6.705,
+        "timingErrorMs": -9.000000000000341
+      },
+      {
+        "expectedId": "r-n11",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.746,
+        "targetEndSec": 6.763
+      },
+      {
+        "expectedId": "n11",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4,
+        "rhythmLabel": "0.171 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.763,
+        "targetEndSec": 6.934,
+        "detectedIndex": 11,
+        "actualStartSec": 6.705,
+        "actualEndSec": 6.94,
+        "timingErrorMs": -57.99999999999983
+      },
+      {
+        "expectedId": "n12",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4.5,
+        "rhythmLabel": "0.16 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.934,
+        "targetEndSec": 7.094,
+        "detectedIndex": 12,
+        "actualStartSec": 6.94,
+        "actualEndSec": 7.03,
+        "timingErrorMs": 6.000000000000227
+      },
+      {
+        "expectedId": "r-n13",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.087 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.094,
+        "targetEndSec": 7.181
+      },
+      {
+        "expectedId": "n13",
+        "kind": "note",
+        "measure": "4",
+        "beat": 1,
+        "rhythmLabel": "0.232 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.181,
+        "targetEndSec": 7.413,
+        "detectedIndex": 13,
+        "actualStartSec": 7.03,
+        "actualEndSec": 7.285,
+        "timingErrorMs": -150.9999999999998
+      }
+    ],
+    "rhythmGroups": []
+  },
+  {
+    "id": "real-late",
+    "onsets": {
+      "tp": 14,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "maeMs": 8.000000000000039
+    },
+    "expected": [
+      {
+        "kind": "late",
+        "expectedId": "n13"
+      }
+    ],
+    "actual": [
+      {
+        "kind": "late",
+        "expectedId": "n13"
+      }
+    ],
+    "tp": 1,
+    "fp": 0,
+    "fn": 0,
+    "correctMatches": 14,
+    "matches": 14,
+    "alignment": {
+      "mode": "fixed",
+      "offsetSec": 0,
+      "tempoScale": 1,
+      "confidence": 0.9771428571428571,
+      "ambiguous": false,
+      "anchors": [
+        {
+          "scoreSec": 0,
+          "performanceSec": 0
+        },
+        {
+          "scoreSec": 7.413,
+          "performanceSec": 7.413
+        }
+      ],
+      "missingIds": [],
+      "extraIndices": []
+    },
+    "rhythmEvents": [
+      {
+        "expectedId": "r-n0",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "2.374 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 0,
+        "targetEndSec": 2.374
+      },
+      {
+        "expectedId": "n0",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.374,
+        "targetEndSec": 2.5709999999999997,
+        "detectedIndex": 0,
+        "actualStartSec": 2.375,
+        "actualEndSec": 2.575,
+        "timingErrorMs": 0.9999999999998899
+      },
+      {
+        "expectedId": "r-n1",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.5709999999999997,
+        "targetEndSec": 2.577
+      },
+      {
+        "expectedId": "n1",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.577,
+        "targetEndSec": 2.769,
+        "detectedIndex": 1,
+        "actualStartSec": 2.575,
+        "actualEndSec": 2.775,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n2",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.769,
+        "targetEndSec": 2.775
+      },
+      {
+        "expectedId": "n2",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2,
+        "rhythmLabel": "0.209 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.775,
+        "targetEndSec": 2.9839999999999995,
+        "detectedIndex": 2,
+        "actualStartSec": 2.775,
+        "actualEndSec": 2.975,
+        "timingErrorMs": 0
+      },
+      {
+        "expectedId": "r-n3",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.011 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.9839999999999995,
+        "targetEndSec": 2.995
+      },
+      {
+        "expectedId": "n3",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.995,
+        "targetEndSec": 3.4070000000000005,
+        "detectedIndex": 3,
+        "actualStartSec": 2.975,
+        "actualEndSec": 3.42,
+        "timingErrorMs": -20.000000000000018
+      },
+      {
+        "expectedId": "r-n4",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.4070000000000005,
+        "targetEndSec": 3.413
+      },
+      {
+        "expectedId": "n4",
+        "kind": "note",
+        "measure": "1",
+        "beat": 3.5,
+        "rhythmLabel": "0.157 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.413,
+        "targetEndSec": 3.57,
+        "detectedIndex": 4,
+        "actualStartSec": 3.42,
+        "actualEndSec": 3.59,
+        "timingErrorMs": 7.000000000000117
+      },
+      {
+        "expectedId": "r-n5",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.029 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.57,
+        "targetEndSec": 3.5989999999999998
+      },
+      {
+        "expectedId": "n5",
+        "kind": "note",
+        "measure": "1",
+        "beat": 4,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.5989999999999998,
+        "targetEndSec": 3.802,
+        "detectedIndex": 5,
+        "actualStartSec": 3.59,
+        "actualEndSec": 3.795,
+        "timingErrorMs": -8.999999999999897
+      },
+      {
+        "expectedId": "r-n6",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "1.707 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.802,
+        "targetEndSec": 5.509000000000001
+      },
+      {
+        "expectedId": "n6",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.509000000000001,
+        "targetEndSec": 5.706,
+        "detectedIndex": 6,
+        "actualStartSec": 5.495,
+        "actualEndSec": 5.71,
+        "timingErrorMs": -14.000000000001123
+      },
+      {
+        "expectedId": "r-n7",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.706,
+        "targetEndSec": 5.712
+      },
+      {
+        "expectedId": "n7",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1.5,
+        "rhythmLabel": "0.18 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.712,
+        "targetEndSec": 5.8919999999999995,
+        "detectedIndex": 7,
+        "actualStartSec": 5.71,
+        "actualEndSec": 5.895,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n8",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.8919999999999995,
+        "targetEndSec": 5.909
+      },
+      {
+        "expectedId": "n8",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.909,
+        "targetEndSec": 6.112,
+        "detectedIndex": 8,
+        "actualStartSec": 5.895,
+        "actualEndSec": 6.11,
+        "timingErrorMs": -14.000000000000234
+      },
+      {
+        "expectedId": "r-n9",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.018 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.112,
+        "targetEndSec": 6.13
+      },
+      {
+        "expectedId": "n9",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.13,
+        "targetEndSec": 6.542,
+        "detectedIndex": 9,
+        "actualStartSec": 6.11,
+        "actualEndSec": 6.545,
+        "timingErrorMs": -19.999999999999574
+      },
+      {
+        "expectedId": "r-n10",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.012 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.542,
+        "targetEndSec": 6.554
+      },
+      {
+        "expectedId": "n10",
+        "kind": "note",
+        "measure": "3",
+        "beat": 3.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.554,
+        "targetEndSec": 6.746,
+        "detectedIndex": 10,
+        "actualStartSec": 6.545,
+        "actualEndSec": 6.765,
+        "timingErrorMs": -9.000000000000341
+      },
+      {
+        "expectedId": "r-n11",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.746,
+        "targetEndSec": 6.763
+      },
+      {
+        "expectedId": "n11",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4,
+        "rhythmLabel": "0.171 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.763,
+        "targetEndSec": 6.934,
+        "detectedIndex": 11,
+        "actualStartSec": 6.765,
+        "actualEndSec": 6.94,
+        "timingErrorMs": 1.9999999999997797
+      },
+      {
+        "expectedId": "n12",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4.5,
+        "rhythmLabel": "0.16 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.934,
+        "targetEndSec": 7.094,
+        "detectedIndex": 12,
+        "actualStartSec": 6.94,
+        "actualEndSec": 7.115,
+        "timingErrorMs": 6.000000000000227
+      },
+      {
+        "expectedId": "r-n13",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.087 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.094,
+        "targetEndSec": 7.181
+      },
+      {
+        "expectedId": "n13",
+        "kind": "note",
+        "measure": "4",
+        "beat": 1,
+        "rhythmLabel": "0.232 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.181,
+        "targetEndSec": 7.413,
+        "detectedIndex": 13,
+        "actualStartSec": 7.305,
+        "actualEndSec": 7.55,
+        "timingErrorMs": 123.99999999999966
+      }
+    ],
+    "rhythmGroups": []
+  },
+  {
+    "id": "real-missing_note",
+    "onsets": {
+      "tp": 13,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "maeMs": 7.538461538461562
+    },
+    "expected": [
+      {
+        "kind": "missing_note",
+        "expectedId": "n3"
+      }
+    ],
+    "actual": [
+      {
+        "kind": "missing_note",
+        "expectedId": "n3"
+      }
+    ],
+    "tp": 1,
+    "fp": 0,
+    "fn": 0,
+    "correctMatches": 13,
+    "matches": 13,
+    "alignment": {
+      "mode": "fixed",
+      "offsetSec": 0,
+      "tempoScale": 1,
+      "confidence": 0.9073469387755102,
+      "ambiguous": false,
+      "anchors": [
+        {
+          "scoreSec": 0,
+          "performanceSec": 0
+        },
+        {
+          "scoreSec": 7.413,
+          "performanceSec": 7.413
+        }
+      ],
+      "missingIds": [
+        "n3"
+      ],
+      "extraIndices": []
+    },
+    "rhythmEvents": [
+      {
+        "expectedId": "r-n0",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "2.374 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 0,
+        "targetEndSec": 2.374
+      },
+      {
+        "expectedId": "n0",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.374,
+        "targetEndSec": 2.5709999999999997,
+        "detectedIndex": 0,
+        "actualStartSec": 2.375,
+        "actualEndSec": 2.575,
+        "timingErrorMs": 0.9999999999998899
+      },
+      {
+        "expectedId": "r-n1",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.5709999999999997,
+        "targetEndSec": 2.577
+      },
+      {
+        "expectedId": "n1",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.577,
+        "targetEndSec": 2.769,
+        "detectedIndex": 1,
+        "actualStartSec": 2.575,
+        "actualEndSec": 2.775,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n2",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.769,
+        "targetEndSec": 2.775
+      },
+      {
+        "expectedId": "n2",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2,
+        "rhythmLabel": "0.209 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.775,
+        "targetEndSec": 2.9839999999999995,
+        "detectedIndex": 2,
+        "actualStartSec": 2.775,
+        "actualEndSec": 3.005,
+        "timingErrorMs": 0
+      },
+      {
+        "expectedId": "r-n3",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.011 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.9839999999999995,
+        "targetEndSec": 2.995
+      },
+      {
+        "expectedId": "n3",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.995,
+        "targetEndSec": 3.4070000000000005
+      },
+      {
+        "expectedId": "r-n4",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.4070000000000005,
+        "targetEndSec": 3.413
+      },
+      {
+        "expectedId": "n4",
+        "kind": "note",
+        "measure": "1",
+        "beat": 3.5,
+        "rhythmLabel": "0.157 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.413,
+        "targetEndSec": 3.57,
+        "detectedIndex": 3,
+        "actualStartSec": 3.405,
+        "actualEndSec": 3.59,
+        "timingErrorMs": -8.000000000000007
+      },
+      {
+        "expectedId": "r-n5",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.029 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.57,
+        "targetEndSec": 3.5989999999999998
+      },
+      {
+        "expectedId": "n5",
+        "kind": "note",
+        "measure": "1",
+        "beat": 4,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.5989999999999998,
+        "targetEndSec": 3.802,
+        "detectedIndex": 4,
+        "actualStartSec": 3.59,
+        "actualEndSec": 3.795,
+        "timingErrorMs": -8.999999999999897
+      },
+      {
+        "expectedId": "r-n6",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "1.707 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.802,
+        "targetEndSec": 5.509000000000001
+      },
+      {
+        "expectedId": "n6",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.509000000000001,
+        "targetEndSec": 5.706,
+        "detectedIndex": 5,
+        "actualStartSec": 5.495,
+        "actualEndSec": 5.71,
+        "timingErrorMs": -14.000000000001123
+      },
+      {
+        "expectedId": "r-n7",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.706,
+        "targetEndSec": 5.712
+      },
+      {
+        "expectedId": "n7",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1.5,
+        "rhythmLabel": "0.18 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.712,
+        "targetEndSec": 5.8919999999999995,
+        "detectedIndex": 6,
+        "actualStartSec": 5.71,
+        "actualEndSec": 5.895,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n8",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.8919999999999995,
+        "targetEndSec": 5.909
+      },
+      {
+        "expectedId": "n8",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.909,
+        "targetEndSec": 6.112,
+        "detectedIndex": 7,
+        "actualStartSec": 5.895,
+        "actualEndSec": 6.11,
+        "timingErrorMs": -14.000000000000234
+      },
+      {
+        "expectedId": "r-n9",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.018 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.112,
+        "targetEndSec": 6.13
+      },
+      {
+        "expectedId": "n9",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.13,
+        "targetEndSec": 6.542,
+        "detectedIndex": 8,
+        "actualStartSec": 6.11,
+        "actualEndSec": 6.545,
+        "timingErrorMs": -19.999999999999574
+      },
+      {
+        "expectedId": "r-n10",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.012 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.542,
+        "targetEndSec": 6.554
+      },
+      {
+        "expectedId": "n10",
+        "kind": "note",
+        "measure": "3",
+        "beat": 3.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.554,
+        "targetEndSec": 6.746,
+        "detectedIndex": 9,
+        "actualStartSec": 6.545,
+        "actualEndSec": 6.765,
+        "timingErrorMs": -9.000000000000341
+      },
+      {
+        "expectedId": "r-n11",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.746,
+        "targetEndSec": 6.763
+      },
+      {
+        "expectedId": "n11",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4,
+        "rhythmLabel": "0.171 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.763,
+        "targetEndSec": 6.934,
+        "detectedIndex": 10,
+        "actualStartSec": 6.765,
+        "actualEndSec": 6.94,
+        "timingErrorMs": 1.9999999999997797
+      },
+      {
+        "expectedId": "n12",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4.5,
+        "rhythmLabel": "0.16 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.934,
+        "targetEndSec": 7.094,
+        "detectedIndex": 11,
+        "actualStartSec": 6.94,
+        "actualEndSec": 7.12,
+        "timingErrorMs": 6.000000000000227
+      },
+      {
+        "expectedId": "r-n13",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.087 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.094,
+        "targetEndSec": 7.181
+      },
+      {
+        "expectedId": "n13",
+        "kind": "note",
+        "measure": "4",
+        "beat": 1,
+        "rhythmLabel": "0.232 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.181,
+        "targetEndSec": 7.413,
+        "detectedIndex": 12,
+        "actualStartSec": 7.17,
+        "actualEndSec": 7.445,
+        "timingErrorMs": -11.00000000000012
+      }
+    ],
+    "rhythmGroups": []
+  },
+  {
+    "id": "real-extra_note",
+    "onsets": {
+      "tp": 15,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "maeMs": 7.800000000000029
+    },
+    "expected": [
+      {
+        "kind": "extra_note",
+        "expectedId": null
+      },
+      {
+        "kind": "misplaced_rest",
+        "expectedId": "r-n6"
+      }
+    ],
+    "actual": [
+      {
+        "kind": "misplaced_rest",
+        "expectedId": "r-n6"
+      },
+      {
+        "kind": "extra_note",
+        "expectedId": null
+      }
+    ],
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "correctMatches": 14,
+    "matches": 14,
+    "alignment": {
+      "mode": "fixed",
+      "offsetSec": 0,
+      "tempoScale": 1,
+      "confidence": 0.9119999999999999,
+      "ambiguous": false,
+      "anchors": [
+        {
+          "scoreSec": 0,
+          "performanceSec": 0
+        },
+        {
+          "scoreSec": 7.413,
+          "performanceSec": 7.413
+        }
+      ],
+      "missingIds": [],
+      "extraIndices": [
+        6
+      ]
+    },
+    "rhythmEvents": [
+      {
+        "expectedId": "r-n0",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "2.374 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 0,
+        "targetEndSec": 2.374
+      },
+      {
+        "expectedId": "n0",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.374,
+        "targetEndSec": 2.5709999999999997,
+        "detectedIndex": 0,
+        "actualStartSec": 2.375,
+        "actualEndSec": 2.575,
+        "timingErrorMs": 0.9999999999998899
+      },
+      {
+        "expectedId": "r-n1",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.5709999999999997,
+        "targetEndSec": 2.577
+      },
+      {
+        "expectedId": "n1",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.577,
+        "targetEndSec": 2.769,
+        "detectedIndex": 1,
+        "actualStartSec": 2.575,
+        "actualEndSec": 2.775,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n2",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.769,
+        "targetEndSec": 2.775
+      },
+      {
+        "expectedId": "n2",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2,
+        "rhythmLabel": "0.209 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.775,
+        "targetEndSec": 2.9839999999999995,
+        "detectedIndex": 2,
+        "actualStartSec": 2.775,
+        "actualEndSec": 2.975,
+        "timingErrorMs": 0
+      },
+      {
+        "expectedId": "r-n3",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.011 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.9839999999999995,
+        "targetEndSec": 2.995
+      },
+      {
+        "expectedId": "n3",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.995,
+        "targetEndSec": 3.4070000000000005,
+        "detectedIndex": 3,
+        "actualStartSec": 2.975,
+        "actualEndSec": 3.42,
+        "timingErrorMs": -20.000000000000018
+      },
+      {
+        "expectedId": "r-n4",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.4070000000000005,
+        "targetEndSec": 3.413
+      },
+      {
+        "expectedId": "n4",
+        "kind": "note",
+        "measure": "1",
+        "beat": 3.5,
+        "rhythmLabel": "0.157 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.413,
+        "targetEndSec": 3.57,
+        "detectedIndex": 4,
+        "actualStartSec": 3.42,
+        "actualEndSec": 3.59,
+        "timingErrorMs": 7.000000000000117
+      },
+      {
+        "expectedId": "r-n5",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.029 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.57,
+        "targetEndSec": 3.5989999999999998
+      },
+      {
+        "expectedId": "n5",
+        "kind": "note",
+        "measure": "1",
+        "beat": 4,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.5989999999999998,
+        "targetEndSec": 3.802,
+        "detectedIndex": 5,
+        "actualStartSec": 3.59,
+        "actualEndSec": 3.795,
+        "timingErrorMs": -8.999999999999897
+      },
+      {
+        "expectedId": "r-n6",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "1.707 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.802,
+        "targetEndSec": 5.509000000000001
+      },
+      {
+        "expectedId": "n6",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.509000000000001,
+        "targetEndSec": 5.706,
+        "detectedIndex": 7,
+        "actualStartSec": 5.495,
+        "actualEndSec": 5.71,
+        "timingErrorMs": -14.000000000001123
+      },
+      {
+        "expectedId": "r-n7",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.706,
+        "targetEndSec": 5.712
+      },
+      {
+        "expectedId": "n7",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1.5,
+        "rhythmLabel": "0.18 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.712,
+        "targetEndSec": 5.8919999999999995,
+        "detectedIndex": 8,
+        "actualStartSec": 5.71,
+        "actualEndSec": 5.895,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n8",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.8919999999999995,
+        "targetEndSec": 5.909
+      },
+      {
+        "expectedId": "n8",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.909,
+        "targetEndSec": 6.112,
+        "detectedIndex": 9,
+        "actualStartSec": 5.895,
+        "actualEndSec": 6.11,
+        "timingErrorMs": -14.000000000000234
+      },
+      {
+        "expectedId": "r-n9",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.018 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.112,
+        "targetEndSec": 6.13
+      },
+      {
+        "expectedId": "n9",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.13,
+        "targetEndSec": 6.542,
+        "detectedIndex": 10,
+        "actualStartSec": 6.11,
+        "actualEndSec": 6.545,
+        "timingErrorMs": -19.999999999999574
+      },
+      {
+        "expectedId": "r-n10",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.012 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.542,
+        "targetEndSec": 6.554
+      },
+      {
+        "expectedId": "n10",
+        "kind": "note",
+        "measure": "3",
+        "beat": 3.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.554,
+        "targetEndSec": 6.746,
+        "detectedIndex": 11,
+        "actualStartSec": 6.545,
+        "actualEndSec": 6.765,
+        "timingErrorMs": -9.000000000000341
+      },
+      {
+        "expectedId": "r-n11",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.746,
+        "targetEndSec": 6.763
+      },
+      {
+        "expectedId": "n11",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4,
+        "rhythmLabel": "0.171 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.763,
+        "targetEndSec": 6.934,
+        "detectedIndex": 12,
+        "actualStartSec": 6.765,
+        "actualEndSec": 6.94,
+        "timingErrorMs": 1.9999999999997797
+      },
+      {
+        "expectedId": "n12",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4.5,
+        "rhythmLabel": "0.16 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.934,
+        "targetEndSec": 7.094,
+        "detectedIndex": 13,
+        "actualStartSec": 6.94,
+        "actualEndSec": 7.115,
+        "timingErrorMs": 6.000000000000227
+      },
+      {
+        "expectedId": "r-n13",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.087 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.094,
+        "targetEndSec": 7.181
+      },
+      {
+        "expectedId": "n13",
+        "kind": "note",
+        "measure": "4",
+        "beat": 1,
+        "rhythmLabel": "0.232 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.181,
+        "targetEndSec": 7.413,
+        "detectedIndex": 14,
+        "actualStartSec": 7.17,
+        "actualEndSec": 7.435,
+        "timingErrorMs": -11.00000000000012
+      }
+    ],
+    "rhythmGroups": []
+  },
+  {
+    "id": "real-incorrect_duration",
+    "onsets": {
+      "tp": 14,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "maeMs": 8.428571428571452
+    },
+    "expected": [
+      {
+        "kind": "incorrect_duration",
+        "expectedId": "n3"
+      }
+    ],
+    "actual": [
+      {
+        "kind": "incorrect_duration",
+        "expectedId": "n3"
+      }
+    ],
+    "tp": 1,
+    "fp": 0,
+    "fn": 0,
+    "correctMatches": 14,
+    "matches": 14,
+    "alignment": {
+      "mode": "fixed",
+      "offsetSec": 0,
+      "tempoScale": 1,
+      "confidence": 0.9757142857142859,
+      "ambiguous": false,
+      "anchors": [
+        {
+          "scoreSec": 0,
+          "performanceSec": 0
+        },
+        {
+          "scoreSec": 7.413,
+          "performanceSec": 7.413
+        }
+      ],
+      "missingIds": [],
+      "extraIndices": []
+    },
+    "rhythmEvents": [
+      {
+        "expectedId": "r-n0",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "2.374 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 0,
+        "targetEndSec": 2.374
+      },
+      {
+        "expectedId": "n0",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.374,
+        "targetEndSec": 2.5709999999999997,
+        "detectedIndex": 0,
+        "actualStartSec": 2.375,
+        "actualEndSec": 2.575,
+        "timingErrorMs": 0.9999999999998899
+      },
+      {
+        "expectedId": "r-n1",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.5709999999999997,
+        "targetEndSec": 2.577
+      },
+      {
+        "expectedId": "n1",
+        "kind": "note",
+        "measure": "1",
+        "beat": 1.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.577,
+        "targetEndSec": 2.769,
+        "detectedIndex": 1,
+        "actualStartSec": 2.575,
+        "actualEndSec": 2.775,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n2",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.769,
+        "targetEndSec": 2.775
+      },
+      {
+        "expectedId": "n2",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2,
+        "rhythmLabel": "0.209 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.775,
+        "targetEndSec": 2.9839999999999995,
+        "detectedIndex": 2,
+        "actualStartSec": 2.775,
+        "actualEndSec": 2.975,
+        "timingErrorMs": 0
+      },
+      {
+        "expectedId": "r-n3",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.011 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.9839999999999995,
+        "targetEndSec": 2.995
+      },
+      {
+        "expectedId": "n3",
+        "kind": "note",
+        "measure": "1",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 2.995,
+        "targetEndSec": 3.4070000000000005,
+        "detectedIndex": 3,
+        "actualStartSec": 2.975,
+        "actualEndSec": 3.165,
+        "timingErrorMs": -20.000000000000018
+      },
+      {
+        "expectedId": "r-n4",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.4070000000000005,
+        "targetEndSec": 3.413
+      },
+      {
+        "expectedId": "n4",
+        "kind": "note",
+        "measure": "1",
+        "beat": 3.5,
+        "rhythmLabel": "0.157 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.413,
+        "targetEndSec": 3.57,
+        "detectedIndex": 4,
+        "actualStartSec": 3.405,
+        "actualEndSec": 3.59,
+        "timingErrorMs": -8.000000000000007
+      },
+      {
+        "expectedId": "r-n5",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.029 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.57,
+        "targetEndSec": 3.5989999999999998
+      },
+      {
+        "expectedId": "n5",
+        "kind": "note",
+        "measure": "1",
+        "beat": 4,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.5989999999999998,
+        "targetEndSec": 3.802,
+        "detectedIndex": 5,
+        "actualStartSec": 3.59,
+        "actualEndSec": 3.795,
+        "timingErrorMs": -8.999999999999897
+      },
+      {
+        "expectedId": "r-n6",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "1.707 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 3.802,
+        "targetEndSec": 5.509000000000001
+      },
+      {
+        "expectedId": "n6",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1,
+        "rhythmLabel": "0.197 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.509000000000001,
+        "targetEndSec": 5.706,
+        "detectedIndex": 6,
+        "actualStartSec": 5.495,
+        "actualEndSec": 5.71,
+        "timingErrorMs": -14.000000000001123
+      },
+      {
+        "expectedId": "r-n7",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.006 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.706,
+        "targetEndSec": 5.712
+      },
+      {
+        "expectedId": "n7",
+        "kind": "note",
+        "measure": "3",
+        "beat": 1.5,
+        "rhythmLabel": "0.18 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.712,
+        "targetEndSec": 5.8919999999999995,
+        "detectedIndex": 7,
+        "actualStartSec": 5.71,
+        "actualEndSec": 5.895,
+        "timingErrorMs": -1.9999999999997797
+      },
+      {
+        "expectedId": "r-n8",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.8919999999999995,
+        "targetEndSec": 5.909
+      },
+      {
+        "expectedId": "n8",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2,
+        "rhythmLabel": "0.203 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 5.909,
+        "targetEndSec": 6.112,
+        "detectedIndex": 8,
+        "actualStartSec": 5.895,
+        "actualEndSec": 6.11,
+        "timingErrorMs": -14.000000000000234
+      },
+      {
+        "expectedId": "r-n9",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.018 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.112,
+        "targetEndSec": 6.13
+      },
+      {
+        "expectedId": "n9",
+        "kind": "note",
+        "measure": "3",
+        "beat": 2.5,
+        "rhythmLabel": "0.412 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.13,
+        "targetEndSec": 6.542,
+        "detectedIndex": 9,
+        "actualStartSec": 6.11,
+        "actualEndSec": 6.545,
+        "timingErrorMs": -19.999999999999574
+      },
+      {
+        "expectedId": "r-n10",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.012 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.542,
+        "targetEndSec": 6.554
+      },
+      {
+        "expectedId": "n10",
+        "kind": "note",
+        "measure": "3",
+        "beat": 3.5,
+        "rhythmLabel": "0.192 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.554,
+        "targetEndSec": 6.746,
+        "detectedIndex": 10,
+        "actualStartSec": 6.545,
+        "actualEndSec": 6.765,
+        "timingErrorMs": -9.000000000000341
+      },
+      {
+        "expectedId": "r-n11",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.017 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.746,
+        "targetEndSec": 6.763
+      },
+      {
+        "expectedId": "n11",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4,
+        "rhythmLabel": "0.171 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.763,
+        "targetEndSec": 6.934,
+        "detectedIndex": 11,
+        "actualStartSec": 6.765,
+        "actualEndSec": 6.94,
+        "timingErrorMs": 1.9999999999997797
+      },
+      {
+        "expectedId": "n12",
+        "kind": "note",
+        "measure": "3",
+        "beat": 4.5,
+        "rhythmLabel": "0.16 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 6.934,
+        "targetEndSec": 7.094,
+        "detectedIndex": 12,
+        "actualStartSec": 6.94,
+        "actualEndSec": 7.115,
+        "timingErrorMs": 6.000000000000227
+      },
+      {
+        "expectedId": "r-n13",
+        "kind": "rest",
+        "measure": "review",
+        "beat": 1,
+        "rhythmLabel": "0.087 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.094,
+        "targetEndSec": 7.181
+      },
+      {
+        "expectedId": "n13",
+        "kind": "note",
+        "measure": "4",
+        "beat": 1,
+        "rhythmLabel": "0.232 quarter-note beats",
+        "labelSource": "score_duration",
+        "targetStartSec": 7.181,
+        "targetEndSec": 7.413,
+        "detectedIndex": 13,
+        "actualStartSec": 7.17,
+        "actualEndSec": 7.445,
+        "timingErrorMs": -11.00000000000012
+      }
+    ],
+    "rhythmGroups": []
+  }
+]

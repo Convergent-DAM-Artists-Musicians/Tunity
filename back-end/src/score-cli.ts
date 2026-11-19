@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { importSheetMusic } from './score-import.ts';
-import { referenceForScorePassage } from './score-xml.ts';
+import { referenceForScorePassage, rhythmForScorePassage } from './score-xml.ts';
 import type { SheetImportOptions } from './score-import.ts';
 
 const [input, output, settings] = process.argv.slice(2);
@@ -10,12 +10,13 @@ if (!input || !output) {
 } else {
   try {
     const config = settings ? JSON.parse(await readFile(settings, 'utf8')) as SheetImportOptions & {
+      rhythmPassage?: { startBeat: number; endBeat: number };
       passage?: { startSec: number; endSec: number; countInSec?: number };
     } : {};
     const score = await importSheetMusic(input, config);
     const p = config.passage;
     const notes = p ? referenceForScorePassage(score, p.startSec, p.endSec, p.countInSec) : score.notes;
-    await writeFile(output, JSON.stringify({ ...score, notes }, null, 2));
+    await writeFile(output, JSON.stringify({ ...score, notes, rhythm: config.rhythmPassage ? rhythmForScorePassage(score, config.rhythmPassage.startBeat, config.rhythmPassage.endBeat) : p ? undefined : score.rhythm }, null, 2));
     console.log(`Imported ${notes.length} notes into ${output}. Review the reference before grading.`);
     for (const warning of score.warnings) console.warn(warning);
   } catch (error) {
