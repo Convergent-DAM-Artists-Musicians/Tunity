@@ -5,7 +5,7 @@ import {
   rhythmFromTimedNotes,
   beatToSeconds,
 } from "../../rhythm-analyzer/src/index.ts";
-import { estimatePitch } from "../../src/pitch/crepe.ts";
+import { estimatePitch } from "../../src/crepe.ts";
 import { median } from "../../src/notes.ts";
 import type { AudioClip, PitchTrack } from "../../src/types.ts";
 import type {

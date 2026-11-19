@@ -1,19 +1,22 @@
-import { importSheetMusic } from "../score/score-import.ts";
-import { extname } from "node:path";
-import { analyzePerformance } from "../../performance-analyzer/src/index.ts";
 /** Local JSON bridge used by the Next.js demo API. */
+import { extname } from "node:path";
 import { readFile } from "node:fs/promises";
-import { extractAudioClip } from "../extract.ts";
-import { estimatePitch } from "../pitch/crepe.ts";
-import { analyzePitchTrack } from "../analyzer.ts";
+import { importSheetMusic } from "./score-import.ts";
+import { analyzePerformance } from "../performance-analyzer/src/index.ts";
+import { extractAudioClip } from "./extract.ts";
+import { estimatePitch } from "./crepe.ts";
+import { analyzePitchTrack } from "./analyzer.ts";
 import {
   analyzeRhythmClip,
   detectRhythm,
   rhythmFromTimedNotes,
-} from "../../rhythm-analyzer/src/index.ts";
-import type { RhythmScore, RhythmOptions } from "../../rhythm-analyzer/src/types.ts";
-import { defaults, segmentNotes } from "../notes.ts";
-import type { ExpectedNote, AnalysisOptions } from "../types.ts";
+} from "../rhythm-analyzer/src/index.ts";
+import type {
+  RhythmScore,
+  RhythmOptions,
+} from "../rhythm-analyzer/src/types.ts";
+import { defaults, segmentNotes } from "./notes.ts";
+import type { ExpectedNote, AnalysisOptions } from "./types.ts";
 
 const [audioPath, referencePath, mode = "performance"] = process.argv.slice(2);
 

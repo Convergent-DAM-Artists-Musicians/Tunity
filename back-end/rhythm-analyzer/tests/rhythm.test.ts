@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { alignRhythm, validateRhythmScore } from "../src/index.ts";
 import type { RhythmScore, RhythmNote } from "../src/types.ts";
-import { parseMusicXml } from "../../src/score/score-xml.ts";
+import { parseMusicXml } from "../../src/score-xml.ts";
 const durations = [
   1,
   0.5,

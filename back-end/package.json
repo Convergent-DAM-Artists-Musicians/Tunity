@@ -7,14 +7,15 @@
     "node": ">=24"
   },
   "scripts": {
-    "test": "node --test tests/*.test.ts rhythm-analyzer/tests/*.test.ts performance-analyzer/tests/*.test.ts",
-    "demo": "node src/cli/demo.ts",
-    "analyze": "node src/cli/cli.ts",
-    "import-score": "node src/cli/score-cli.ts",
+    "test": "node --test test/*.test.ts rhythm-analyzer/tests/*.test.ts performance-analyzer/tests/*.test.ts",
+    "demo": "node src/demo.ts",
+    "analyze": "node src/cli.ts",
+    "import-score": "node src/score-cli.ts",
+    "score-server": "node src/score-server.ts",
     "test:python": "python -m unittest discover -s python -p test_*.py && python -m unittest discover -s rhythm-analyzer/python -p test_*.py",
-    "demo:fixture": "node src/cli/fixture-demo.ts",
+    "demo:fixture": "node test/fixture-demo.ts",
     "analyze:rhythm": "node rhythm-analyzer/src/cli.ts",
-    "analyze:performance": "node src/cli/web-demo.ts"
+    "analyze:performance": "node src/web-demo.ts"
   },
   "dependencies": {
     "jszip": "3.10.1",

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { extractAudioClip } from "../../src/extract.ts";
-import { estimatePitch } from "../../src/pitch/crepe.ts";
+import { estimatePitch } from "../../src/crepe.ts";
 import { measurePerformance } from "../src/index.ts";
 const source = new URL(
     "../../rhythm-analyzer/evaluation/data/",

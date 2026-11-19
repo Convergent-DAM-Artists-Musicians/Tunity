@@ -1,5 +1,5 @@
-import { importSheetMusic } from '../score/score-import.ts';
-import type { SheetImportOptions } from '../score/score-import.ts';
+import { importSheetMusic } from './score-import.ts';
+import type { SheetImportOptions } from './score-import.ts';
 
 /** JSON bridge used by the Next.js studio routes. Prints the imported score to stdout. */
 const [input, settings] = process.argv.slice(2);

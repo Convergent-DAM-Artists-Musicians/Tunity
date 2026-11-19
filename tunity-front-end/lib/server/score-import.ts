@@ -17,7 +17,7 @@ export async function importScore(bytes: Uint8Array, extension: string, options:
   try {
     const path = join(folder, `score${extension}`);
     await writeFile(path, bytes);
-    const cli = resolve(process.env.TUNITY_BACKEND_DIR || "../back-end", "src/cli/score-json.ts");
+    const cli = resolve(process.env.TUNITY_BACKEND_DIR || "../back-end", "src/score-json.ts");
     try {
       const { stdout } = await run(process.env.TUNITY_NODE_PATH || "node", [cli, path, JSON.stringify(options)], {
         timeout: 30_000, maxBuffer: 8 * 1024 * 1024, windowsHide: true,

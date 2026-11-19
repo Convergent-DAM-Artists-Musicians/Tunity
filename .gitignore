@@ -1,8 +1,10 @@
 node_modules/
-*.log
 .venv/
 __pycache__/
 *.pyc
+*.log
+practice/
+work/
 
 # Local environment files across the repo
 .env*
@@ -33,6 +35,7 @@ secrets.json
 tunity-demo-backup-*/
 tunity-profile-backup-*/
 .DS_Store
+
 # Reproducibly downloaded/generated rhythm evaluation media
 back-end/rhythm-analyzer/evaluation/data/
 

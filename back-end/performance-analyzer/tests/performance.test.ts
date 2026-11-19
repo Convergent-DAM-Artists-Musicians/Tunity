@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { measurePerformance, referenceScore } from "../src/index.ts";
 import { alignRhythm } from "../../rhythm-analyzer/src/index.ts";
-import { parseMusicXml } from "../../src/score/score-xml.ts";
+import { parseMusicXml } from "../../src/score-xml.ts";
 import type {
   RhythmScore,
   RhythmNote,

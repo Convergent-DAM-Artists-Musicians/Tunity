@@ -16,7 +16,7 @@ function importXml(xml) {
   try {
     const path = join(folder, 'etude.musicxml');
     writeFileSync(path, xml);
-    return JSON.parse(execFileSync(process.execPath, [join(backend, 'src/cli/score-json.ts'), path, '{}'], { encoding: 'utf8' }));
+    return JSON.parse(execFileSync(process.execPath, [join(backend, 'src/score-json.ts'), path, '{}'], { encoding: 'utf8' }));
   } finally { rmSync(folder, { recursive: true, force: true }); }
 }
 const note = (step, type, extra = {}) => ({ rest: false, step, accidental: 'key', octave: 4, type, dotted: false, triplet: false,

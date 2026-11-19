@@ -92,7 +92,7 @@ export async function POST(request: Request) {
     const args = [
       resolve(
         process.env.TUNITY_BACKEND_DIR || "../back-end",
-        "src/cli/web-demo.ts",
+        "src/web-demo.ts",
       ),
       input,
     ];

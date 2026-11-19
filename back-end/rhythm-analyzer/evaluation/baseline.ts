@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { extractAudioClip } from "../../src/extract.ts";
-import { estimatePitch } from "../../src/pitch/crepe.ts";
+import { estimatePitch } from "../../src/crepe.ts";
 import { segmentNotes, defaults } from "../../src/notes.ts";
 import { alignNotes } from "../../src/analyzer.ts";
 const root = new URL("./", import.meta.url);

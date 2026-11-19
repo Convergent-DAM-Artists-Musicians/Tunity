@@ -1,5 +1,5 @@
 import { analyzePitchTrack } from '../src/analyzer.ts';
-import type { SynthNote } from '../fixtures/fixtures.ts';
+import type { SynthNote } from '../src/fixtures.ts';
 import type { AnalysisOptions, AudioClip, ExpectedNote, PitchTrack } from '../src/types.ts';
 /** Oracle frames for postprocessing tests only. This is NOT audio inference. */
 export function trackForNotes(clip: AudioClip, played: SynthNote[], periodicity = 0.95): PitchTrack {

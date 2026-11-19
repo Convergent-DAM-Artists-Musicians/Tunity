@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
-import type { ExpectedNote } from '../types.ts';
-import type { RhythmScore, RhythmEvent } from '../../rhythm-analyzer/src/types.ts';
+import type { ExpectedNote } from './types.ts';
+import type { RhythmScore, RhythmEvent } from '../rhythm-analyzer/src/types.ts';
 
 const require = createRequire(import.meta.url);
 const { xml2js } = require('xml-js') as { xml2js(xml: string, options: object): XmlNode };
@@ -41,6 +41,8 @@ export type ScoreImportOptions = {
   staff?: string;
   /** Explicit practice tempo in quarter notes/minute, overriding all score tempos. */
   tempoBpm?: number;
+  /** Explicit written-to-sounding semitones, replacing XML transposition (Bb trumpet: -2). */
+  transpositionSemitones?: number;
   /** Optional teacher-specified relative levels. Not inferred from printed markings. */
   dynamicsDbByMark?: Record<string, number>;
 };
@@ -59,10 +61,23 @@ export type ImportedScore = {
 type BeatNote = { id: string; midi: number; start: number; end: number; voice: string; staff: string; tieStart: boolean; tieStop: boolean; measure: string; beat: number; notation: RhythmEvent['notation']; tiedIds: string[] };
 type ParsedPart = { notes: BeatNote[]; rests: (RhythmEvent & {voice: string; staff: string})[]; meters: RhythmScore['meterMap']; tempos: { beat: number; bpm: number }[]; dynamics: { beat: number; mark: string }[]; hairpins: NonNullable<RhythmScore["hairpins"]>; duration: number; warnings: Set<string> };
 
-function parsePart(part: XmlNode): ParsedPart {
-  const result: ParsedPart = { notes: [], rests: [], meters: [], tempos: [], dynamics: [], hairpins: [], duration: 0, warnings: new Set() };
+function parsePart(part: XmlNode, transpositionOverride?: number): ParsedPart {
+  const result: ParsedPart = {
+    notes: [],
+    rests: [],
+    meters: [],
+    tempos: [],
+    dynamics: [],
+    hairpins: [],
+    duration: 0,
+    warnings: new Set()
+  };
   const activeSlurs = new Set<string>();
-  const openHairpins = new Map<string, { startBeat: number; kind: "crescendo" | "diminuendo" }>();
+  const openHairpins = new Map<string, {
+    startBeat: number;
+    kind: "crescendo" | "diminuendo";
+  }>();
+  
   let divisions = 0, timeBeats = 0, transpose = 0, measureStart = 0;
   let noteNumber = 0, restNumber = 0, numerator = 4, denominator = 4;
   for (const measure of children(part, 'measure')) {
@@ -169,7 +184,7 @@ function parsePart(part: XmlNode): ParsedPart {
         if (!p) throw new Error('Only pitched notes are supported.');
         const semitone = ({ C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 } as Record<string, number>)[value(p, 'step')];
         const octave = number(value(p, 'octave'), 'pitch octave');
-        const midi = (octave + 1) * 12 + semitone + Number(value(p, 'alter') || 0) + transpose;
+          const midi = (octave + 1) * 12 + semitone + Number(value(p, 'alter') || 0) + (transpositionOverride ?? transpose);
         if (!Number.isInteger(octave) || !Number.isInteger(midi) || midi < 0 || midi > 127) throw new Error('Invalid or microtonal pitch.');
         if (e.attributes?.attack || e.attributes?.release) throw new Error('Custom note attack/release timing is not supported.');
         const ties = children(e, 'tie').map(t => t.attributes?.type);
@@ -194,6 +209,8 @@ function parsePart(part: XmlNode): ParsedPart {
 }
 
 export function parseMusicXml(xml: string, options: ScoreImportOptions = {}): ImportedScore {
+  if (options.transpositionSemitones !== undefined && (!Number.isInteger(options.transpositionSemitones)
+      || Math.abs(options.transpositionSemitones) > 24)) throw new Error('Transposition must be an integer between -24 and 24 semitones.');
   const doc = parseXml(xml);
   const root = children(doc)[0];
   if (!root || name(root) !== 'score-partwise') throw new Error('Upload score-partwise MusicXML (timewise scores are not supported).');
@@ -209,7 +226,7 @@ export function parseMusicXml(xml: string, options: ScoreImportOptions = {}): Im
   if (parts.length > 1 && !options.partId) throw new Error(`Choose partId: ${metadata.map(p => `${p.id} (${p.name})`).join(', ')}.`);
   const part = options.partId ? parts.find(p => p.attributes?.id === options.partId) : parts[0];
   if (!part) throw new Error('Selected partId does not exist.');
-  const parsed = parsePart(part);
+  const parsed = parsePart(part, options.transpositionSemitones);
   let selected = parsed.notes.filter(n => (options.voice === undefined || n.voice === options.voice)
     && (options.staff === undefined || n.staff === options.staff));
   if (!selected.length) throw new Error('Selected part/voice/staff has no pitched notes.');
@@ -260,6 +277,7 @@ export function parseMusicXml(xml: string, options: ScoreImportOptions = {}): Im
   });
   if (notes.length > 20000) throw new Error('Score has too many notes.');
   parsed.warnings.add('Review the imported melody, tempo and synchronization cue before using it to grade a performance.');
+  if (options.transpositionSemitones !== undefined) parsed.warnings.add(`User-specified written-to-sounding transposition: ${options.transpositionSemitones} semitones; replaces MusicXML transposition.`);
   if (!options.dynamicsDbByMark) parsed.warnings.add('Printed dynamics have no universal dB mapping; dynamics scoring is disabled until relative targets are supplied.');
   const selectedStream = selected[0];
   const rhythmEvents: RhythmEvent[] = [
